@@ -36,4 +36,9 @@ class Menu extends Model
     {
         return $this->belongsToMany(Order::class, 'menu__orders', 'menu_id', 'order_id')->withPivot('quantity', 'menu_prepare', 'menu_serve', 'remarks', 'sides');
     }
+
+    public function analyses()
+    {
+        return $this->hasOne(Analysis::class);
+    }
 }
