@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Red Card Staff | Log in </title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}" >
-    <link rel="stylesheet" href="{{ asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}"> 
+    <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css?v=3.2.0') }}">
     <script nonce="f1278212-5b00-4b7f-8d07-1a15f2e02b11">
         (function(w, d) {
@@ -33,7 +33,7 @@
                         .zarazData.e = a.innerWidth, a.zarazData.l = a.location.href, a.zarazData.r = e
                         .referrer, a.zarazData.k = a.screen.colorDepth, a.zarazData.n = e.characterSet, a
                         .zarazData.o = (new Date).getTimezoneOffset(), a.zarazData.q = []; a.zaraz.q.length;
-                        ) {
+                    ) {
                         const e = a.zaraz.q.shift();
                         a.zarazData.q.push(e)
                     }
@@ -49,9 +49,10 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="card card-outline card-danger">
-            <div class="card-header text-center" style="background-color: #000000">
+            <!-- <div class="card-header text-center" style="background-color: #000000">
                 <h1 class="text-white"><b>Red Card Cafe Staff</b></h1>
-            </div>
+            </div> -->
+            <img src="{{ asset('img/red_card_cafe_logo.jpeg') }}" class="card-img-top" alt="red card cafe logo">
             <div class="card-body">
                 <form action="{{ route('login') }}" method="POST">
                     @csrf
@@ -63,9 +64,9 @@
                             </div>
                         </div>
                         @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                         @enderror
                     </div>
                     <div class="input-group mb-3">
@@ -76,9 +77,9 @@
                             </div>
                         </div>
                         @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                         @enderror
                     </div>
                     <div class="row">
@@ -93,7 +94,7 @@
         </div>
 
     </div>
-    
+
     <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('adminlte/dist/js/adminlte.min.js?v=3.2.0') }}"></script>
