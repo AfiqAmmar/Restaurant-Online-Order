@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Traits\HasRoles;
 
 class RegisterController extends Controller
 {
@@ -25,7 +24,6 @@ class RegisterController extends Controller
     */
 
     use RegistersUsers;
-    use HasRoles;
 
     /**
      * Where to redirect users after registration.
@@ -33,6 +31,7 @@ class RegisterController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+    
 
     /**
      * Create a new controller instance.
@@ -85,27 +84,25 @@ class RegisterController extends Controller
             'role' => $data['role'],
         ]);
 
-        $user->assignRole('master-admin');
-
-        // if($data['role'] == 'Master-Admin')
-        // {
-        //     $user->assignRole('master-admin');
-        // }
+        if(strcmp($data['role'], 'Master-Admin')  == 0)
+        {
+            $user->assignRole('master-admin');
+        }
         
-        // else if($data['role'] == 'Cashier')
-        // {
-        //     $user->assignRole('cashier');
-        // }
+        else if(strcmp($data['role'], 'Cashier')  == 0)
+        {
+            $user->assignRole('cashier');
+        }
 
-        // else if($data['role'] == 'Waiter')
-        // {
-        //     $user->assignRole('waiter');
-        // }
+        else if(strcmp($data['role'], 'Waiter')  == 0)
+        {
+            $user->assignRole('waiter');
+        }
 
-        // else
-        // {
-        //     $user->assignRole('kitchen-staff');
-        // }
+        else
+        {
+            $user->assignRole('kitchen-staff');
+        }
     
         return $user;
     }
