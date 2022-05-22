@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TaxController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Tax
+Route::get('tax', [TaxController::class, 'index']);
+Route::post('getTaxes', [TaxController::class, 'getTaxes'])->name('getTaxes');
+Route::get('add-tax', [TaxController::class, 'addTaxIndex']);
+Route::post('add-tax', [TaxController::class, 'addTax']);
