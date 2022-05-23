@@ -79,7 +79,7 @@
                         <ul class="nav nav-pills nav-sidebar flex-column">
                             @role('master-admin')
                                 <li class="nav-item">
-                                    <a href="{{ url('dashboard') }}" class="nav-link {{ request()->is('dashboard') ? 'active' : ''}}">
+                                    <a href="{{ url('dashboard') }}" class="nav-link {{ request()->is('dashboard*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-chart-line"></i>
                                         <p>
                                             Dashboard
@@ -87,7 +87,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('order-queue') }}" class="nav-link {{ request()->is('order-queue') ? 'active' : ''}}">
+                                    <a href="{{ url('order-queue') }}" class="nav-link {{ request()->is('order-queue*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-list-ul"></i>
                                         <p>
                                             Order Queue
@@ -95,7 +95,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('order-history') }}" class="nav-link {{ request()->is('order-history') ? 'active' : ''}}">
+                                    <a href="{{ url('order-history') }}" class="nav-link {{ request()->is('order-history*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-history"></i>
                                         <p>
                                             Order History
@@ -103,7 +103,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('billing') }}" class="nav-link {{ request()->is('billing') ? 'active' : ''}}">
+                                    <a href="{{ url('billing') }}" class="nav-link {{ request()->is('billing*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-credit-card"></i>
                                         <p>
                                             Billing
@@ -111,7 +111,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('staff') }}" class="nav-link {{ request()->is('staff') ? 'active' : ''}}">
+                                    <a href="{{ url('staff') }}" class="nav-link {{ request()->is('staff*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-users"></i>
                                         <p>
                                             Staff
@@ -119,7 +119,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('menu') }}" class="nav-link {{ request()->is('menu') ? 'active' : ''}}">
+                                    <a href="{{ url('menu') }}" class="nav-link {{ request()->is('menu*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-utensils"></i>
                                         <p>
                                             Menu
@@ -127,7 +127,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('menu-ranking') }}" class="nav-link {{ request()->is('menu-ranking') ? 'active' : ''}}">
+                                    <a href="{{ url('menu-ranking') }}" class="nav-link {{ request()->is('menu-ranking*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-chart-area"></i>
                                         <p>
                                             Menu Ranking
@@ -135,7 +135,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('table') }}" class="nav-link {{ request()->is('table') ? 'active' : ''}}">
+                                    <a href="{{ url('table') }}" class="nav-link {{ request()->is('table*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-table"></i>
                                         <p>
                                             Table
@@ -143,7 +143,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('tax') }}" class="nav-link {{ request()->is('tax') ? 'active' : ''}}">
+                                    <a href="{{ url('tax') }}" class="nav-link {{ request()->is('tax*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-percent"></i>
                                         <p>
                                             Tax
@@ -154,7 +154,7 @@
 
                             @role('waiter')
                                 <li class="nav-item">
-                                    <a href="{{ url('order-queue') }}" class="nav-link {{ request()->is('order-queue') ? 'active' : ''}}">
+                                    <a href="{{ url('order-queue') }}" class="nav-link {{ request()->is('order-queue*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-list-ul"></i>
                                         <p>
                                             Order Queue
@@ -162,7 +162,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('order-history') }}" class="nav-link {{ request()->is('order-history') ? 'active' : ''}}">
+                                    <a href="{{ url('order-history') }}" class="nav-link {{ request()->is('order-history*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-history"></i>
                                         <p>
                                             Order History
@@ -173,7 +173,7 @@
 
                             @role('cashier')
                                 <li class="nav-item">
-                                    <a href="{{ url('order-queue') }}" class="nav-link {{ request()->is('order-queue') ? 'active' : ''}}">
+                                    <a href="{{ url('order-queue') }}" class="nav-link {{ request()->is('order-queue*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-list-ul"></i>
                                         <p>
                                             Order Queue
@@ -181,7 +181,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('order-history') }}" class="nav-link {{ request()->is('order-history') ? 'active' : ''}}">
+                                    <a href="{{ url('order-history') }}" class="nav-link {{ request()->is('order-history*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-history"></i>
                                         <p>
                                             Order History
@@ -189,7 +189,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('billing') }}" class="nav-link {{ request()->is('billing') ? 'active' : ''}}">
+                                    <a href="{{ url('billing') }}" class="nav-link {{ request()->is('billing*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-credit-card"></i>
                                         <p>
                                             Billing
@@ -200,7 +200,7 @@
 
                             @role('kitchen-staff')
                                 <li class="nav-item">
-                                    <a href="{{ url('order-queue') }}" class="nav-link {{ request()->is('order-queue') ? 'active' : ''}}">
+                                    <a href="{{ url('order-queue') }}" class="nav-link {{ request()->is('order-queue*') ? 'active' : ''}}">
                                         <i class="nav-icon fas fa-list-ul"></i>
                                         <p>
                                             Order Queue

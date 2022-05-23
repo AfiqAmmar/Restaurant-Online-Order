@@ -15,7 +15,7 @@
                 <h4 class="mb-3">Tax Management</h4>
                 <div class="card">
                     <div class="card-header">
-                        <button class="btn btn-success card-title float-right"><a class="text-white" href="/add-tax">Add New Tax</a></button>
+                        <button class="btn btn-success card-title float-right"><a class="text-white" href="/tax/add">Add New Tax</a></button>
                     </div>
                     <div class="card-body">
                         <table id="taxTable" class="table table-bordered table-striped">

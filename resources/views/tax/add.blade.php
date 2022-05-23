@@ -56,7 +56,7 @@
                 let taxName = $("input[name='taxName']").val();
                 let percentage = $("input[name='percentage']").val();
                 $.ajax({
-                    url: "add-tax",
+                    url: "add",
                     type: "POST",
                     data:{
                         taxName: taxName,
@@ -64,7 +64,7 @@
                         "_token":"{{csrf_token()}}"
                     },
                     success:function(response) {
-                        window.location.href = "tax";
+                        window.location.href = "/tax";
                     },
                     error:function(response){
                         document.getElementById("submitTaxButton").disabled = false;
