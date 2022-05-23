@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary float-right" id="submitTaxButton">Submit</button>
+                        <button type="submit" class="btn btn-primary float-right" id="submitTaxButton">Add</button>
                     </div>
                 </form>
             </div> 
