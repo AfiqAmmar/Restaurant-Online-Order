@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/pace-progress/themes/black/pace-theme-flat-top.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css?v=3.2.0') }}">
     @yield('css')
     
@@ -68,7 +69,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="#" class="brand-link">
-                <img src="img/red_card_cafe_logo-removebg.png" alt="Restaurant Logo" class="brand-image img-circle">
+                <img src="{{ asset('img/red_card_cafe_logo-removebg.png') }}" alt="Restaurant Logo" class="brand-image img-circle">
                 <span class="brand-text font-weight-light">Red Card Cafe</span>
             </a>
             <div class="sidebar">
@@ -248,6 +249,7 @@
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
+<script src="{{ asset('adminlte/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/pace-progress/pace.min.js')}}"></script>
 @stack('script')
 

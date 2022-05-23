@@ -28,3 +28,6 @@ Route::get('tax', [TaxController::class, 'index']);
 Route::post('getTaxes', [TaxController::class, 'getTaxes'])->name('getTaxes');
 Route::get('add-tax', [TaxController::class, 'addTaxIndex']);
 Route::post('add-tax', [TaxController::class, 'addTax']);
+Route::get('tax/{id}', [TaxController::class, 'viewTax']);
+Route::put('tax/{id}/edit', [TaxController::class, 'editTax']);
+Route::delete('tax/{id}', [TaxController::class, 'deleteTax']);

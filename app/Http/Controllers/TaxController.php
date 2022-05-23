@@ -69,7 +69,7 @@ class TaxController extends Controller
             foreach($taxes as $tax)
             {
                 $editButton = '<div class="btn-group">
-                                <button type="button" class="btn btn-primary"><a href="'. url('edit-tax/' . $tax->id ) .'"></a>Edit</button>
+                                <button type="button" class="btn btn-primary"><a href="'. url('tax/' . $tax->id ) .'" class="text-white">Edit</a></button>
                               </div>';
                 
                 $data[] = array(
@@ -120,5 +120,42 @@ class TaxController extends Controller
 
         Session::flash('success','Tax added successfully');
         return response()->json(['success'=>'Tax added successfully']);
+    }
+
+    public function viewTax($id)
+    {
+        $tax = Tax::where('id', $id)->first();
+
+        return view('tax.edit', [
+            'tax' => $tax,
+        ]);
+    }
+
+    public function editTax(Request $request, $id)
+    {
+        // validate credentials
+        $validatedData = $request->validate([
+            'taxName' => ['required', 'string', 'max:255'],
+            'percentage' => ['required', 'numeric'],
+            ],
+        );
+
+        // update data
+        $tax = Tax::find($id);
+        $tax->update([
+            'name' => $request->taxName,
+            'percentage' => $request->percentage,
+        ]);
+
+        Session::flash('success','Tax updated successfully');
+        return response()->json(['success'=>'Tax updated successfully']);
+    }
+
+    public function deleteTax($id)
+    {
+        $tax = Tax::find($id);
+        $tax->delete();
+        Session::flash('success','Tax deleted successfully');
+        return redirect('/tax');
     }
 }
