@@ -108,7 +108,7 @@ class TaxController extends Controller
         // validate credentials
         $validatedData = $request->validate([
             'taxName' => ['required', 'string', 'max:255'],
-            'percentage' => ['required', 'numeric'],
+            'percentage' => ['required', 'digits_between:1,2'],
             ],
         );
 
@@ -136,7 +136,7 @@ class TaxController extends Controller
         // validate credentials
         $validatedData = $request->validate([
             'taxName' => ['required', 'string', 'max:255'],
-            'percentage' => ['required', 'numeric'],
+            'percentage' => ['required', 'digits_between:1,2'],
             ],
         );
 
