@@ -11,6 +11,7 @@ class Table extends Model
 
     protected $fillable = [
         'seats',
+        'table_number'
     ];
 
     public function orders()
