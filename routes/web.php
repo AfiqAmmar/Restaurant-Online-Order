@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TaxController;
+use App\Http\Controllers\TableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,12 @@ Route::post('tax/add', [TaxController::class, 'addTax']);
 Route::get('tax/{id}', [TaxController::class, 'viewTax']);
 Route::put('tax/{id}/edit', [TaxController::class, 'editTax']);
 Route::delete('tax/{id}', [TaxController::class, 'deleteTax']);
+
+// Table
+Route::get('table', [TableController::class, 'index']);
+Route::post('getTable', [TableController::class, 'getTables'])->name('getTables');
+Route::get('table/add', [TableController::class, 'addTableIndex']);
+Route::post('table/add', [TableController::class, 'addTable']);
+Route::get('table/{id}', [TableController::class, 'viewTable']);
+Route::put('table/{id}/edit', [TableController::class, 'editTable']);
+Route::delete('table/{id}', [TableController::class, 'deleteTable']);
