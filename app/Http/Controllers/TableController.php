@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Table;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class TableController extends Controller
 {
@@ -134,14 +135,15 @@ class TableController extends Controller
     public function editTable(Request $request, $id)
     {
         // validate credentials
+        $table = Table::find($id);
         $validatedData = $request->validate([
-            'table_num' => ['required', 'unique:tables,table_number', 'digits_between:1,2'],
+            'table_num' => ['required', 'digits_between:1,2'],
             'capacity' => ['required', 'digits_between:1,2'],
             ],
         );
+        // Rule::unique('tables,table_number')->where('table_number', '!=', $table->table_number)
 
         // update data
-        $table = Table::find($id);
         $table->update([
             'table_number' => $request->table_num,
             'seats' => $request->capacity,
