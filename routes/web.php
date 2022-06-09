@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,15 @@ Route::post('table/add', [TableController::class, 'addTable']);
 Route::get('table/{id}', [TableController::class, 'viewTable']);
 Route::put('table/{id}/edit', [TableController::class, 'editTable']);
 Route::delete('table/{id}', [TableController::class, 'deleteTable']);
+
+//  Menu Category
+Route::get('category', [CategoryController::class, 'index']);
+Route::post('getCategory', [CategoryController::class, 'getCategories'])->name('getCategories');
+Route::get('category/add', [CategoryController::class, 'addCategoryIndex']);
+Route::post('category/add', [CategoryController::class, 'addCategory']);
+Route::get('category/{id}', [CategoryController::class, 'viewCategory']);
+Route::put('category/{id}/edit', [CategoryController::class, 'editCategory']);
+Route::delete('category/{id}', [CategoryController::class, 'deleteCategory']);
 
 //  Menu
 Route::get('menu', [MenuController::class, 'index']);
