@@ -16,7 +16,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-right">
-                            <button class="btn btn-success card-title mr-3"><a class="text-white" href="/category/add">Add New Menu Category</a></button>
+                            <button class="btn btn-success card-title mr-3"><a class="text-white" href="/category">Manage Menu Category</a></button>
                             <button class="btn btn-success card-title"><a class="text-white" href="/menu/add">Add New Menu</a></button>
                         </div>
                     </div>
