@@ -27,7 +27,6 @@
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Price</th>
-                                    <th>Image</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -71,8 +70,6 @@
             }, {
                 "data": "price",
             }, {
-                "data": "image",
-            }, {
                 "data": "action"
             }],
             "columnDefs": [{
@@ -85,11 +82,8 @@
                 "orderable": true,
                 "targets": 2
             }, {
-                "orderable": true,
-                "targets": 3
-            }, {
                 "orderable": false,
-                "targets": 4
+                "targets": 3
             }],
             dom: 'Plfrtip',
             "language": {

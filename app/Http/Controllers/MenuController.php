@@ -32,8 +32,7 @@ class MenuController extends Controller
             0 => 'name',
             1 => 'category',
             2 => 'price',
-            3 => 'image',
-            4 => 'action'
+            3 => 'action'
         );
 
         $draw = $request->get('draw');
@@ -76,13 +75,13 @@ class MenuController extends Controller
                               </div>';
                 
                 $category = Category::where('id', $menu->category_id)->get();
+                
 
                 $data[] = array(
                     'name' => $menu->name,
                     'category' => $category[0]->name,
                     'price' => $menu->price,
-                    'image' => 'image',
-                    'action' => $editButton
+                    'action' => $editButton,
                 );
 
                 $keys = array_column($data, $columnName);
@@ -132,7 +131,7 @@ class MenuController extends Controller
         $imageName = pathinfo($imageNameWithExt, PATHINFO_FILENAME);
         $extension = $request->file('imageFile')->getClientOriginalExtension();
         $imageNameToStore = $imageName.'_'.time().'.'.$extension;
-        $path = $request->file('imageFile')->move(public_path('menu_img'), $imageName);
+        $path = $request->file('imageFile')->move(public_path('menu_img'), $imageNameToStore);
 
         // insert data
         $menuInsert = Menu::create([
