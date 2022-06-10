@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\Category;
+use Illuminate\Support\Facades\Session;
 
 class MenuController extends Controller
 {
@@ -78,7 +79,7 @@ class MenuController extends Controller
 
                 $data[] = array(
                     'name' => $menu->name,
-                    'category' => $category->name,
+                    'category' => $category[0]->name,
                     'price' => $menu->price,
                     'image' => 'image',
                     'action' => $editButton
@@ -102,5 +103,50 @@ class MenuController extends Controller
         );
 
         echo json_encode($jsonData);
+    }
+
+    public function addMenuIndex()
+    {
+        $categories = Category::all();
+        return view('menu.add', [
+            'categories' => $categories,
+        ]);
+    }
+
+    public function addMenu(Request $request)
+    {
+        
+        // validate credentials
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'category' => ['required'],
+            'imageFile' => ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
+            'price' => ['required', 'numeric'],
+            'sides' => ['required'],
+            'time' => ['required', 'numeric'],
+            ],
+        );
+
+        $imageNameWithExt = $request->file('imageFile')->getClientOriginalName();
+        $imageName = pathinfo($imageNameWithExt, PATHINFO_FILENAME);
+        $extension = $request->file('imageFile')->getClientOriginalExtension();
+        $imageNameToStore = $imageName.'_'.time().'.'.$extension;
+        $path = $request->file('imageFile')->move(public_path('menu_img'), $imageName);
+
+        // insert data
+        $menuInsert = Menu::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'category_id' => $request->category,
+            'image_name' => $imageNameToStore,
+            'image_path' => $path,
+            'price' => $request->price,
+            'sides' => $request->sides,
+            'preparation_time' => $request->time,
+        ]);
+
+        Session::flash('success','Menu added successfully');
+        return response()->json(['success'=>'Menu added successfully']);
     }
 }

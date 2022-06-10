@@ -56,8 +56,8 @@ Route::delete('category/{id}', [CategoryController::class, 'deleteCategory']);
 //  Menu
 Route::get('menu', [MenuController::class, 'index']);
 Route::post('getMenu', [MenuController::class, 'getMenus'])->name('getMenus');
-Route::get('table/add', [TableController::class, 'addTableIndex']);
-Route::post('table/add', [TableController::class, 'addTable']);
-Route::get('table/{id}', [TableController::class, 'viewTable']);
-Route::put('table/{id}/edit', [TableController::class, 'editTable']);
-Route::delete('table/{id}', [TableController::class, 'deleteTable']);
+Route::get('menu/add', [MenuController::class, 'addMenuIndex']);
+Route::post('menu/add', [MenuController::class, 'addMenu']);
+Route::get('menu/{id}', [MenuController::class, 'viewMenu']);
+Route::put('menu/{id}/edit', [MenuController::class, 'editMenu']);
+Route::delete('menu/{id}', [MenuController::class, 'deleteMenu']);
