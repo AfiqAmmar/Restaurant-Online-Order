@@ -8,9 +8,9 @@
             <div class="col-md-12">
             <div class="card card-light">
                 <div class="card-header">
-                    <h3 class="card-title">Add New Menu</h3>
+                    <h3 class="card-title">Menu: {{ $menu->name }}</h3>
                 </div>    
-                <form id="addMenuForm" method="POST" enctype="multipart/form-data">
+                <form id="editMenuForm" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
                         <div class="row">
@@ -18,7 +18,7 @@
                                 <div class="form-group">
                                     <label for="name">Menu Name</label>
                                     <span style="font-size: 15px; color: red;">*</span>
-                                    <input type="text" class="form-control" value="{{ old('name') }}" id="name" name="name" placeholder="Enter Menu Name">
+                                    <input type="text" class="form-control" value="{{ $menu->name }}" id="name" name="name">
                                     <span class="text-danger mt-0" role="alert">
                                         <small><strong id="nameError"></strong></small>
                                     </span>
@@ -31,7 +31,7 @@
                                     <div class="input-group">
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input" name="imageFile" id="imageFile">
-                                            <label class="custom-file-label" for="imageFile">Choose file</label>
+                                            <label class="custom-file-label" for="imageFile">{{ $menu->image_name }}</label>
                                         </div>
                                     </div>
                                     <span class="text-danger mt-0" role="alert">
@@ -45,17 +45,20 @@
                                 <div class="form-group">
                                     <label for="description">Menu Description</label>
                                     <span style="font-size: 15px; color: red;">*</span>
-                                    <textarea type="text" class="form-control" rows="5" value="{{ old('description') }}" id="description" name="description" placeholder="Enter Menu Description"></textarea>
+                                    <textarea type="text" class="form-control" rows="5" value="" id="description" name="description"></textarea>
                                     <span class="text-danger mt-0" role="alert">
                                         <small><strong id="descriptionError"></strong></small>
                                     </span>
+                                    <script>
+                                        document.getElementById("description").value = "{{ $menu->description }}";
+                                    </script>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="price">Price (RM)</label>
                                     <span style="font-size: 15px; color: red;">*</span>
-                                    <input type="text" class="form-control" value="{{ old('price') }}" id="price" name="price" placeholder="Enter Menu Price">
+                                    <input type="text" class="form-control" value="{{ $menu->price }}" id="price" name="price">
                                     <span class="text-danger mt-0" role="alert">
                                         <small><strong id="priceError"></strong></small>
                                     </span>
@@ -64,13 +67,23 @@
                                     <label for="sides">Sides</label>
                                     <span style="font-size: 15px; color: red;">*</span>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="sides" value="1">
+                                        <input class="form-check-input" type="radio" name="sides" id="yesRadio" value="1">
                                         <label class="form-check-label">Yes</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="sides" value="0">
+                                        <input class="form-check-input" type="radio" name="sides" id="noRadio" value="0">
                                         <label class="form-check-label">No</label>
                                     </div>
+                                    @if ( $menu->sides == "0" )
+                                        <script>
+                                            document.getElementById("noRadio").checked = true;
+                                        </script>
+                                    @endif
+                                    @if ( $menu->sides == "1" )
+                                        <script>
+                                            document.getElementById("yesRadio").checked = true;
+                                        </script>
+                                    @endif
                                     <span class="text-danger mt-0" role="alert">
                                         <small><strong id="sidesError"></strong></small>
                                     </span>
@@ -84,7 +97,11 @@
                                     <div class="form-group">
                                         <select class="form-control" id="category" name="category" required>
                                             @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @if ( $menu->category_id == $category->id)
+                                                    <option value="{{ $category->id }}" selected>{{ $category->name }}</option>
+                                                @else
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
@@ -97,17 +114,66 @@
                                 <div class="form-group">
                                     <label for="time">Estimated Preparation Time (Minutes)</label>
                                     <span style="font-size: 15px; color: red;">*</span>
-                                    <input type="text" class="form-control" value="{{ old('time') }}" id="time" name="time" placeholder="Enter Estimated Time">
+                                    <input type="text" class="form-control" value="{{ $menu->preparation_time }}" id="time" name="time" >
                                     <span class="text-danger mt-0" role="alert">
                                         <small><strong id="timeError"></strong></small>
                                     </span>
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="availability">Availability</label>
+                                    <span style="font-size: 15px; color: red;">*</span>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="availability" id="yesAvailability" value="0">
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="availability" id="noAvailability" value="1">
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                    @if ( $menu->availability == "0" )
+                                        <script>
+                                            document.getElementById("yesAvailability").checked = true;
+                                        </script>
+                                    @endif
+                                    @if ( $menu->availability == "1" )
+                                        <script>
+                                            document.getElementById("noAvailability").checked = true;
+                                        </script>
+                                    @endif
+                                    <span class="text-danger mt-0" role="alert">
+                                        <small><strong id="availabilityError"></strong></small>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="quantity">Available Quantity <span style="font-size: 10px;">*Enter negative integer if this field is not applicable</span></label>
+                                    <span style="font-size: 15px; color: red;">*</span>
+                                    <input type="text" class="form-control" id="quantity" name="quantity" >
+                                    <span class="text-danger mt-0" role="alert">
+                                        <small><strong id="quantityError"></strong></small>
+                                    </span>
+                                    @if ( $menu->available_quantity == null)
+                                        <script>
+                                            document.getElementById("quantity").value = "N/A";
+                                        </script>
+                                    @else
+                                        <script>
+                                            document.getElementById("quantity").value = "{{ $menu->available_quantity }}";
+                                        </script>
+                                    @endif       
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary float-right" id="submitMenuButton">Confirm</button>
+                        <button type="submit" class="btn btn-primary float-right" id="editMenuButton">Confirm</button>
                     </div>
+                    <input type="hidden" id="idMenu" name="idMenu" value="{{ $menu->id }}">
                 </form>
             </div> 
         </div>      
@@ -125,13 +191,14 @@
             }
         });
         $(document).ready(function() {
-            $("#addMenuForm").submit(function(e){
+            $("#editMenuForm").submit(function(e){
                 e.preventDefault();
-                document.getElementById("submitMenuButton").disabled = true;
-                let formData = new FormData($('#addMenuForm')[0]);
-
+                document.getElementById("editMenuButton").disabled = true;
+                let id = $("input[name='idMenu']").val();
+                let formData = new FormData($('#editMenuForm')[0]);
+                let url = id + "/edit";
                 $.ajax({
-                    url: "add",
+                    url: url,
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -141,7 +208,7 @@
                         window.location.href = "/menu";
                     },
                     error:function(response){
-                        document.getElementById("submitMenuButton").disabled = false;
+                        document.getElementById("editMenuButton").disabled = false;
                         if(response.responseJSON.errors.hasOwnProperty('name')){
                             let name_field = document.getElementById('name');
                             $('#nameError').text(response.responseJSON.errors.name[0]);
@@ -181,6 +248,16 @@
                             $('#timeError').text(response.responseJSON.errors.time[0]);
                             time_field.style.borderColor = "red";
                             time_field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        if(response.responseJSON.errors.hasOwnProperty('availability')){
+                            let availability_field = document.getElementById('availability');
+                            $('#availabilityError').text(response.responseJSON.errors.availability[0]);
+                        }
+                        if(response.responseJSON.errors.hasOwnProperty('quantity')){
+                            let quantity_field = document.getElementById('quantity');
+                            $('#quantityError').text(response.responseJSON.errors.quantity[0]);
+                            quantity_field.style.borderColor = "red";
+                            quantity_field.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     }
                 });

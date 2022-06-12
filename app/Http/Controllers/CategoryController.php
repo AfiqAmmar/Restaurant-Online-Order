@@ -50,7 +50,7 @@ class CategoryController extends Controller
         if($search_arr[0]['value'] == null){
             $categories = Category::orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
         }
-        else if(strcasecmp($search_arr[0]['value'], "Food") == 0){
+        else if(stripos( "Food", $search_arr[0]['value']) !== false){
             $categories = Category::where('category', 'LIKE', 0)
                 ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
 
@@ -60,7 +60,7 @@ class CategoryController extends Controller
 
             $totalData = $totalFiltered;
         }
-        else if(strcasecmp($search_arr[0]['value'], "Drink") == 0 || strcasecmp($search_arr[0]['value'], "Drinks") == 0 ){
+        else if(stripos("Drinks", $search_arr[0]['value']) !== false){
             $categories = Category::where('category', 'LIKE', 1)
                 ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
 
@@ -69,7 +69,7 @@ class CategoryController extends Controller
                 ->count();
 
             $totalData = $totalFiltered;
-        }
+        } 
         else{
             $categories = Category::where('name', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orWhere('category', 'LIKE', "%{$search_arr[0]['value']}%")

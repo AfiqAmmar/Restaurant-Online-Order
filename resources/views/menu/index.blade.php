@@ -27,6 +27,7 @@
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Price (RM)</th>
+                                    <th>Availability</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -70,6 +71,8 @@
             }, {
                 "data": "price",
             }, {
+                "data": "availability",
+            }, {
                 "data": "action"
             }],
             "columnDefs": [{
@@ -82,8 +85,11 @@
                 "orderable": true,
                 "targets": 2
             }, {
-                "orderable": false,
+                "orderable": true,
                 "targets": 3
+            }, {
+                "orderable": false,
+                "targets": 4
             }],
             dom: 'Plfrtip',
             "language": {

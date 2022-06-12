@@ -59,5 +59,5 @@ Route::post('getMenu', [MenuController::class, 'getMenus'])->name('getMenus');
 Route::get('menu/add', [MenuController::class, 'addMenuIndex']);
 Route::post('menu/add', [MenuController::class, 'addMenu']);
 Route::get('menu/{id}', [MenuController::class, 'viewMenu']);
-Route::put('menu/{id}/edit', [MenuController::class, 'editMenu']);
+Route::post('menu/{id}/edit', [MenuController::class, 'editMenu']);
 Route::delete('menu/{id}', [MenuController::class, 'deleteMenu']);
