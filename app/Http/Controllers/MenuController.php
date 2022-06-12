@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\Category;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\File;
 
 class MenuController extends Controller
 {
@@ -169,58 +170,90 @@ class MenuController extends Controller
 
     public function editMenu(Request $request, $id)
     {
-        // validate credentials
-        $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'category' => ['required'],
-            'imageFile' => ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
-            'price' => ['required', 'numeric'],
-            'sides' => ['required'],
-            'time' => ['required', 'numeric'],
-            'availability' => ['required'],
-            'quantity' => ['required', 'numeric'],
-            ],
-        );
-
-        $imageNameWithExt = $request->file('imageFile')->getClientOriginalName();
-        $imageName = pathinfo($imageNameWithExt, PATHINFO_FILENAME);
-        $extension = $request->file('imageFile')->getClientOriginalExtension();
-        $imageNameToStore = $imageName.'_'.time().'.'.$extension;
-        $path = $request->file('imageFile')->move(public_path('menu_img'), $imageNameToStore);
-
         $quantityMenu = 0;
-        if($request->quantity < 0){
+        if($request->quantity < 0 || $request->quantity == null){
             $quantityMenu = null;
         }
         else{
             $quantityMenu = $request->quantity;
         }
 
-        // update data
         $menuEdit = Menu::find($id);
-        $menuEdit->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'category_id' => $request->category,
-            'image_name' => $imageNameToStore,
-            'image_path' => $path,
-            'price' => $request->price,
-            'sides' => $request->sides,
-            'preparation_time' => $request->time,
-            'availability' => $request->availability,
-            'available_quantity'=> $quantityMenu,
-        ]);
 
+        if($request->hasFile('imageFile')){
+            $validatedData = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'description' => ['required', 'string'],
+                'category' => ['required'],
+                'imageFile' => ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
+                'price' => ['required', 'numeric'],
+                'sides' => ['required'],
+                'time' => ['required', 'numeric'],
+                'availability' => ['required'],
+                'quantity' => ['required', 'numeric', 'nullable'],
+                ],
+            );
+
+            if(File::exists(public_path('menu_img/' . $menuEdit->image_name))){
+                File::delete(public_path('menu_img/' . $menuEdit->image_name));
+            }
+
+            $imageNameWithExt = $request->file('imageFile')->getClientOriginalName();
+            $imageName = pathinfo($imageNameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('imageFile')->getClientOriginalExtension();
+            $imageNameToStore = $imageName.'_'.time().'.'.$extension;
+            $path = $request->file('imageFile')->move(public_path('menu_img'), $imageNameToStore);
+
+            $menuEdit->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'category_id' => $request->category,
+                'image_name' => $imageNameToStore,
+                'image_path' => $path,
+                'price' => $request->price,
+                'sides' => $request->sides,
+                'preparation_time' => $request->time,
+                'availability' => $request->availability,
+                'available_quantity'=> $quantityMenu,
+            ]);
+        }
+        else{
+            $validatedData = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'description' => ['required', 'string'],
+                'category' => ['required'],
+                'price' => ['required', 'numeric'],
+                'sides' => ['required'],
+                'time' => ['required', 'numeric'],
+                'availability' => ['required'],
+                'quantity' => ['required', 'numeric'],
+                ],
+            );
+
+            $menuEdit->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'category_id' => $request->category,
+                'price' => $request->price,
+                'sides' => $request->sides,
+                'preparation_time' => $request->time,
+                'availability' => $request->availability,
+                'available_quantity'=> $quantityMenu,
+            ]);
+        }
+        
         Session::flash('success','Menu updated successfully');
         return response()->json(['success'=>'Menu updated successfully']);
     }
 
-    public function deleteTax($id)
+    public function deleteMenu($id)
     {
-        $tax = Menu::find($id);
-        $tax->delete();
+        $menuDelete = Menu::find($id);
+        if(File::exists(public_path('menu_img/' . $menuDelete->image_name))){
+            File::delete(public_path('menu_img/' . $menuDelete->image_name));
+        }
+        $menuDelete->delete();
         Session::flash('success','Tax deleted successfully');
-        return redirect('/tax');
+        return redirect('/menu');
     }
 }
