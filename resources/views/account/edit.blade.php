@@ -3,7 +3,7 @@
 @section('content')
 
 @if(session()->has('success'))
-    <div class="alert alert-success d-flex justify-content-center message">
+    <div class="alert alert-success d-flex justify-content-center message" id="message">
         {{ session()->get('success') }}
     </div>
 @endif
@@ -114,6 +114,10 @@
 @push('script')
 
 <script>
+
+    // $(function() {
+    //     setTimeout(function() { $("#message").fadeOut(1500); }, 3000)
+    // })
 
     function ableAccount(){
         document.getElementById("editButton").disabled = true;
