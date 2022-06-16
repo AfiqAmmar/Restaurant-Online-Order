@@ -51,21 +51,57 @@ class MenuController extends Controller
         $totalFiltered = $menusCount;
         $totalData = $totalFiltered;
 
-        if($search_arr[0]['value'] == null){
-            $menus = Menu::orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
+        $categories = Category::all();
+        $count = 0;
+        foreach($categories as $category){
+            if($search_arr[0]['value'] == null){
+                $menus = Menu::orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
+            }
+            else if(stripos( "Available", $search_arr[0]['value']) !== false){
+                $menus = Menu::where('availability', 'LIKE', 0)
+                    ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
+    
+                $totalFiltered = Menu::where('availability', 'LIKE', 0)
+                    ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)
+                    ->count();
+    
+                $totalData = $totalFiltered;
+            }
+            else if(stripos("Unavailable", $search_arr[0]['value']) !== false){
+                $menus = Menu::where('availability', 'LIKE', 1)
+                    ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
+    
+                $totalFiltered = Menu::where('availability', 'LIKE', 1)
+                    ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)
+                    ->count();
+    
+                $totalData = $totalFiltered;
+            }
+            else if(stripos($category->name, $search_arr[0]['value']) !== false){
+                $menus = Menu::where('category_id', 'LIKE', $category->id)
+                    ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
+    
+                $totalFiltered = Menu::where('category_id', 'LIKE', $category->id)
+                    ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)
+                    ->count();
+    
+                $totalData = $totalFiltered;
+                break;
+            }
+            else{
+                $menus = Menu::where('name', 'LIKE', "%{$search_arr[0]['value']}%")
+                    ->orWhere('price', 'LIKE', "%{$search_arr[0]['value']}%")
+                    ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
+    
+                $totalFiltered = Menu::where('name', 'LIKE', "%{$search_arr[0]['value']}%")
+                    ->orWhere('price', 'LIKE', "%{$search_arr[0]['value']}%")
+                    ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get()
+                    ->count();
+    
+                $totalData = $totalFiltered;
+            }
         }
-        else{
-            $menus = Menu::where('name', 'LIKE', "%{$search_arr[0]['value']}%")
-                ->orWhere('price', 'LIKE', "%{$search_arr[0]['value']}%")
-                ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
-
-            $totalFiltered = Menu::where('name', 'LIKE', "%{$search_arr[0]['value']}%")
-                ->orWhere('price', 'LIKE', "%{$search_arr[0]['value']}%")
-                ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get()
-                ->count();
-
-            $totalData = $totalFiltered;
-        }
+        $count = $menus;
 
         $data = [];
 
@@ -108,6 +144,7 @@ class MenuController extends Controller
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data,
+            "count" => $count,
         );
 
         echo json_encode($jsonData);
