@@ -6,6 +6,7 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Account
+Route::get('account', [UserController::class, 'index']);
+Route::put('account/edit', [UserController::class, 'editUser']);
 
 // Tax
 Route::get('tax', [TaxController::class, 'index']);
