@@ -166,7 +166,7 @@ class MenuController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'category' => ['required'],
-            'imageFile' => ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
+            'imageFile' => ['required', 'mimes:jpg,jpeg,png,svg', 'image', 'max:2048'],
             'price' => ['required', 'numeric'],
             'sides' => ['required'],
             'time' => ['required', 'numeric'],
@@ -222,7 +222,7 @@ class MenuController extends Controller
                 'name' => ['required', 'string', 'max:255'],
                 'description' => ['required', 'string'],
                 'category' => ['required'],
-                'imageFile' => ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
+                'imageFile' => ['required', 'mimes:jpg,jpeg,png,svg', 'image', 'max:2048'],
                 'price' => ['required', 'numeric'],
                 'sides' => ['required'],
                 'time' => ['required', 'numeric'],
@@ -290,7 +290,7 @@ class MenuController extends Controller
             File::delete(public_path('menu_img/' . $menuDelete->image_name));
         }
         $menuDelete->delete();
-        Session::flash('success','Tax deleted successfully');
+        Session::flash('success','Menu deleted successfully');
         return redirect('/menu');
     }
 }

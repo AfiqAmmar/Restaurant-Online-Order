@@ -197,7 +197,7 @@
                                     </button>
                                 </div>
                             <div class="modal-body">
-                                <p>Are you sure you want to delete this tax?</p>
+                                <p>Are you sure you want to delete this menu?</p>
                             </div>
                             <div class="modal-footer justify-content-between">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
