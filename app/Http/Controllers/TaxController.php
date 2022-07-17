@@ -100,7 +100,7 @@ class TaxController extends Controller
 
     public function addTaxIndex()
     {
-        return view('tax.add');
+        return view('manage.tax.add');
     }
 
     public function addTax(Request $request)
@@ -126,7 +126,7 @@ class TaxController extends Controller
     {
         $tax = Tax::where('id', $id)->first();
 
-        return view('tax.edit', [
+        return view('manage.tax.edit', [
             'tax' => $tax,
         ]);
     }

@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css?v=3.2.0') }}">
     @yield('css')
-    
+
 </head>
 
 
@@ -233,7 +233,7 @@
         </footer>
     </div>
     <!-- ./wrapper -->
-   
+
 </body>
 <!-- REQUIRED SCRIPTS -->
 <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>

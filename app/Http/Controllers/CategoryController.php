@@ -128,7 +128,7 @@ class CategoryController extends Controller
 
     public function addCategoryIndex()
     {
-        return view('category.add');
+        return view('manage.category.add');
     }
 
     public function addCategory(Request $request)
@@ -154,7 +154,7 @@ class CategoryController extends Controller
     {
         $category = Category::where('id', $id)->first();
 
-        return view('category.edit', [
+        return view('manage.category.edit', [
             'category' => $category,
         ]);
     }

@@ -101,7 +101,7 @@ class TableController extends Controller
 
     public function addTableIndex()
     {
-        return view('table.add');
+        return view('manage.table.add');
     }
 
     public function addTable(Request $request)
@@ -127,7 +127,7 @@ class TableController extends Controller
     {
         $table = Table::where('id', $id)->first();
 
-        return view('table.edit', [
+        return view('manage.table.edit', [
             'table' => $table,
         ]);
     }

@@ -153,7 +153,7 @@ class MenuController extends Controller
     public function addMenuIndex()
     {
         $categories = Category::all();
-        return view('menu.add', [
+        return view('manage.menu.add', [
             'categories' => $categories,
         ]);
     }
@@ -199,7 +199,7 @@ class MenuController extends Controller
     {
         $menu = Menu::where('id', $id)->first();
         $categories = Category::all();
-        return view('menu.edit', [
+        return view('manage.menu.edit', [
             'menu' => $menu,
             'categories' => $categories,
         ]);
