@@ -23,8 +23,8 @@ use App\Http\Controllers\OrderingController;
 // Customer Ordering
 Route::get('/', [OrderingController::class, 'index']);
 Route::get('/menus', [OrderingController::class, 'getMenus']);
-Route::get('/menus/menu', [OrderingController::class, 'getMenu']);
-// Route::get('/menus/{menu}', [OrderingController::class, 'getMenu']);
+// Route::get('/menus/menu', [OrderingController::class, 'getMenu']);
+Route::get('/menus/{menu}', [OrderingController::class, 'getMenu']);
 Route::get('/confirm-order', [OrderingController::class, 'confirmOrder']);
 Route::get('/order-confirmed', [OrderingController::class, 'orderConfirmed']);
 

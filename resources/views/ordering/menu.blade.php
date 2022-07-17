@@ -16,13 +16,13 @@
   <main>
     <!-- Menu -->
     <div class="container p-3 min-vh-100" style="background-color: #F7E7D8;">
-      <img src="{{ asset('img/anh-nguyen-kcA-c3f_3FE-unsplash.jpg') }}" class="card-img-top rounded border border-dark"
+      <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="card-img-top rounded border border-dark"
         alt="bowl of salad">
       <div class="d-flex align-items-center justify-content-between pt-3 pb-1">
-        <h1>Bowl of Salad</h1>
-        <h4 class="bg-danger text-white rounded text-center px-2 py-1">RM 10</h4>
+        <h1>{{$menu->name}}</h1>
+        <h4 class="bg-danger text-white rounded text-center px-2 py-1">RM {{$menu->price}}</h4>
       </div>
-      <p>Just a bowl of salad.</p>
+      <p>{{$menu->description}}</p>
 
       <hr class="text-dark">
 
