@@ -15,7 +15,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return view('category.index');
+        return view('manage.category.index');
     }
 
     public function getCategories(Request $request)
@@ -46,7 +46,7 @@ class CategoryController extends Controller
         $categoriesCount = Category::count();
         $totalFiltered = $categoriesCount;
         $totalData = $totalFiltered;
-        
+
         if($search_arr[0]['value'] == null){
             $categories = Category::orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
         }
@@ -69,7 +69,7 @@ class CategoryController extends Controller
                 ->count();
 
             $totalData = $totalFiltered;
-        } 
+        }
         else{
             $categories = Category::where('name', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orWhere('category', 'LIKE', "%{$search_arr[0]['value']}%")
@@ -91,7 +91,7 @@ class CategoryController extends Controller
                 $editButton = '<div class="btn-group">
                                 <button type="button" class="btn btn-primary"><a href="'. url('category/' . $category->id ) .'" class="text-white">Edit</a></button>
                               </div>';
-                
+
                 $categoryName = "";
                 if($category->category == 0){
                     $categoryName = "Food";
@@ -99,7 +99,7 @@ class CategoryController extends Controller
                 else{
                     $categoryName = "Drinks";
                 }
-                
+
                 $data[] = array(
                     'name' => $category->name,
                     'category' => $categoryName,

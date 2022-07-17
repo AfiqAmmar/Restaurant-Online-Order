@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('account.edit', [
+        return view('manage.account.edit', [
             'user' => $user,
         ]);
     }
@@ -71,7 +71,7 @@ class UserController extends Controller
             ]);
 
         }
-        
+
         Session::flash('success','Account updated successfully');
         return response()->json(['success'=>'Account updated successfully']);
     }

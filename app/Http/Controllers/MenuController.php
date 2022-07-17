@@ -17,7 +17,7 @@ class MenuController extends Controller
 
     public function index()
     {
-        return view('menu.index');
+        return view('manage.menu.index');
     }
 
     public function getMenus(Request $request)
@@ -60,31 +60,31 @@ class MenuController extends Controller
             else if(stripos( "Available", $search_arr[0]['value']) !== false){
                 $menus = Menu::where('availability', 'LIKE', 0)
                     ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
-    
+
                 $totalFiltered = Menu::where('availability', 'LIKE', 0)
                     ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)
                     ->count();
-    
+
                 $totalData = $totalFiltered;
             }
             else if(stripos("Unavailable", $search_arr[0]['value']) !== false){
                 $menus = Menu::where('availability', 'LIKE', 1)
                     ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
-    
+
                 $totalFiltered = Menu::where('availability', 'LIKE', 1)
                     ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)
                     ->count();
-    
+
                 $totalData = $totalFiltered;
             }
             else if(stripos($category->name, $search_arr[0]['value']) !== false){
                 $menus = Menu::where('category_id', 'LIKE', $category->id)
                     ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
-    
+
                 $totalFiltered = Menu::where('category_id', 'LIKE', $category->id)
                     ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)
                     ->count();
-    
+
                 $totalData = $totalFiltered;
                 break;
             }
@@ -92,12 +92,12 @@ class MenuController extends Controller
                 $menus = Menu::where('name', 'LIKE', "%{$search_arr[0]['value']}%")
                     ->orWhere('price', 'LIKE', "%{$search_arr[0]['value']}%")
                     ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get();
-    
+
                 $totalFiltered = Menu::where('name', 'LIKE', "%{$search_arr[0]['value']}%")
                     ->orWhere('price', 'LIKE', "%{$search_arr[0]['value']}%")
                     ->orderBy('id', 'DESC')->skip($start)->take($rowPerPage)->get()
                     ->count();
-    
+
                 $totalData = $totalFiltered;
             }
         }
@@ -107,11 +107,11 @@ class MenuController extends Controller
 
         if(!(empty($menus))){
             foreach($menus as $menu)
-            {                
+            {
                 $editButton = '<div class="btn-group">
                                 <button type="button" class="btn btn-primary"><a href="'. url('menu/' . $menu->id ) .'" class="text-white">View & Edit</a></button>
                               </div>';
-                
+
                 $category = Category::where('id', $menu->category_id)->get();
                 $availability = "";
                 if($menu->availability == 0){
@@ -160,7 +160,7 @@ class MenuController extends Controller
 
     public function addMenu(Request $request)
     {
-        
+
         // validate credentials
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -278,7 +278,7 @@ class MenuController extends Controller
                 'available_quantity'=> $quantityMenu,
             ]);
         }
-        
+
         Session::flash('success','Menu updated successfully');
         return response()->json(['success'=>'Menu updated successfully']);
     }

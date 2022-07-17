@@ -16,7 +16,7 @@ class TableController extends Controller
 
     public function index()
     {
-        return view('table.index');
+        return view('manage.table.index');
     }
 
     public function getTables(Request $request)
@@ -72,7 +72,7 @@ class TableController extends Controller
                 $editButton = '<div class="btn-group">
                                 <button type="button" class="btn btn-primary"><a href="'. url('table/' . $table->id ) .'" class="text-white">Edit</a></button>
                               </div>';
-                
+
                 $data[] = array(
                     'table_number' => $table->table_number,
                     'capacity' => $table->seats,

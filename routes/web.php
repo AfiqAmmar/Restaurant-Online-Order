@@ -1,12 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TaxController;
-use App\Http\Controllers\TableController;
 use App\Http\Controllers\MenuController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TableController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,13 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Customer Ordering
+Route::get('/', [OrderingController::class, 'index']);
+Route::get('/menus', [OrderingController::class, 'getMenus']);
+Route::get('/menus/menu', [OrderingController::class, 'getMenu']);
+// Route::get('/menus/{menu}', [OrderingController::class, 'getMenu']);
+Route::get('/confirm-order', [OrderingController::class, 'confirmOrder']);
+Route::get('/order-confirmed', [OrderingController::class, 'orderConfirmed']);
 
 Auth::routes();
 

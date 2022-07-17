@@ -15,7 +15,7 @@ class TaxController extends Controller
 
     public function index()
     {
-        return view('tax.index');
+        return view('manage.tax.index');
     }
 
     public function getTaxes(Request $request)
@@ -71,7 +71,7 @@ class TaxController extends Controller
                 $editButton = '<div class="btn-group">
                                 <button type="button" class="btn btn-primary"><a href="'. url('tax/' . $tax->id ) .'" class="text-white">Edit</a></button>
                               </div>';
-                
+
                 $data[] = array(
                     'tax_name' => $tax->name,
                     'percentage' => $tax->percentage,
