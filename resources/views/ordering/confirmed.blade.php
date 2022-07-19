@@ -2,9 +2,7 @@
   <!-- Header -->
   <header class="fixed-top" style="background-color: #000">
     <div class="container-fluid py-3 d-flex flex-column align-items-center">
-      <a href="/menus">
-        <img src="{{ asset('img/red_card_cafe_logo-removebg-preview.png') }}" alt="red card logo" width="80">
-      </a>
+      <img src="{{ asset('img/red_card_cafe_logo-removebg-preview.png') }}" alt="red card logo" width="80">
     </div>
   </header>
 

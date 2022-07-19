@@ -3,9 +3,9 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #000">
       <div class="container-fluid">
-        <a class="navbar-brand ps-2" href="/menus">
+        <div class="navbar-brand ps-2">
           <img src="{{ asset('img/red_card_cafe_logo-removebg-preview.png') }}" alt="red card logo" width="80">
-        </a>
+        </div>
         <x-search />
       </div>
     </nav>
@@ -33,7 +33,7 @@
       <h5 class="text-white py-1" id="trendingMenus">Trending Menus</h5>
 
       @foreach ($categories as $category)
-      <x-menu-card :menus="$menus" :category="$category" />
+      <x-menu-card :id="$id" :menus="$menus" :category="$category" />
       @endforeach
     </div>
   </main>

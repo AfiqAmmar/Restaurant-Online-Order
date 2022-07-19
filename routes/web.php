@@ -1,10 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\LoginController;
+// use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderingController;
@@ -22,11 +23,12 @@ use App\Http\Controllers\OrderingController;
 
 // Customer Ordering
 Route::get('/', [OrderingController::class, 'index']);
-Route::get('/menus', [OrderingController::class, 'getMenus']);
-// Route::get('/menus/menu', [OrderingController::class, 'getMenu']);
-Route::get('/menus/{menu}', [OrderingController::class, 'getMenu']);
-Route::get('/confirm-order', [OrderingController::class, 'confirmOrder']);
-Route::get('/order-confirmed', [OrderingController::class, 'orderConfirmed']);
+Route::post('/customers', [OrderingController::class, 'storePhoneNumber']);
+Route::get('/{id}/menus', [OrderingController::class, 'getMenus']);
+Route::get('/{id}/menus/{menu}', [OrderingController::class, 'getMenu']);
+Route::post('/{id}/cart', [OrderingController::class, 'addMenuToCart']);
+Route::get('/{id}/confirm-order', [OrderingController::class, 'confirmOrder']);
+Route::get('/{id}/order-confirmed', [OrderingController::class, 'orderConfirmed']);
 
 Auth::routes();
 

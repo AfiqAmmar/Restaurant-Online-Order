@@ -1,4 +1,4 @@
-@props(['menus', 'category'])
+@props(['id', 'menus', 'category'])
 
 @php
 $menus = $menus->where('category_id', $category->id);
@@ -14,7 +14,7 @@ $menus = $menus->where('category_id', $category->id);
         <h5 class="card-title">{{$menu->name}}</h5>
         <p class="card-text">RM {{$menu->price}}</p>
       </div>
-      <a href="/menus/{{$menu->id}}" class="stretched-link"></a>
+      <a href="/{{$id}}/menus/{{$menu->id}}" class="stretched-link"></a>
     </div>
   </div>
   @endforeach

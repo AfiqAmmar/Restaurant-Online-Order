@@ -2,9 +2,9 @@
   aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
   <i class="fas fa-search"></i>
 </button>
-<div class="collapse navbar-collapse" id="navbarNav">
+<div class="collapse navbar-collapse py-2" id="navbarNav">
   <form class="d-flex" role="search">
-    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+    <input class="form-control me-2" type="search" placeholder="Search menus..." id=""aria-label="Search">
     <button class="btn btn-outline-success" type="submit">Search</button>
   </form>
 </div>
