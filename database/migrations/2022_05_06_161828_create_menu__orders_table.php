@@ -20,8 +20,8 @@ return new class extends Migration
             $table->integer('quantity');
             $table->integer('menu_prepare');
             $table->integer('menu_serve');
-            $table->string('remarks');
-            $table->string('sides');
+            $table->string('remarks')->nullable();
+            $table->string('sides')->nullable();
             $table->timestamps();
         });
     }

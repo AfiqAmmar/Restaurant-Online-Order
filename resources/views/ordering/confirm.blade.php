@@ -4,7 +4,7 @@
     <div class="container-fluid py-3">
       <div class="row">
         <div class="col">
-          <a class="btn btn-dark border-0" href="/menus" role="button" style="background-color: #000">
+          <a class="btn btn-dark border-0" href="/{{$customer_id}}/menus" role="button" style="background-color: #000">
             <span class="fa fa-chevron-left"></span>
           </a>
         </div>
@@ -18,83 +18,42 @@
 
   <main>
     <div class="container bg-dark py-2 min-vh-100">
+      @if ($cartMenus->isEmpty())
+      <h5 class="text-white py-1">No menus selected</h5>
+      @else
       <!-- Selected Menus -->
       <h5 class="text-white py-1">Selected Menus</h5>
-      <div class="card mb-3" style="background-color: #F7E7D8;">
-        <div class="row g-0 align-items-center">
-          <div class="col-4">
-            <img src="{{ asset('img/anh-nguyen-kcA-c3f_3FE-unsplash.jpg') }}" class="img-fluid rounded"
-              alt="bowl of salad">
-          </div>
-          <div class="col-6">
-            <div class="card-body">
-              <h5 class="card-title">Bowl of Salad</h5>
-              <p class="card-text">RM 10</p>
-            </div>
-          </div>
-          <div class="col-1">
-            <p class="bg-danger rounded-circle text-center text-white">2</p>
-          </div>
-        </div>
-      </div>
-      <div class="card mb-3" style="background-color: #F7E7D8;">
-        <div class="row g-0 align-items-center">
-          <div class="col-4">
-            <img src="{{ asset('img/anh-nguyen-kcA-c3f_3FE-unsplash.jpg') }}" class="img-fluid rounded"
-              alt="bowl of salad">
-          </div>
-          <div class="col-6">
-            <div class="card-body">
-              <h5 class="card-title">Bowl of Salad</h5>
-              <p class="card-text">RM 10</p>
-            </div>
-          </div>
-          <div class="col-1">
-            <p class="bg-danger rounded-circle text-center text-white">2</p>
-          </div>
-        </div>
-      </div>
-      <div class="card mb-3" style="background-color: #F7E7D8;">
-        <div class="row g-0 align-items-center">
-          <div class="col-4">
-            <img src="{{ asset('img/anh-nguyen-kcA-c3f_3FE-unsplash.jpg') }}" class="img-fluid rounded"
-              alt="bowl of salad">
-          </div>
-          <div class="col-6">
-            <div class="card-body">
-              <h5 class="card-title">Bowl of Salad</h5>
-              <p class="card-text">RM 10</p>
-            </div>
-          </div>
-          <div class="col-1">
-            <p class="bg-danger rounded-circle text-center text-white">2</p>
-          </div>
-        </div>
-      </div>
+
+      @foreach ($cartMenus as $cartMenu)
+      <x-confirm-menu-card :cartMenu="$cartMenu" :menus="$menus" :customer_id="$customer_id" />
+      @endforeach
 
       <hr style="color: #F7E7D8">
 
       <!-- Cart Description -->
       <div class="d-flex justify-content-between align-items-center">
         <h5 class="text-white">Total Price</h5>
-        <h5 class="text-white lead">RM60</h5>
+        <h5 class="text-white lead">RM {{$totalPrice}}</h5>
       </div>
       <div class="d-flex justify-content-between align-items-center">
         <h5 class="text-white">Estimated Preparation Time</h5>
-        <h5 class="text-white lead">20 mins</h5>
+        <h5 class="text-white lead">?? mins</h5>
       </div>
+      @endif
     </div>
   </main>
 
+  @unless ($cartMenus->isEmpty())
   <!-- Footer -->
   <footer class="footer py-3 fixed-bottom" style="background-color: #000">
     <div class="container d-flex justify-content-between align-items-center">
-      <a class="btn btn-danger" href="/menus" role="button">
-        <i class="fas fa-trash"></i>&nbsp;Clear
+      <a class="btn btn-danger" href="/{{$customer_id}}/cart/clear" role="button">
+        <i class="fas fa-trash"></i>&nbsp;&nbsp;Clear
       </a>
-      <a class="btn btn-success" href="/order-confirmed" role="button">
+      <a class="btn btn-success" href="/{{$customer_id}}/cart/confirmed" role="button">
         Confirm Order
       </a>
     </div>
   </footer>
+  @endunless
 </x-customer-layout>

@@ -10,11 +10,11 @@ class Menu_Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'cart_id',
+        'order_id',
         'menu_id',
         'quantity',
         'menu_prepare',
-        'menu_status',
+        'menu_serve',
         'remarks',
         'sides',
     ];

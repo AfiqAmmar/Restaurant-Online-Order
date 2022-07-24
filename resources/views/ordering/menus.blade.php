@@ -33,7 +33,7 @@
       <h5 class="text-white py-1" id="trendingMenus">Trending Menus</h5>
 
       @foreach ($categories as $category)
-      <x-menu-card :id="$id" :menus="$menus" :category="$category" />
+      <x-menu-card :customer_id="$customer_id" :menus="$menus" :category="$category" />
       @endforeach
     </div>
   </main>
@@ -41,8 +41,8 @@
   <!-- Footer -->
   <footer class="footer px-2 py-3 sticky-bottom" style="background-color: #000">
     <div class="container d-flex justify-content-between align-items-center">
-      <span class="h4 text-light pt-2"><strong>Total:</strong> RM0.00</span>
-      <a class="btn btn-danger" href="/confirm-order" role="button">
+      <span class="h4 text-light pt-2"><strong>Total:</strong> RM {{$totalPrice}}</span>
+      <a class="btn btn-danger" href="/{{$customer_id}}/cart/confirm" role="button">
         Order&nbsp;&nbsp;<i class="fas fa-cart-plus mr-2"></i>
       </a>
     </div>

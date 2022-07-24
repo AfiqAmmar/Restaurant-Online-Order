@@ -23,12 +23,14 @@ use App\Http\Controllers\OrderingController;
 
 // Customer Ordering
 Route::get('/', [OrderingController::class, 'index']);
-Route::post('/customers', [OrderingController::class, 'storePhoneNumber']);
-Route::get('/{id}/menus', [OrderingController::class, 'getMenus']);
-Route::get('/{id}/menus/{menu}', [OrderingController::class, 'getMenu']);
-Route::post('/{id}/cart', [OrderingController::class, 'addMenuToCart']);
-Route::get('/{id}/confirm-order', [OrderingController::class, 'confirmOrder']);
-Route::get('/{id}/order-confirmed', [OrderingController::class, 'orderConfirmed']);
+Route::post('/customers', [OrderingController::class, 'fillIndexForm']);
+Route::get('/{customer_id}/menus', [OrderingController::class, 'getMenus']);
+Route::get('/{customer_id}/menus/{menu}', [OrderingController::class, 'getMenu']);
+Route::post('/{customer_id}/{menu_id}/cart', [OrderingController::class, 'addMenuToCart']);
+Route::get('/{customer_id}/cart/confirm', [OrderingController::class, 'confirmOrder']);
+Route::get('/{customer_id}/cart/{menu_id}/delete', [OrderingController::class, 'deleteMenuFromCart']);
+Route::get('/{customer_id}/cart/clear', [OrderingController::class, 'clearCart']);
+Route::get('/{customer_id}/cart/confirmed', [OrderingController::class, 'orderConfirmed']);
 
 Auth::routes();
 

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('cart_id')->constrained('carts');
             $table->foreignId('menu_id')->constrained('menus');
             $table->integer('quantity');
-            $table->string('remarks');
-            $table->string('sides');
+            $table->string('remarks')->nullable();
+            $table->string('sides')->nullable();
             $table->timestamps();
         });
     }
