@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -135,7 +136,7 @@ class CategoryController extends Controller
     {
         // validate credentials
         $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', Rule::unique('categories')],
             'category' => ['required'],
             ],
         );
@@ -162,14 +163,14 @@ class CategoryController extends Controller
     public function editCategory(Request $request, $id)
     {
         // validate credentials
+        $category = Category::find($id);
         $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', Rule::unique('categories')->ignore($category->id)],
             'category' => ['required'],
             ],
         );
 
         // update data
-        $category = Category::find($id);
         $category->update([
             'name' => $request->name,
             'category' => $request->category,

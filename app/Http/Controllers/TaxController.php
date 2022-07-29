@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tax;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class TaxController extends Controller
 {
@@ -107,7 +108,7 @@ class TaxController extends Controller
     {
         // validate credentials
         $validatedData = $request->validate([
-            'taxName' => ['required', 'string', 'max:255'],
+            'taxName' => ['required', 'string', 'max:255', Rule::unique('taxes')],
             'percentage' => ['required', 'digits_between:1,2'],
             ],
         );
@@ -134,14 +135,14 @@ class TaxController extends Controller
     public function editTax(Request $request, $id)
     {
         // validate credentials
+        $tax = Tax::find($id);
         $validatedData = $request->validate([
-            'taxName' => ['required', 'string', 'max:255'],
+            'taxName' => ['required', 'string', 'max:255', Rule::unique('taxes')->ignore($tax->id)],
             'percentage' => ['required', 'digits_between:1,2'],
             ],
         );
 
         // update data
-        $tax = Tax::find($id);
         $tax->update([
             'name' => $request->taxName,
             'percentage' => $request->percentage,

@@ -108,7 +108,7 @@ class TableController extends Controller
     {
         // validate credentials
         $validatedData = $request->validate([
-            'table_num' => ['required', 'unique:tables,table_number', 'digits_between:1,2'],
+            'table_num' => ['required', Rule::unique('tables'), 'digits_between:1,2'],
             'capacity' => ['required', 'digits_between:1,2'],
             ],
         );
@@ -137,7 +137,7 @@ class TableController extends Controller
         // validate credentials
         $table = Table::find($id);
         $validatedData = $request->validate([
-            'table_num' => ['required', 'digits_between:1,2'],
+            'table_num' => ['required', 'digits_between:1,2', Rule::unique('tables')->ignore($table->id)],
             'capacity' => ['required', 'digits_between:1,2'],
             ],
         );

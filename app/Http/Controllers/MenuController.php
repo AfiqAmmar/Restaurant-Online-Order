@@ -7,6 +7,7 @@ use App\Models\Menu;
 use App\Models\Category;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 
 class MenuController extends Controller
 {
@@ -163,7 +164,7 @@ class MenuController extends Controller
 
         // validate credentials
         $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', Rule::unique('menus')],
             'description' => ['required', 'string'],
             'category' => ['required'],
             'imageFile' => ['required', 'mimes:jpg,jpeg,png,svg', 'image', 'max:2048'],
@@ -219,7 +220,7 @@ class MenuController extends Controller
 
         if($request->hasFile('imageFile')){
             $validatedData = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
+                'name' => ['required', 'string', 'max:255', Rule::unique('menus')->ignore($menuEdit->id)],
                 'description' => ['required', 'string'],
                 'category' => ['required'],
                 'imageFile' => ['required', 'mimes:jpg,jpeg,png,svg', 'image', 'max:2048'],
@@ -256,7 +257,7 @@ class MenuController extends Controller
         }
         else{
             $validatedData = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
+                'name' => ['required', 'string', 'max:255', Rule::unique('menus')->ignore($menuEdit->id)],
                 'description' => ['required', 'string'],
                 'category' => ['required'],
                 'price' => ['required', 'numeric'],
