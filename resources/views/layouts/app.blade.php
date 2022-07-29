@@ -76,7 +76,8 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="#" class="brand-link">
                 <img src="{{ asset('img/red_card_cafe_logo-removebg-preview.png') }}" alt="Restaurant Logo"
-                    class="brand-image">
+                    class="brand-image ">
+                    {{-- test --}}
                 <span class="brand-text font-weight-light">Red Card Cafe</span>
             </a>
             <div class="sidebar">
