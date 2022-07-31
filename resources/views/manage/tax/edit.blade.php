@@ -91,7 +91,7 @@
                     type: "PUT",
                     data:{
                         url: url,
-                        taxName: taxName,
+                        name: taxName,
                         percentage: percentage,
                         "_token":"{{csrf_token()}}"
                     },
@@ -100,9 +100,9 @@
                     },
                     error:function(response){
                         document.getElementById("submitTaxButton").disabled = false;
-                        if(response.responseJSON.errors.hasOwnProperty('taxName')){
+                        if(response.responseJSON.errors.hasOwnProperty('name')){
                             let tax_Name = document.getElementById('taxName');
-                            $('#taxNameError').text(response.responseJSON.errors.taxName[0]);
+                            $('#taxNameError').text(response.responseJSON.errors.name[0]);
                             tax_Name.style.borderColor = "red";
                             tax_Name.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }

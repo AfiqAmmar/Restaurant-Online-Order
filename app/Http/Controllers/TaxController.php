@@ -108,14 +108,14 @@ class TaxController extends Controller
     {
         // validate credentials
         $validatedData = $request->validate([
-            'taxName' => ['required', 'string', 'max:255', Rule::unique('taxes')],
+            'name' => ['required', 'string', 'max:255', Rule::unique('taxes')],
             'percentage' => ['required', 'digits_between:1,2'],
             ],
         );
 
         // insert data
         $form = Tax::create([
-            'name' => $request->taxName,
+            'name' => $request->name,
             'percentage' => $request->percentage,
         ]);
 
@@ -137,14 +137,14 @@ class TaxController extends Controller
         // validate credentials
         $tax = Tax::find($id);
         $validatedData = $request->validate([
-            'taxName' => ['required', 'string', 'max:255', Rule::unique('taxes')->ignore($tax->id)],
+            'name' => ['required', 'string', 'max:255', Rule::unique('taxes')->ignore($tax->id)],
             'percentage' => ['required', 'digits_between:1,2'],
             ],
         );
 
         // update data
         $tax->update([
-            'name' => $request->taxName,
+            'name' => $request->name,
             'percentage' => $request->percentage,
         ]);
 

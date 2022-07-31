@@ -91,7 +91,7 @@
                     type: "PUT",
                     data:{
                         url: url,
-                        table_num: table_num,
+                        table_number: table_num,
                         capacity: capacity,
                         "_token":"{{csrf_token()}}"
                     },
@@ -100,9 +100,9 @@
                     },
                     error:function(response){
                         document.getElementById("submitTableButton").disabled = false;
-                        if(response.responseJSON.errors.hasOwnProperty('table_num')){
+                        if(response.responseJSON.errors.hasOwnProperty('table_number')){
                             let table_num_field = document.getElementById('table_num');
-                            $('#table_numError').text(response.responseJSON.errors.table_num[0]);
+                            $('#table_numError').text(response.responseJSON.errors.table_number[0]);
                             table_num_field.style.borderColor = "red";
                             table_num_field.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }

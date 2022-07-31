@@ -108,14 +108,14 @@ class TableController extends Controller
     {
         // validate credentials
         $validatedData = $request->validate([
-            'table_num' => ['required', Rule::unique('tables'), 'digits_between:1,2'],
+            'table_number' => ['required', Rule::unique('tables'), 'digits_between:1,2'],
             'capacity' => ['required', 'digits_between:1,2'],
             ],
         );
 
         // insert data
         $form = Table::create([
-            'table_number' => $request->table_num,
+            'table_number' => $request->table_number,
             'seats' => $request->capacity,
         ]);
 
@@ -137,7 +137,7 @@ class TableController extends Controller
         // validate credentials
         $table = Table::find($id);
         $validatedData = $request->validate([
-            'table_num' => ['required', 'digits_between:1,2', Rule::unique('tables')->ignore($table->id)],
+            'table_number' => ['required', 'digits_between:1,2', Rule::unique('tables')->ignore($table->id)],
             'capacity' => ['required', 'digits_between:1,2'],
             ],
         );
@@ -145,7 +145,7 @@ class TableController extends Controller
 
         // update data
         $table->update([
-            'table_number' => $request->table_num,
+            'table_number' => $request->table_number,
             'seats' => $request->capacity,
         ]);
 
