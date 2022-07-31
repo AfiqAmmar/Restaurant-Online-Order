@@ -3,9 +3,18 @@
 @section('content')
 
 @if(session()->has('success'))
-    <div class="alert alert-success d-flex justify-content-center message">
+    <div class="alert alert-success d-flex justify-content-center message" id="message">
         {{ session()->get('success') }}
     </div>
+
+    <script>
+        setTimeout(function(){
+        if ($('#message').length > 0) {
+            $('#message').remove();
+            }
+        }, 3000)
+    </script>
+    
 @endif
 
 <section class="content mt-4">
