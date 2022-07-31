@@ -105,37 +105,41 @@ class MenuController extends Controller
         $count = $menus;
 
         $data = [];
-
-        if(!(empty($menus))){
-            foreach($menus as $menu)
-            {
-                $editButton = '<div class="btn-group">
-                                <button type="button" class="btn btn-primary"><a href="'. url('menu/' . $menu->id ) .'" class="text-white">View & Edit</a></button>
-                              </div>';
-
-                $category = Category::where('id', $menu->category_id)->get();
-                $availability = "";
-                if($menu->availability == 0){
-                    $availability = '<p class="text-success"><strong>Available</strong></p>';
-                }
-                else{
-                    $availability = '<p class="text-danger"><strong>Unavailable</strong></p>';
-                }
-
-                $data[] = array(
-                    'name' => $menu->name,
-                    'category' => $category[0]->name,
-                    'price' => $menu->price,
-                    'availability' => $availability,
-                    'action' => $editButton,
-                );
-
-                $keys = array_column($data, $columnName);
-                if($columnSortOrder == 'asc')
+        
+        $category = Category::all();
+        if(!(empty($category)))
+        {
+            if(!(empty($menus))){
+                foreach($menus as $menu)
                 {
-                    array_multisort($keys, SORT_ASC, $data);
-                } else {
-                    array_multisort($keys, SORT_DESC, $data);
+                    $editButton = '<div class="btn-group">
+                                    <button type="button" class="btn btn-primary"><a href="'. url('menu/' . $menu->id ) .'" class="text-white">View & Edit</a></button>
+                                  </div>';
+    
+                    $category = Category::where('id', $menu->category_id)->get();
+                    $availability = "";
+                    if($menu->availability == 0){
+                        $availability = '<p class="text-success"><strong>Available</strong></p>';
+                    }
+                    else{
+                        $availability = '<p class="text-danger"><strong>Unavailable</strong></p>';
+                    }
+    
+                    $data[] = array(
+                        'name' => $menu->name,
+                        'category' => $category[0]->name,
+                        'price' => $menu->price,
+                        'availability' => $availability,
+                        'action' => $editButton,
+                    );
+    
+                    $keys = array_column($data, $columnName);
+                    if($columnSortOrder == 'asc')
+                    {
+                        array_multisort($keys, SORT_ASC, $data);
+                    } else {
+                        array_multisort($keys, SORT_DESC, $data);
+                    }
                 }
             }
         }
@@ -167,7 +171,7 @@ class MenuController extends Controller
             'name' => ['required', 'string', 'max:255', Rule::unique('menus')],
             'description' => ['required', 'string'],
             'category' => ['required'],
-            'imageFile' => ['required', 'mimes:jpg,jpeg,png,svg', 'image', 'max:2048'],
+            'imageFile' => ['required', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
             'price' => ['required', 'numeric'],
             'sides' => ['required'],
             'time' => ['required', 'numeric'],
@@ -223,7 +227,7 @@ class MenuController extends Controller
                 'name' => ['required', 'string', 'max:255', Rule::unique('menus')->ignore($menuEdit->id)],
                 'description' => ['required', 'string'],
                 'category' => ['required'],
-                'imageFile' => ['required', 'mimes:jpg,jpeg,png,svg', 'image', 'max:2048'],
+                'imageFile' => ['required', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
                 'price' => ['required', 'numeric'],
                 'sides' => ['required'],
                 'time' => ['required', 'numeric'],

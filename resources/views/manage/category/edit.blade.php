@@ -59,7 +59,7 @@
                                     </button>
                                 </div>
                             <div class="modal-body">
-                                <p>Are you sure you want to delete this menu category?</p>
+                                <p>Are you sure you want to delete this menu category? The menu related with this menu category will be deleted as well.</p>
                             </div>
                             <div class="modal-footer justify-content-between">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Menu;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
@@ -183,6 +185,13 @@ class CategoryController extends Controller
     public function deleteCategory($id)
     {
         $category = Category::find($id);
+        $menus = $category->menus;
+        foreach($menus as $menu){
+            $menu->delete();
+            if(File::exists(public_path('menu_img/' . $menu->image_name))){
+                File::delete(public_path('menu_img/' . $menu->image_name));
+            }
+        }
         $category->delete();
         Session::flash('success','Menu Category deleted successfully');
         return redirect('/category');
