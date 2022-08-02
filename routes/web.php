@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderingController;
+use App\Http\Controllers\StaffController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,3 +76,12 @@ Route::post('menu/add', [MenuController::class, 'addMenu']);
 Route::get('menu/{id}', [MenuController::class, 'viewMenu']);
 Route::post('menu/{id}/edit', [MenuController::class, 'editMenu']);
 Route::delete('menu/{id}', [MenuController::class, 'deleteMenu']);
+
+//  Staff
+Route::get('staff', [StaffController::class, 'index']);
+Route::post('getStaff', [StaffController::class, 'getStaffs'])->name('getStaffs');
+Route::get('staff/add', [StaffController::class, 'addStaffIndex']);
+Route::post('staff/add', [StaffController::class, 'addStaff']);
+Route::get('staff/{id}', [StaffController::class, 'viewStaff']);
+Route::post('staff/{id}/edit', [StaffController::class, 'editStaff']);
+Route::delete('staff/{id}', [StaffController::class, 'deleteStaff']);
