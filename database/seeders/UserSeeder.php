@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
             'fname' => 'Master',
             'lname' => 'Admin',
             'address' => 'Sample Address',
+            'start_date' => date('Y-m-d', strtotime('2022-04-02')),
             'phone_number' => '0123456789',
             'gender' => 'Male',
             'salary' => '1234',
