@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 
@@ -82,7 +83,7 @@ class StaffController extends Controller
             foreach($staffs as $staff)
             {
                 $editButton = '<div class="btn-group">
-                                <button type="button" class="btn btn-primary"><a href="'. url('staff/' . $staff->id ) .'" class="text-white">Edit</a></button>
+                                <button type="button" class="btn btn-primary"><a href="'. url('staff/' . $staff->id ) .'" class="text-white">View & Edit</a></button>
                               </div>';
                 
                 $convertedDate = date('d/m/Y', strtotime($staff->start_date));
@@ -115,5 +116,65 @@ class StaffController extends Controller
         );
 
         echo json_encode($jsonData);
+    }
+
+    public function addStaffIndex()
+    {
+        return view('manage.staff.add');
+    }
+
+    public function addStaff(Request $request)
+    {
+        // validate credentials
+        $validatedData = $request->validate([
+            'fname' => ['required', 'string', 'max:255'],
+            'lname' => ['required', 'string', 'max:255'],
+            'start_date' => ['required'],
+            'address' => ['required', 'string'],
+            'phone_number' => ['required', 'string'],
+            'gender' => ['required'],
+            'salary' => ['required', 'numeric'],
+            'role' => ['required'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:8'],
+            ],
+        );
+
+        // insert data
+        $staff = User::create([
+            'fname' => $request->fname,
+            'lname' => $request->lname,
+            'start_date' => $request->start_date,
+            'address' => $request->address,
+            'phone_number' => $request->phone_number,
+            'gender' => $request->gender,
+            'salary' => $request->salary,
+            'role' => $request->role,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        if(strcmp($request->role, 'Master-Admin')  == 0)
+        {
+            $staff->assignRole('master-admin');
+        }
+        
+        else if(strcmp($request->role, 'Cashier')  == 0)
+        {
+            $staff->assignRole('cashier');
+        }
+
+        else if(strcmp($request->role, 'Waiter')  == 0)
+        {
+            $staff->assignRole('waiter');
+        }
+
+        else
+        {
+            $staff->assignRole('kitchen-staff');
+        }
+
+        Session::flash('success','Staff added successfully');
+        return response()->json(['success'=>'Staff added successfully']);
     }
 }
