@@ -196,16 +196,17 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to delete this menu?</p>
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <form action="{{ $menu->id }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    @method('delete')
-                                    <button type="submit" class="btn btn-danger" type="submit">Confirm</button>
-                                </form>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete this menu?</p>
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <form action="{{ $menu->id }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-danger" type="submit">Confirm</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div> 

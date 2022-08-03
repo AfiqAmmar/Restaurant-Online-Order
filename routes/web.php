@@ -84,4 +84,5 @@ Route::get('staff/add', [StaffController::class, 'addStaffIndex']);
 Route::post('staff/add', [StaffController::class, 'addStaff']);
 Route::get('staff/{id}', [StaffController::class, 'viewStaff']);
 Route::post('staff/{id}/edit', [StaffController::class, 'editStaff']);
+Route::post('staff/{id}/tempPassword', [StaffController::class, 'editTempPassword']);
 Route::delete('staff/{id}', [StaffController::class, 'deleteStaff']);

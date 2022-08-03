@@ -136,7 +136,7 @@ class StaffController extends Controller
             'salary' => ['required', 'numeric'],
             'role' => ['required'],
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
             ],
         );
 
@@ -176,5 +176,113 @@ class StaffController extends Controller
 
         Session::flash('success','Staff added successfully');
         return response()->json(['success'=>'Staff added successfully']);
+    }
+
+    public function viewStaff($id)
+    {
+        $staff = User::where('id', $id)->first();
+
+        return view('manage.staff.edit', [
+            'staff' => $staff,
+        ]);
+    }
+
+    public function editStaff(Request $request, $id)
+    {
+        // validate credentials
+        $staff = User::find($id);
+        $validatedData = $request->validate([
+            'fname' => ['required', 'string', 'max:255'],
+            'lname' => ['required', 'string', 'max:255'],
+            'start_date' => ['required'],
+            'address' => ['required', 'string'],
+            'phone_number' => ['required', 'string'],
+            'gender' => ['required'],
+            'salary' => ['required', 'numeric'],
+            'role' => ['required'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            ],
+        );
+
+        if(strcmp($request->role, $staff->role)  == 0){
+            // update data
+            $staff->update([
+                'fname' => $request->fname,
+                'lname' => $request->lname,
+                'start_date' => $request->start_date,
+                'address' => $request->address,
+                'phone_number' => $request->phone_number,
+                'gender' => $request->gender,
+                'salary' => $request->salary,
+                'email' => $request->email,
+            ]);
+        }
+
+        else{
+            $staff->update([
+                'fname' => $request->fname,
+                'lname' => $request->lname,
+                'start_date' => $request->start_date,
+                'address' => $request->address,
+                'phone_number' => $request->phone_number,
+                'gender' => $request->gender,
+                'salary' => $request->salary,
+                'role' => $request->role,
+                'email' => $request->email,
+            ]);
+
+            $role = $staff->getRoleNames();
+            $staff->removeRole($role[0]);
+
+            if(strcmp($request->role, 'Master-Admin')  == 0)
+            {
+                $staff->assignRole('master-admin');
+            }
+            
+            else if(strcmp($request->role, 'Cashier')  == 0)
+            {
+                $staff->assignRole('cashier');
+            }
+
+            else if(strcmp($request->role, 'Waiter')  == 0)
+            {
+                $staff->assignRole('waiter');
+            }
+
+            else
+            {
+                $staff->assignRole('kitchen-staff');
+            }
+        }
+
+        Session::flash('success','Staff updated successfully');
+        return response()->json(['success'=>'Staff updated successfully']);
+    }
+
+    public function editTempPassword(Request $request, $id)
+    {
+        // validate credentials
+        $staff = User::find($id);
+        $validatedData = $request->validate([
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ],
+        );
+
+        // update password
+        $staff->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        Session::flash('success','Temporary password updated successfully');
+        return response()->json(['success'=>'Temporary password updated successfully']);
+
+    }
+
+    public function deleteStaff($id)
+    {
+        $staff = User::find($id);
+        $staff->delete();
+        Session::flash('success','Staff removed successfully');
+        return redirect('/staff');
     }
 }
