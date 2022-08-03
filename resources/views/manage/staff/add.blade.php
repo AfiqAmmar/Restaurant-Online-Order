@@ -108,7 +108,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="salary">Salary</label>
+                                    <label for="salary">Salary (RM)</label>
                                     <span style="font-size: 15px; color: red;">*</span>
                                     <input type="text" class="form-control" value="{{ old('salary') }}" id="salary" name="salary" placeholder="Enter Staff Salary">
                                     <span class="text-danger mt-0" role="alert">
@@ -125,6 +125,16 @@
                                     <input type="password" class="form-control" value="{{ old('password') }}" id="password" name="password" placeholder="Enter Temporary Password">
                                     <span class="text-danger mt-0" role="alert">
                                         <small><strong id="passwordError"></strong></small>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cpassword">Confirm Temporary Password</label>
+                                    <span style="font-size: 15px; color: red;">*</span>
+                                    <input type="password" class="form-control" value="{{ old('cpassword') }}" id="cpassword" name="cpassword" placeholder="Confirm Temporary Password">
+                                    <span class="text-danger mt-0" role="alert">
+                                        <small><strong id="cpasswordError"></strong></small>
                                     </span>
                                 </div>
                             </div>
@@ -163,6 +173,7 @@
                 let role = $( "#role" ).val();
                 let email = $("input[name='email']").val();
                 let password = $("input[name='password']").val();
+                let password_confirmation = $("input[name='cpassword']").val();
                 
                 $.ajax({
                     url: "add",
@@ -178,6 +189,7 @@
                         role: role,
                         email: email,
                         password: password,
+                        password_confirmation: password_confirmation,
                         "_token":"{{csrf_token()}}"
                     },
                     success:function(response) {
@@ -243,6 +255,12 @@
                             $('#passwordError').text(response.responseJSON.errors.password[0]);
                             password_field.style.borderColor = "red";
                             password_field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        if(response.responseJSON.errors.hasOwnProperty('password')){
+                            let cpassword_field = document.getElementById('cpassword');
+                            $('#cpasswordError').text(response.responseJSON.errors.password[0]);
+                            cpassword_field.style.borderColor = "red";
+                            cpassword_field.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     }
                 });
