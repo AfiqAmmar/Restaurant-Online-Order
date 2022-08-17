@@ -10,6 +10,7 @@ use App\Http\Controllers\TableController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderingController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\BillingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,7 @@ Route::group(['middleware' => ['role:master-admin']], function () {
     // Menu Analyzation
 
     // Billing
+    Route::get('billing', [BillingController::class, 'index']);
 
 });
 
