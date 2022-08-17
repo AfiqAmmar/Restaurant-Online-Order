@@ -69,23 +69,29 @@ class TableController extends Controller
         if(!(empty($tables))){
             foreach($tables as $table)
             {
-                $editButton = '<div class="btn-group">
+                if($table->table_number == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    $editButton = '<div class="btn-group">
                                 <button type="button" class="btn btn-primary"><a href="'. url('table/' . $table->id ) .'" class="text-white">Edit</a></button>
                               </div>';
 
-                $data[] = array(
-                    'table_number' => $table->table_number,
-                    'capacity' => $table->seats,
-                    'action' => $editButton
-                );
-
-                $keys = array_column($data, $columnName);
-                if($columnSortOrder == 'asc')
-                {
-                    array_multisort($keys, SORT_ASC, $data);
-                } else {
-                    array_multisort($keys, SORT_DESC, $data);
+                    $data[] = array(
+                        'table_number' => $table->table_number,
+                        'capacity' => $table->seats,
+                        'action' => $editButton
+                    );
                 }
+                $keys = array_column($data, $columnName);
+                    if($columnSortOrder == 'asc')
+                    {
+                        array_multisort($keys, SORT_ASC, $data);
+                    } else {
+                        array_multisort($keys, SORT_DESC, $data);
+                    }
             }
         }
 
