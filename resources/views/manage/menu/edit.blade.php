@@ -16,8 +16,8 @@
                     @csrf
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-md-12 text-center">
-                                <img src="{{ asset('menu_img/' . $menu->image_name) }}" width="350px" height="300px" alt="Menu Image">
+                            <div class="col-md-12">
+                                <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="mx-auto d-block w-50 p-3" alt="Menu Image">
                             </div>
                         </div>
                         <div class="row">

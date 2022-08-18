@@ -19,4 +19,15 @@ class BillingController extends Controller
             'tables' => $tables,
         ]);
     }
+
+    public function invoice()
+    {
+        date_default_timezone_set("Asia/Bangkok");
+        $today_date = date("d/m/Y");
+        $current_time = date("h:ia");
+        return view('manage.billing.invoice', [
+            'date' => $today_date,
+            'time' => $current_time,
+        ]);
+    }
 }
