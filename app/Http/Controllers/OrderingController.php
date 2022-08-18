@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Menu;
-use App\Models\Menu_Order;
 use App\Models\Order;
 use App\Models\Table;
 use App\Models\Category;
 use App\Models\Customer;
-use App\Models\Cart_Menu;
 use Illuminate\Http\Request;
 
 class OrderingController extends Controller
@@ -58,8 +56,8 @@ class OrderingController extends Controller
         $order = Order::where('customer_id', $customer_id)->get();
 
         if ($order->isNotEmpty()) {
-            $order_id = $order->first()->id;
-            $menuOrder = $order->first()->menus()->get();
+            $order_id = $order->last()->id;
+            $menuOrder = $order->last()->menus()->get();
             if ($menuOrder->isEmpty()) {
                 Order::destroy($order_id);
             }
@@ -187,17 +185,16 @@ class OrderingController extends Controller
     public function orderConfirmed($customer_id)
     {
         $totalPrice = 0;
-        $order_id = Order::where('customer_id', $customer_id)->first()->id;
+        $order = Order::where('customer_id', $customer_id)->get()->last();
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cartMenus = $cart->menus()->get();
 
         foreach ($cartMenus as $cartMenu) {
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
+            $menu_id = $cartMenu->id;
 
-            Menu_Order::create([
-                'order_id' => $order_id,
-                'menu_id' => $cartMenu->id,
+            $order->menus()->attach($menu_id, [
                 'quantity' => $cartMenu->pivot->quantity,
                 'menu_prepare' => 0,
                 'menu_serve' => 0,
