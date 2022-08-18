@@ -25,7 +25,7 @@
       <h5 class="text-white py-1">Selected Menus</h5>
 
       @foreach ($cartMenus as $cartMenu)
-      <x-confirm-menu-card :cartMenu="$cartMenu" :menus="$menus" :customer_id="$customer_id" />
+      <x-confirm-menu-card :cartMenu="$cartMenu" :customer_id="$customer_id" />
       @endforeach
 
       <hr style="color: #F7E7D8">

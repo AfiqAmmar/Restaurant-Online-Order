@@ -19,7 +19,7 @@
       <!-- Menu -->
       <div class="container p-3 min-vh-100" style="background-color: #F7E7D8;">
         <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="card-img-top rounded border border-dark"
-          alt="bowl of salad">
+          alt="{{$menu->name}}">
         <div class="d-flex align-items-center justify-content-between pt-3 pb-1">
           <h1>{{$menu->name}}</h1>
           <h4 class="bg-danger text-white rounded text-center px-2 py-1">RM {{$menu->price}}</h4>
@@ -46,7 +46,7 @@
     <footer class="footer px-1 py-3 sticky-bottom" style="background-color: #000">
       <div class="container d-flex justify-content-between align-items-center">
         {{-- Quantity --}}
-        <div class="btn-group" role="group" aria-label="Quantity" x-data="{ quantity: 0 }">
+        <div class="btn-group" role="group" aria-label="Quantity" x-data="{ quantity: 1 }">
           <button type="button" class="btn btn-light" x-on:click="quantity = quantity-1">
             <i class="fas fa-minus"></i>
           </button>
