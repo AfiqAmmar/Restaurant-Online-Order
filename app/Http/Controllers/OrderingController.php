@@ -30,7 +30,7 @@ class OrderingController extends Controller
 
         $phone_num = $validatedData['phone_num'];
         $table_number = $validatedData['table_number'];
-        $customer_id = $this->storePhoneNumber($phone_num);
+        $customer_id = Customer::firstOrCreate(['phone_num' => $phone_num])->id;
 
         $this->checkIfCartExists($customer_id);
         $this->checkIfOrderExists($customer_id);
@@ -39,30 +39,15 @@ class OrderingController extends Controller
         return redirect('/' . $customer_id . '/menus');
     }
 
-    public function storePhoneNumber($phone_num)
-    {
-        $customerData = Customer::where('phone_num', $phone_num)->get();
-        if ($customerData->isEmpty()) {
-            $customer_id = Customer::create(['phone_num' => $phone_num])->id;
-        } else {
-            $customer_id = Customer::where('phone_num', $phone_num)
-                ->get()->first()->id;
-        }
-        return $customer_id;
-    }
-
     public function checkIfCartExists($customer_id)
     {
         $cart = Cart::where('customer_id', $customer_id)->get();
 
         if ($cart->isNotEmpty()) {
             $cart_id = $cart->first()->id;
-            $cartMenus = Cart_Menu::where('cart_id', $cart_id)->get();
-            if ($cartMenus->isNotEmpty()) {
-                foreach ($cartMenus as $cartMenu) {
-                    $cartMenu_id = $cartMenu->first()->id;
-                    Cart_Menu::destroy($cartMenu_id);
-                }
+            $cartMenus = $cart->first()->menus();
+            if ($cartMenus->get()->isNotEmpty()) {
+                $cartMenus->detach();
             }
             Cart::destroy($cart_id);
         }
@@ -71,9 +56,10 @@ class OrderingController extends Controller
     public function checkIfOrderExists($customer_id)
     {
         $order = Order::where('customer_id', $customer_id)->get();
+
         if ($order->isNotEmpty()) {
             $order_id = $order->first()->id;
-            $menuOrder = Menu_Order::where('order_id', $order_id)->get();
+            $menuOrder = $order->first()->menus()->get();
             if ($menuOrder->isEmpty()) {
                 Order::destroy($order_id);
             }
@@ -100,14 +86,12 @@ class OrderingController extends Controller
     public function getMenus($customer_id)
     {
         $totalPrice = 0;
-        $cart_id = Cart::where('customer_id', $customer_id)->get()->first()->id;
-        $cartMenus = Cart_Menu::where('cart_id', $cart_id)->get();
+        $cart = Cart::where('customer_id', $customer_id)->first();
+        $cartMenus = $cart->menus()->get();
 
         if ($cartMenus->isNotEmpty()) {
             foreach ($cartMenus as $cartMenu) {
-                $menu_id = $cartMenu->menu_id;
-                $menu = Menu::where('id', $menu_id)->get()->first();
-                $price = ($menu->price) * ($cartMenu->quantity);
+                $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
                 $totalPrice += $price;
             }
         }
@@ -123,10 +107,12 @@ class OrderingController extends Controller
 
     public function getMenu($customer_id, Menu $menu)
     {
+        $category_id = Category::where('name', 'Sides')->first()->id;
+
         return view('ordering.menu', [
             'customer_id' => $customer_id,
             'menu' => $menu,
-            'sides' => Menu::where('category_id', '3')->get()
+            'sides' => Menu::where('category_id', $category_id)->get()
         ]);
     }
 
@@ -140,65 +126,58 @@ class OrderingController extends Controller
         ]);
         // dd($validatedData);
 
-        $cart_id = Cart::where('customer_id', $customer_id)->get()->first()->id;
         $menuToCartData = array(
-            'cart_id' => $cart_id,
-            'menu_id' => $menu_id,
             'quantity' => $validatedData['quantity'],
             'remarks' => $validatedData['remarks'],
-            // 'sides' => $validatedData['sides']
+            'sides' => 'null'
         );
 
         // if ($validatedData->contains()) {
         //     # code...
         // }
         // array_push($validatedData, $cart_id, $menu_id);
-        Cart_Menu::create($menuToCartData);
+
+        $cart = Cart::where('customer_id', $customer_id)->first();
+        $cart->menus()->attach($menu_id, $menuToCartData);
         return redirect('/' . $customer_id . '/menus');
     }
 
     public function confirmOrder($customer_id)
     {
         $totalPrice = 0;
-        $cart_id = Cart::where('customer_id', $customer_id)->get()->first()->id;
-        $cartMenus = Cart_Menu::where('cart_id', $cart_id)->get();
+        $cart = Cart::where('customer_id', $customer_id)->first();
+        $cart_id = $cart->id;
+        $cartMenus = $cart->menus()->get();
 
         foreach ($cartMenus as $cartMenu) {
-            $menu_id = $cartMenu->menu_id;
-            $menu = Menu::where('id', $menu_id)->get()->first();
-            $price = ($menu->price) * ($cartMenu->quantity);
+            $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
         }
+        // dd($cartMenus);
 
         return view('ordering.confirm', [
             'cart_id' => $cart_id,
             'customer_id' => $customer_id,
             'cartMenus' => $cartMenus,
-            'menus' => Menu::all(),
             'totalPrice' => $totalPrice
         ]);
     }
 
     public function deleteMenuFromCart($customer_id, $menu_id)
     {
-        $cart_id = Cart::where('customer_id', $customer_id)->get()->first()->id;
-        $cartMenus = Cart_Menu::where('cart_id', $cart_id)->get();
-        $cartMenu = $cartMenus->where('menu_id', $menu_id);
-        $cartMenu_id = $cartMenu->first()->id;
-        Cart_Menu::destroy($cartMenu_id);
+        $cart = Cart::where('customer_id', $customer_id)->first();
+        $cart->menus()->detach($menu_id);
 
         return redirect('/' . $customer_id . '/cart/confirm');
     }
 
     public function clearCart($customer_id)
     {
-        $cart_id = Cart::where('customer_id', $customer_id)->get()->first()->id;
-        $cartMenus = Cart_Menu::where('cart_id', $cart_id)->get();
-        if ($cartMenus->isNotEmpty()) {
-            foreach ($cartMenus as $cartMenu) {
-                $cartMenu_id = $cartMenu->first()->id;
-                Cart_Menu::destroy($cartMenu_id);
-            }
+        $cart = Cart::where('customer_id', $customer_id)->first();
+        $cartMenus = $cart->menus();
+
+        if ($cartMenus->get()->isNotEmpty()) {
+            $cartMenus->detach();
         }
 
         return redirect('/' . $customer_id . '/menus');
@@ -208,28 +187,23 @@ class OrderingController extends Controller
     public function orderConfirmed($customer_id)
     {
         $totalPrice = 0;
-        $order_id = Order::where('customer_id', $customer_id)->get()->first()->id;
-        $cart_id = Cart::where('customer_id', $customer_id)->get()->first()->id;
-        $cartMenus = Cart_Menu::where('cart_id', $cart_id)->get();
+        $order_id = Order::where('customer_id', $customer_id)->first()->id;
+        $cart = Cart::where('customer_id', $customer_id)->first();
+        $cartMenus = $cart->menus()->get();
 
         foreach ($cartMenus as $cartMenu) {
-            $menu_id = $cartMenu->menu_id;
-            $menu = Menu::where('id', $menu_id)->get()->first();
-            $price = ($menu->price) * ($cartMenu->quantity);
+            $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
-
-            $quantity = $cartMenu->quantity;
-            $remarks = $cartMenu->remarks;
-            // $sides = $cartMenu->sides;
 
             Menu_Order::create([
                 'order_id' => $order_id,
-                'menu_id' => $menu_id,
-                'quantity' => $quantity,
+                'menu_id' => $cartMenu->id,
+                'quantity' => $cartMenu->pivot->quantity,
                 'menu_prepare' => 0,
                 'menu_serve' => 0,
-                'remarks' => $remarks,
-                // 'sides' => $sides
+                'remarks' => $cartMenu->pivot->remarks,
+                // 'sides' => $cartMenu->pivot->sides
+                'sides' => 'null'
             ]);
         }
 

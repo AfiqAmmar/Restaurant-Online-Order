@@ -21,6 +21,6 @@
     <h5>?? mins</h5>
     <h4>Total Price:</h4>
     <h5>RM {{$totalPrice}}</h5>
-    <a class="btn btn-primary col-5 mx-auto" href="/" role="button">Order again?</a>
+    <a class="btn btn-primary mx-auto" href="/" role="button">Order again?</a>
   </main>
 </x-customer-layout>
