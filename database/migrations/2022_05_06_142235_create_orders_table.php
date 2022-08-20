@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained('customers');
             $table->foreignId('table_id')->constrained('tables');
-            $table->integer('prepare_status');
-            $table->integer('serve_status');
+            $table->integer('prepare_status')->default('0');
+            $table->integer('serve_status')->default('0');
             $table->integer('estimate_time');
-            $table->integer('payment_status');
+            $table->integer('payment_status')->default('0');
             $table->timestamps();
         });
     }

@@ -117,16 +117,15 @@ class OrderingController extends Controller
     // sides not yet finished
     public function addMenuToCart(Request $request, $customer_id, $menu_id)
     {
-        $validatedData = $request->validate([
-            'quantity' => ['required', 'numeric', 'min:1'],
-            'remarks' => 'string',
-            // 'sides' => 'required'
-        ]);
-        // dd($validatedData);
+        // $validatedData = $request->validate([
+        //     'quantity' => ['required', 'numeric', 'min:1'],
+        //     'remarks' => 'string',
+        //     // 'sides' => 'required'
+        // ]);
 
         $menuToCartData = array(
-            'quantity' => $validatedData['quantity'],
-            'remarks' => $validatedData['remarks'],
+            'quantity' => $request->quantity,
+            'remarks' => $request->remarks,
             'sides' => 'null'
         );
 
