@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <h4 class="mb-3">Invoice for Table 4</h4>                    
+                <h4 class="mb-3">Invoice for Table {{ $table->id }}</h4>                    
                 <div class="invoice p-3 mb-3">
                     <div class="row">
                         <div class="col-12">
@@ -41,37 +41,25 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Qty</th>
                                     <th>Product</th>
                                     <th>Description</th>
+                                    <th>Price(RM)</th>
+                                    <th>Qty</th>
                                     <th>Subtotal(RM)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Call of Duty</td>
-                                    <td>El snort testosterone trophy driving gloves handsome</td>
-                                    <td>$64.50</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Need for Speed IV</td>
-                                    <td>Wes Anderson umami biodiesel</td>
-                                    <td>$50.00</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Monsters DVD</td>
-                                    <td>Terry Richardson helvetica tousled street art master</td>
-                                    <td>$10.70</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Grown Ups Blue Ray</td>
-                                    <td>Tousled lomo letterpress</td>
-                                    <td>$25.99</td>
-                                </tr>
+                                @foreach ($lists as $list)
+                                    @foreach ($list->menus as $ordering)
+                                        <tr>
+                                            <td>{{ $ordering->name }}</td>
+                                            <td>{{ $ordering->description }}</td>
+                                            <td>{{ $ordering->price }}</td>
+                                            <td>{{ $ordering->pivot->quantity }}</td>
+                                            <td>{{ $ordering->price*$ordering->pivot->quantity }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -84,31 +72,51 @@
                             <table class="table">
                                 <tr>
                                     <th style="width:50%">Subtotal:(RM)</th>
-                                    <td>250.30</td>
+                                    <td>{{ $amount_exl_tax }}</td>
                                 </tr>
-                                <tr>
-                                    <th>Tax (9.3%)</th>
-                                    <td>10.34</td>
-                                </tr>
-                                <tr>
-                                    <th>Shipping:</th>
-                                    <td>5.80</td>
-                                </tr>
+                                @foreach ($taxes as $tax)
+                                    <tr>
+                                        <th>{{ $tax->name }} ({{ $tax->percentage }}%)</th>
+                                        <td>{{ $tax_amount[$tax->name] }}</td>
+                                    </tr>
+                                @endforeach
                                 <tr>
                                     <th>Total:</th>
-                                    <td>265.24</td>
+                                    <td>{{ $amount_incl_tax }}</td>
                                 </tr>
                             </table>
                         </div>
                     </div>
                 </div>
-                
                 <div class="row no-print">
                     <div class="col-12">
-                        <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Submit Payment</button>
+                        <button type="button" class="btn btn-success float-right" id="submitPaymentButton" data-toggle="modal" data-target="#submitPaymentModal">
+                            <i class="far fa-credit-card"></i> Submit Payment
+                        </button> 
                         <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
                             <i class="fas fa-download"></i> Generate PDF
                         </button>
+                        <div class="modal fade" id="submitPaymentModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-success">
+                                        <h4 class="modal-title">Payment</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                <div class="modal-body">
+                                    <p>Are you sure the payment for this table has been confirmed?</p>
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <form action="{{ $table->id }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success" type="submit">Confirm</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>     
                     </div>
                 </div>
             </div>
