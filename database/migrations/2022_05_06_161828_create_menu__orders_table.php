@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained('orders');
             $table->foreignId('menu_id')->constrained('menus');
             $table->integer('quantity');
-            $table->integer('menu_prepare')->default('0');
-            $table->integer('menu_serve')->default('0');
+            $table->integer('menu_prepare');
+            $table->integer('menu_serve');
             $table->string('remarks')->nullable();
             $table->string('sides')->nullable();
             $table->timestamps();
