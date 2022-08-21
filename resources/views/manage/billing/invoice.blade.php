@@ -27,8 +27,6 @@
                     </div>
                     
                     <div class="col-sm-4 invoice-col">
-                        <b>Invoice #007612</b><br>
-                        <br>
                         <b>Payment Due:</b> {{ $date }}<br>
                         <b>Table:</b> 1
                         <br>
@@ -93,9 +91,11 @@
                         <button type="button" class="btn btn-success float-right" id="submitPaymentButton" data-toggle="modal" data-target="#submitPaymentModal">
                             <i class="far fa-credit-card"></i> Submit Payment
                         </button> 
-                        <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
-                            <i class="fas fa-download"></i> Generate PDF
-                        </button>
+                        <a target="_blank" href="{{ url('billing/pdf/' . $table->id ) }}">
+                            <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                                <i class="fas fa-download"></i> Generate PDF
+                            </button>
+                        </a>
                         <div class="modal fade" id="submitPaymentModal">
                             <div class="modal-dialog">
                                 <div class="modal-content">

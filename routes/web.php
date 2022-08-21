@@ -103,5 +103,6 @@ Route::group(['middleware' => ['role:master-admin']], function () {
     Route::get('billing', [BillingController::class, 'index']);
     Route::get('billing/{id}', [BillingController::class, 'invoice']);
     Route::post('billing/{id}', [BillingController::class, 'submitPayment']);
+    Route::get('billing/pdf/{id}', [BillingController::class, 'viewPDF']);
 });
 
