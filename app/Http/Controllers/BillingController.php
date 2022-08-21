@@ -111,7 +111,8 @@ class BillingController extends Controller
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('manage.billing.pdf', $data)->setPaper(array(0,0,300,900), 'potrait')->setOptions(['defaultFont' => 'sans-serif']);;
+        $pdf->loadView('manage.billing.pdf', $data)->setPaper(array(0,0,300,900), 'potrait')->setOptions(['defaultFont' => 'sans-serif']);
+        // $pdf->loadView('manage.billing.pdf', $data)->setPaper("a8", 'potrait')->setOptions(['defaultFont' => 'sans-serif']); // need to set margin and no page break
         return $pdf->stream('Invoice Table ' . $table->id . '.pdf');
     }
 
