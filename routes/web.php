@@ -11,6 +11,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderingController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\SalesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,6 +97,7 @@ Route::group(['middleware' => ['role:master-admin']], function () {
     Route::delete('staff/{id}', [StaffController::class, 'deleteStaff']);
 
     // Dashboard (Sales)
+    Route::get('dashboard', [SalesController::class, 'index']);
 
     // Menu Analyzation
 
