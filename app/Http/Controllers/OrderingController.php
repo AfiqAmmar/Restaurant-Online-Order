@@ -125,7 +125,7 @@ class OrderingController extends Controller
         $menuToCartData = array(
             'quantity' => $request->quantity,
             'remarks' => $request->remarks,
-            'sides' => 'null'
+            'sides' => null
         );
 
         // if ($validatedData->contains()) {
@@ -198,7 +198,7 @@ class OrderingController extends Controller
                 'menu_serve' => 0,
                 'remarks' => $cartMenu->pivot->remarks,
                 // 'sides' => $cartMenu->pivot->sides
-                'sides' => 'null'
+                'sides' => null
             ]);
         }
 

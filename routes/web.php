@@ -6,6 +6,7 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\UserController;
 // use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderingController;
@@ -39,70 +40,78 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware' => ['role:master-admin|waiter|cashier|kitchen-staff']], function () {
-    
-    // Account
-    Route::get('account', [UserController::class, 'index']);
-    Route::put('account/edit', [UserController::class, 'editUser']);
+// Order Queue
+Route::get('order-queue', [OrderController::class, 'indexQueue']);
 
+// Order History
+Route::get('order-history', [OrderController::class, 'indexHistory']);
+Route::post('getOrders', [OrderController::class, 'getOrders'])->name('getOrders');
+Route::get('order/{id}', [OrderController::class, 'viewOrder']);
+Route::post('getOrder', [OrderController::class, 'getOrder'])->name('getOrder');
+
+Route::group(['middleware' => ['role:master-admin|waiter|cashier|kitchen-staff']], function () {
+
+  // Account
+  Route::get('account', [UserController::class, 'index']);
+  Route::put('account/edit', [UserController::class, 'editUser']);
 });
 
 Route::group(['middleware' => ['role:master-admin']], function () {
-    
-    // Tax
-    Route::get('tax', [TaxController::class, 'index']);
-    Route::post('getTaxes', [TaxController::class, 'getTaxes'])->name('getTaxes');
-    Route::get('tax/add', [TaxController::class, 'addTaxIndex']);
-    Route::post('tax/add', [TaxController::class, 'addTax']);
-    Route::get('tax/{id}', [TaxController::class, 'viewTax']);
-    Route::put('tax/{id}/edit', [TaxController::class, 'editTax']);
-    Route::delete('tax/{id}', [TaxController::class, 'deleteTax']);
 
-    // Table
-    Route::get('table', [TableController::class, 'index']);
-    Route::post('getTable', [TableController::class, 'getTables'])->name('getTables');
-    Route::get('table/add', [TableController::class, 'addTableIndex']);
-    Route::post('table/add', [TableController::class, 'addTable']);
-    Route::get('table/{id}', [TableController::class, 'viewTable']);
-    Route::put('table/{id}/edit', [TableController::class, 'editTable']);
-    Route::delete('table/{id}', [TableController::class, 'deleteTable']);
+  // Tax
+  Route::get('tax', [TaxController::class, 'index']);
+  Route::post('getTaxes', [TaxController::class, 'getTaxes'])->name('getTaxes');
+  Route::get('tax/add', [TaxController::class, 'addTaxIndex']);
+  Route::post('tax/add', [TaxController::class, 'addTax']);
+  Route::get('tax/{id}', [TaxController::class, 'viewTax']);
+  Route::put('tax/{id}/edit', [TaxController::class, 'editTax']);
+  Route::delete('tax/{id}', [TaxController::class, 'deleteTax']);
 
-    //  Menu Category
-    Route::get('category', [CategoryController::class, 'index']);
-    Route::post('getCategory', [CategoryController::class, 'getCategories'])->name('getCategories');
-    Route::get('category/add', [CategoryController::class, 'addCategoryIndex']);
-    Route::post('category/add', [CategoryController::class, 'addCategory']);
-    Route::get('category/{id}', [CategoryController::class, 'viewCategory']);
-    Route::put('category/{id}/edit', [CategoryController::class, 'editCategory']);
-    Route::delete('category/{id}', [CategoryController::class, 'deleteCategory']);
+  // Table
+  Route::get('table', [TableController::class, 'index']);
+  Route::post('getTable', [TableController::class, 'getTables'])->name('getTables');
+  Route::get('table/add', [TableController::class, 'addTableIndex']);
+  Route::post('table/add', [TableController::class, 'addTable']);
+  Route::get('table/{id}', [TableController::class, 'viewTable']);
+  Route::put('table/{id}/edit', [TableController::class, 'editTable']);
+  Route::delete('table/{id}', [TableController::class, 'deleteTable']);
 
-    //  Menu
-    Route::get('menu', [MenuController::class, 'index']);
-    Route::post('getMenu', [MenuController::class, 'getMenus'])->name('getMenus');
-    Route::get('menu/add', [MenuController::class, 'addMenuIndex']);
-    Route::post('menu/add', [MenuController::class, 'addMenu']);
-    Route::get('menu/{id}', [MenuController::class, 'viewMenu']);
-    Route::post('menu/{id}/edit', [MenuController::class, 'editMenu']);
-    Route::delete('menu/{id}', [MenuController::class, 'deleteMenu']);
+  //  Menu Category
+  Route::get('category', [CategoryController::class, 'index']);
+  Route::post('getCategory', [CategoryController::class, 'getCategories'])->name('getCategories');
+  Route::get('category/add', [CategoryController::class, 'addCategoryIndex']);
+  Route::post('category/add', [CategoryController::class, 'addCategory']);
+  Route::get('category/{id}', [CategoryController::class, 'viewCategory']);
+  Route::put('category/{id}/edit', [CategoryController::class, 'editCategory']);
+  Route::delete('category/{id}', [CategoryController::class, 'deleteCategory']);
 
-    //  Staff
-    Route::get('staff', [StaffController::class, 'index']);
-    Route::post('getStaff', [StaffController::class, 'getStaffs'])->name('getStaffs');
-    Route::get('staff/add', [StaffController::class, 'addStaffIndex']);
-    Route::post('staff/add', [StaffController::class, 'addStaff']);
-    Route::get('staff/{id}', [StaffController::class, 'viewStaff']);
-    Route::post('staff/{id}/edit', [StaffController::class, 'editStaff']);
-    Route::post('staff/{id}/tempPassword', [StaffController::class, 'editTempPassword']);
-    Route::delete('staff/{id}', [StaffController::class, 'deleteStaff']);
+  //  Menu
+  Route::get('menu', [MenuController::class, 'index']);
+  Route::post('getMenu', [MenuController::class, 'getMenus'])->name('getMenus');
+  Route::get('menu/add', [MenuController::class, 'addMenuIndex']);
+  Route::post('menu/add', [MenuController::class, 'addMenu']);
+  Route::get('menu/{id}', [MenuController::class, 'viewMenu']);
+  Route::post('menu/{id}/edit', [MenuController::class, 'editMenu']);
+  Route::delete('menu/{id}', [MenuController::class, 'deleteMenu']);
 
-    // Dashboard (Sales)
+  //  Staff
+  Route::get('staff', [StaffController::class, 'index']);
+  Route::post('getStaff', [StaffController::class, 'getStaffs'])->name('getStaffs');
+  Route::get('staff/add', [StaffController::class, 'addStaffIndex']);
+  Route::post('staff/add', [StaffController::class, 'addStaff']);
+  Route::get('staff/{id}', [StaffController::class, 'viewStaff']);
+  Route::post('staff/{id}/edit', [StaffController::class, 'editStaff']);
+  Route::post('staff/{id}/tempPassword', [StaffController::class, 'editTempPassword']);
+  Route::delete('staff/{id}', [StaffController::class, 'deleteStaff']);
 
-    // Menu Analyzation
+  // Dashboard (Sales)
 
-    // Billing
-    Route::get('billing', [BillingController::class, 'index']);
-    Route::get('billing/{id}', [BillingController::class, 'invoice']);
-    Route::post('billing/{id}', [BillingController::class, 'submitPayment']);
-    Route::get('billing/pdf/{id}', [BillingController::class, 'viewPDF']);
+  // Menu Analyzation
+
+  // Billing
+  Route::get('billing', [BillingController::class, 'index']);
+  Route::get('billing/{id}', [BillingController::class, 'invoice']);
+  Route::post('billing/{id}', [BillingController::class, 'submitPayment']);
+  Route::get('billing/pdf/{id}', [BillingController::class, 'viewPDF']);
+  Route::get('invoice', [BillingController::class, 'invoice']);
 });
-
