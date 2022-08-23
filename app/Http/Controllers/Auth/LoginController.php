@@ -41,7 +41,7 @@ class LoginController extends Controller
 
     public function redirectTo() {
         if(Auth::user()->hasRole('master-admin')){
-            return '/home';
+            return '/dashboard';
         }
         else if(Auth::user()->hasRole('waiter')){
             // order queue
