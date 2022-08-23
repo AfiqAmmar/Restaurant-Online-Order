@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('menu__orders', function (Blueprint $table) {
-            $table->integer('remarks')->nullable()->change();
-            $table->integer('sides')->nullable()->change();
+            $table->string('remarks')->nullable()->change();
+            $table->string('sides')->nullable()->change();
         });
     }
 
