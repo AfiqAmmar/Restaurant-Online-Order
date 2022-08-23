@@ -66,8 +66,7 @@ class OrderingController extends Controller
 
     public function createCartAndOrder($customer_id, $table_number)
     {
-        $table_id = Table::where('table_number', $table_number)
-            ->get()->first()->id;
+        $table_id = Table::where('table_number', $table_number)->first()->id;
 
         Cart::create(['customer_id' => $customer_id]);
         Order::create([
