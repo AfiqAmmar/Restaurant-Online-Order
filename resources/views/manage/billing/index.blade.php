@@ -13,44 +13,41 @@
                     <div class="card-body">
                         <div class="row">
                             @foreach ($tables as $table)
-                                @if ($table->table_number == 0)
-                                    @continue 
+                                @if ($table_arr[$table->id] == 0)
+                                    <div class="col-3">
+                                        <div class="card">
+                                            <div class="card-header bg-secondary">
+                                                <h6 class="text-center">Table</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <button type="button" class="btn btn-block btn-default btn-lg">{{ $table->table_number }}</button>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    @continue
                                 @else
-                                    @if (empty($table->orders[0]))
+                                    @if($table->orders[$table_arr[$table->id]-1]->payment_status == 0)
                                         <div class="col-3">
                                             <div class="card">
                                                 <div class="card-header bg-secondary">
                                                     <h6 class="text-center">Table</h6>
                                                 </div>
                                                 <div class="card-body">
-                                                    <a href="{{ url('billing/' . $table->id ) }}"><button type="button" class="btn btn-block btn-default btn-lg">{{ $table->table_number }}</button></a>
+                                                    <a href="{{ url('billing/' . $table->id ) }}"><button type="button" class="btn btn-block btn-success btn-lg">{{ $table->table_number }}</button></a>
                                                 </div>
                                             </div>
                                         </div>
                                     @else
-                                        @if ($table->orders[0]->payment_status == 0)
-                                            <div class="col-3">
-                                                <div class="card">
-                                                    <div class="card-header bg-success">
-                                                        <h6 class="text-center">Table</h6>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <a href="{{ url('billing/' . $table->id ) }}"><button type="button" class="btn btn-block btn-success btn-lg">{{ $table->table_number }}</button></a>
-                                                    </div>
+                                        <div class="col-3">
+                                            <div class="card">
+                                                <div class="card-header bg-secondary">
+                                                    <h6 class="text-center">Table</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <button type="button" class="btn btn-block btn-default btn-lg">{{ $table->table_number }}</button>
                                                 </div>
                                             </div>
-                                        @else
-                                            <div class="col-3">
-                                                <div class="card">
-                                                    <div class="card-header bg-secondary">
-                                                        <h6 class="text-center">Table</h6>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <a href="{{ url('billing/' . $table->id ) }}"><button type="button" class="btn btn-block btn-default btn-lg">{{ $table->table_number }}</button></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif    
+                                        </div>   
                                     @endif
                                 @endif
                             @endforeach

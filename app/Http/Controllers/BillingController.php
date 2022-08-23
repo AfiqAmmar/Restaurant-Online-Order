@@ -19,8 +19,15 @@ class BillingController extends Controller
     public function index()
     {
         $tables = Table::orderBy('table_number', 'ASC')->get();
+        $table_arr = array();
+        foreach($tables as $table)
+        {
+            $count = sizeof($table->orders);
+            $table_arr += [$table->id => $count];
+        }
         return view('manage.billing.index', [
             'tables' => $tables,
+            'table_arr' => $table_arr,
         ]);
     }
 
