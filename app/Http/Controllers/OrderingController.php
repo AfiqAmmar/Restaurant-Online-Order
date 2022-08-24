@@ -39,34 +39,39 @@ class OrderingController extends Controller
 
     public function checkIfCartExists($customer_id)
     {
-        $cart = Cart::where('customer_id', $customer_id)->get();
+        $carts = Cart::where('customer_id', $customer_id)->get();
 
-        if ($cart->isNotEmpty()) {
-            $cart_id = $cart->first()->id;
-            $cartMenus = $cart->first()->menus();
-            if ($cartMenus->get()->isNotEmpty()) {
-                $cartMenus->detach();
+        if ($carts->isNotEmpty()) {
+            foreach ($carts as $cart) {
+                $cart_id = $cart->id;
+                $cartMenus = $cart->menus();
+                if ($cartMenus->get()->isNotEmpty()) {
+                    $cartMenus->detach();
+                }
+                Cart::destroy($cart_id);
             }
-            Cart::destroy($cart_id);
         }
     }
 
     public function checkIfOrderExists($customer_id)
     {
-        $order = Order::where('customer_id', $customer_id)->get();
+        $orders = Order::where('customer_id', $customer_id)->get();
 
-        if ($order->isNotEmpty()) {
-            $order_id = $order->last()->id;
-            $menuOrder = $order->last()->menus()->get();
-            if ($menuOrder->isEmpty()) {
-                Order::destroy($order_id);
+        if ($orders->isNotEmpty()) {
+            foreach ($orders as $order) {
+                $order_id = $order->id;
+                $menuOrder = $order->menus()->get();
+                if ($menuOrder->isEmpty()) {
+                    Order::destroy($order_id);
+                }
             }
         }
     }
 
     public function createCartAndOrder($customer_id, $table_number)
     {
-        $table_id = Table::where('table_number', $table_number)->first()->id;
+        $table_id = Table::where('table_number', $table_number)
+            ->first()->id;
 
         Cart::create(['customer_id' => $customer_id]);
         Order::create([
@@ -113,28 +118,29 @@ class OrderingController extends Controller
         ]);
     }
 
-    // sides not yet finished
     public function addMenuToCart(Request $request, $customer_id, $menu_id)
     {
-        // $validatedData = $request->validate([
-        //     'quantity' => ['required', 'numeric', 'min:1'],
-        //     'remarks' => 'string',
-        //     // 'sides' => 'required'
-        // ]);
+        $sides = ($request->sides) ? implode(", ", $request->sides) : $request->sides;
 
         $menuToCartData = array(
             'quantity' => $request->quantity,
             'remarks' => $request->remarks,
-            'sides' => null
+            'sides' => $sides
         );
 
-        // if ($validatedData->contains()) {
-        //     # code...
-        // }
-        // array_push($validatedData, $cart_id, $menu_id);
+        $cartMenus = Cart::where('customer_id', $customer_id)->first()->menus();
+        // dd($cartMenus->get()->where('id', $menu_id)->first());
 
-        $cart = Cart::where('customer_id', $customer_id)->first();
-        $cart->menus()->attach($menu_id, $menuToCartData);
+        if ($cartMenus->get()->contains($menu_id)) {
+            $cartMenu = $cartMenus->get()->where('id', $menu_id)->first();
+            $quantity = $cartMenu->pivot->quantity;
+            $cartMenus->updateExistingPivot($menu_id, [
+                'quantity' => $quantity + 1
+            ]);
+        } else {
+            $cartMenus->attach($menu_id, $menuToCartData);
+        }
+
         return redirect('/' . $customer_id . '/menus');
     }
 
@@ -149,7 +155,6 @@ class OrderingController extends Controller
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
         }
-        // dd($cartMenus);
 
         return view('ordering.confirm', [
             'cart_id' => $cart_id,
@@ -188,6 +193,7 @@ class OrderingController extends Controller
         $cartMenus = $cart->menus()->get();
 
         foreach ($cartMenus as $cartMenu) {
+            // dd($cartMenu->pivot);
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
             $menu_id = $cartMenu->id;
@@ -197,8 +203,8 @@ class OrderingController extends Controller
                 'menu_prepare' => 0,
                 'menu_serve' => 0,
                 'remarks' => $cartMenu->pivot->remarks,
-                // 'sides' => $cartMenu->pivot->sides
-                'sides' => null
+                'sides' => $cartMenu->pivot->sides
+                // 'sides' => null
             ]);
         }
 
