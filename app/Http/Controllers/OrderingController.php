@@ -129,7 +129,6 @@ class OrderingController extends Controller
         );
 
         $cartMenus = Cart::where('customer_id', $customer_id)->first()->menus();
-        // dd($cartMenus->get()->where('id', $menu_id)->first());
 
         if ($cartMenus->get()->contains($menu_id)) {
             $cartMenu = $cartMenus->get()->where('id', $menu_id)->first();
@@ -184,7 +183,6 @@ class OrderingController extends Controller
         return redirect('/' . $customer_id . '/menus');
     }
 
-    // sides not yet finished
     public function orderConfirmed($customer_id)
     {
         $totalPrice = 0;
@@ -193,7 +191,6 @@ class OrderingController extends Controller
         $cartMenus = $cart->menus()->get();
 
         foreach ($cartMenus as $cartMenu) {
-            // dd($cartMenu->pivot);
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
             $menu_id = $cartMenu->id;
@@ -204,7 +201,6 @@ class OrderingController extends Controller
                 'menu_serve' => 0,
                 'remarks' => $cartMenu->pivot->remarks,
                 'sides' => $cartMenu->pivot->sides
-                // 'sides' => null
             ]);
         }
 
