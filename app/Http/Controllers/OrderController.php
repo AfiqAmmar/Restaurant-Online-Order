@@ -32,7 +32,7 @@ class OrderController extends Controller
         }
 
         $columns = array(
-            0 => 'table_number',
+            0 => 'order_number',
             1 => 'order_time',
             2 => 'order_date',
             3 => 'action'
@@ -56,12 +56,12 @@ class OrderController extends Controller
             $orders = Order::orderBy('id', 'DESC')->skip($start)
                 ->take($rowPerPage)->get();
         } else {
-            $orders = Order::where('table_id', 'LIKE', "%{$search_arr[0]['value']}%")
+            $orders = Order::where('id', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orWhere('created_at', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orderBy('id', 'DESC')->skip($start)
                 ->take($rowPerPage)->get();
 
-            $totalFiltered = Order::where('table_id', 'LIKE', "%{$search_arr[0]['value']}%")
+            $totalFiltered = Order::where('id', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orWhere('created_at', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orderBy('id', 'DESC')->skip($start)
                 ->take($rowPerPage)->count();
@@ -79,11 +79,11 @@ class OrderController extends Controller
                                 </button>
                               </div>';
 
-                $table_id = $order->table_id;
-                $table_number = Table::where('id', $table_id)->first()->table_number;
+                // $table_id = $order->table_id;
+                // $table_number = Table::where('id', $table_id)->first()->table_number;
 
                 $data[] = array(
-                    'table_number' => $table_number,
+                    'order_number' => $order->id,
                     'order_time' => $order->created_at->format('g:i a'),
                     'order_date' => $order->created_at->format('d/m/Y'),
                     'action' => $editButton
@@ -151,11 +151,18 @@ class OrderController extends Controller
 
         if (!(empty($menus))) {
             foreach ($menus as $menu) {
+                $sides = $menu->pivot->sides;
+
+                if ($sides != 'N/A') {
+                    $sidesArray = explode(', ', $menu->pivot->sides);
+                    $sides = (count($sidesArray) == 1) ? $sidesArray : $this->displaySidesAsList($sidesArray);
+                }
+
                 $data[] = array(
                     'name' => $menu->name,
                     'quantity' => $menu->pivot->quantity,
                     'remarks' => $menu->pivot->remarks,
-                    'sides' => $menu->pivot->sides
+                    'sides' => $sides
                 );
 
                 $keys = array_column($data, $columnName);
@@ -175,5 +182,14 @@ class OrderController extends Controller
         );
 
         echo json_encode($jsonData);
+    }
+
+    public function displaySidesAsList($sides)
+    {
+        $output = '<ul>';
+        foreach ($sides as $side) {
+            $output .= '<li>' . $side . '</li>';
+        }
+        return $output . '</ul>';
     }
 }

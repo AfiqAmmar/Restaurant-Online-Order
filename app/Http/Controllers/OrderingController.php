@@ -120,11 +120,12 @@ class OrderingController extends Controller
 
     public function addMenuToCart(Request $request, $customer_id, $menu_id)
     {
-        $sides = ($request->sides) ? implode(", ", $request->sides) : $request->sides;
+        $remarks = ($request->remarks) ? $request->remarks : 'N/A';
+        $sides = ($request->sides) ? implode(', ', $request->sides) : 'N/A';
 
         $menuToCartData = array(
             'quantity' => $request->quantity,
-            'remarks' => $request->remarks,
+            'remarks' => $remarks,
             'sides' => $sides
         );
 

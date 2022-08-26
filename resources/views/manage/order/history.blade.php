@@ -26,7 +26,7 @@
             <table id="orderHistoryTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Table Number</th>
+                  <th>Order Number</th>
                   <th>Order Time</th>
                   <th>Order Date</th>
                   <th>Action</th>
@@ -65,7 +65,7 @@
                 }
             },
             "columns": [
-              {"data": "table_number"},
+              {"data": "order_number"},
               {"data": "order_time"},
               {"data": "order_date"},
               {"data": "action"}
@@ -88,7 +88,7 @@
                 "emptyTable": "No records found"
             },
             order: [
-                [2, 'desc']
+                [0, 'desc']
             ],
         }).buttons().container().appendTo('#orderHistoryTable .col-md-6:eq(0)');
     })
