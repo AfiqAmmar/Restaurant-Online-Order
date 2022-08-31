@@ -144,9 +144,11 @@ class OrderingController extends Controller
         return redirect('/' . $customer_id . '/menus');
     }
 
+    // estimated preparation time calculation not implemented yet
     public function confirmOrder($customer_id)
     {
         $totalPrice = 0;
+        $estimatedTime = 0;
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cart_id = $cart->id;
         $cartMenus = $cart->menus()->get();
@@ -154,13 +156,15 @@ class OrderingController extends Controller
         foreach ($cartMenus as $cartMenu) {
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
+            $estimatedTime += $cartMenu->preparation_time;
         }
 
         return view('ordering.confirm', [
             'cart_id' => $cart_id,
             'customer_id' => $customer_id,
             'cartMenus' => $cartMenus,
-            'totalPrice' => $totalPrice
+            'totalPrice' => $totalPrice,
+            'estimatedTime' => $estimatedTime
         ]);
     }
 
@@ -184,9 +188,11 @@ class OrderingController extends Controller
         return redirect('/' . $customer_id . '/menus');
     }
 
+    // estimated preparation time calculation not implemented yet
     public function orderConfirmed($customer_id)
     {
         $totalPrice = 0;
+        $estimatedTime = 0;
         $order = Order::where('customer_id', $customer_id)->get()->last();
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cartMenus = $cart->menus()->get();
@@ -194,6 +200,7 @@ class OrderingController extends Controller
         foreach ($cartMenus as $cartMenu) {
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
+            $estimatedTime += $cartMenu->preparation_time;
             $menu_id = $cartMenu->id;
 
             $order->menus()->attach($menu_id, [
@@ -205,6 +212,10 @@ class OrderingController extends Controller
             ]);
         }
 
-        return view('ordering.confirmed', ['totalPrice' => $totalPrice]);
+        $order->update(['estimate_time' => $estimatedTime]);
+        return view('ordering.confirmed', [
+            'totalPrice' => $totalPrice,
+            'estimatedTime' => $estimatedTime
+        ]);
     }
 }

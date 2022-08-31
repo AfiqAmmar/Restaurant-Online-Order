@@ -37,7 +37,7 @@
       </div>
       <div class="d-flex justify-content-between align-items-center">
         <h5 class="text-white">Estimated Preparation Time</h5>
-        <h5 class="text-white lead">?? mins</h5>
+        <h5 class="text-white lead">{{$estimatedTime}} mins</h5>
       </div>
       @endif
     </div>

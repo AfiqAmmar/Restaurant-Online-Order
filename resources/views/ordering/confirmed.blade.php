@@ -18,7 +18,7 @@
     <h1>Your order has been confirmed!</h1>
     <hr>
     <h4>Estimated Preparation Time:</h4>
-    <h5>?? mins</h5>
+    <h5>{{$estimatedTime}} mins</h5>
     <h4>Total Price:</h4>
     <h5>RM {{$totalPrice}}</h5>
     <a class="btn btn-primary mx-auto" href="/" role="button">Order again?</a>
