@@ -127,7 +127,7 @@ class BillingController extends Controller
     {
         $table = Table::where('id', $id)->first();
         $taxes = Tax::all();
-        $orders = $table->orders->where('payment_status', 1);
+        $orders = $table->orders->where('payment_status', 0);
 
         foreach($orders as $order)
         {
