@@ -127,10 +127,15 @@ class BillingController extends Controller
     {
         $table = Table::where('id', $id)->first();
         $taxes = Tax::all();
-        $orders = $table->orders->where('payment_status', 0);
+        $orders = $table->orders->where('payment_status', 1);
 
         foreach($orders as $order)
         {
+            if(sizeof($order->menus) == 0)
+            {
+                continue;
+            }
+
             $amount_exl_tax = 0;
             $amount_inlc_tax = 0;
 
