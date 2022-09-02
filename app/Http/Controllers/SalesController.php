@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -17,6 +19,28 @@ class SalesController extends Controller
 
     public function index()
     {
+        $customers = Customer::all();
+        $customers_count = count($customers);
+        $regular_customers_count = 0;
+        foreach($customers as $customer)
+        {
+            if(count($customer->orders) > 2)
+            {
+                $regular_customers_count++;
+            }
+        }
+
+        $new_orders = Order::where('payment_status', 0)->count();
+        $available_table = 0;
+        $tables = Table::all();
+        foreach($tables as $table)
+        {
+            if($table->orders[sizeof($table->orders)-1]->payment_status == 1)
+            {
+                $available_table++;
+            }
+        }
+        
         $today_date = date('Y-m-d');
         // $today_date = date('Y-m-d', strtotime('2022-08-23'));
         $today_arr = array();
@@ -113,6 +137,10 @@ class SalesController extends Controller
             'total_month' => $total_month,
             'year_data_arr' => $year_data_arr,
             'total_year' => $total_year,
+            'customers_count' => $customers_count,
+            'regular_customers_count' => $regular_customers_count,
+            'new_orders' => $new_orders,
+            'available_table' => $available_table,
         ]);
     }
 }
