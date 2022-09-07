@@ -4,7 +4,9 @@
   @foreach ($sides as $side)
   <div class="col-6" x-data="{ checked: false, open: false }">
     <input type="checkbox" class="checkbox" id="{{strtolower($side->name)}}" name="sides[]"
-      value="{{strtolower($side->name)}}" autocomplete="off" x-show="open" x-cloak>
+      {{-- value="{{strtolower($side->name)}}" --}}
+      value="{{$side->id}}"
+      autocomplete="off" x-show="open" x-cloak>
     <label for="{{strtolower($side->name)}}" x-on:click="checked = !checked">
       <div class="card" x-bind:class="checked ? 'bg-danger' : 'bg-dark'">
         <img src="{{ asset('menu_img/' . $side->image_name) }}" class="card-img-top rounded" alt="{{$side->name}}">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Table;
 use Illuminate\Http\Request;
@@ -13,14 +14,66 @@ class OrderController extends Controller
         $this->middleware('auth');
     }
 
+    // Order Queue
     public function indexQueue()
     {
-        return view('manage.order.queue');
+        $ordersNotServed = Order::where('serve_status', 0)
+            ->orderBy('id', 'desc')->get();
+        $ordersNotPrepared = Order::where('prepare_status', 0)
+            ->orderBy('id', 'desc')->get();
+
+        return view('manage.order-queue.index', [
+            'ordersNotServed' => $ordersNotServed,
+            'ordersNotPrepared' => $ordersNotPrepared,
+            'tables' => Table::all(),
+            'allMenus' => Menu::all()
+        ]);
     }
 
+    public function menuServed($order_id, $menu_id)
+    {
+        $order = Order::find($order_id);
+        $menu = $order->menus()->get()
+            ->where('id', $menu_id)
+            ->first()->pivot;
+
+        $serveStatus = ($menu->menu_serve == 1) ? 0 : 1;
+        $menu->update(['menu_serve' => $serveStatus]);
+
+        return back();
+    }
+
+    public function orderServed($order_id)
+    {
+        $order = Order::find($order_id);
+        $order->update(['serve_status' => 1]);
+        return back();
+    }
+
+    public function menuPrepared($order_id, $menu_id)
+    {
+        $order = Order::find($order_id);
+        $menu = $order->menus()->get()
+            ->where('id', $menu_id)
+            ->first()->pivot;
+
+        $prepareStatus = ($menu->menu_prepare == 1) ? 0 : 1;
+        $menu->update(['menu_prepare' => $prepareStatus]);
+
+        return back();
+    }
+
+    public function orderPrepared($order_id)
+    {
+        $order = Order::find($order_id);
+        $order->update(['prepare_status' => 1]);
+        return back();
+    }
+
+    // Order History
     public function indexHistory()
     {
-        return view('manage.order.history');
+        return view('manage.order-history.index');
     }
 
     public function getOrders(Request $request)
@@ -111,11 +164,10 @@ class OrderController extends Controller
     public function viewOrder($id)
     {
         $order = Order::find($id);
-        $table = Table::where('id', $order->table_id)->first();
 
-        return view('manage.order.view', [
+        return view('manage.order-history.view', [
             'order' => $order,
-            'table' => $table
+            'table' => Table::where('id', $order->table_id)->first()
         ]);
     }
 
@@ -153,9 +205,11 @@ class OrderController extends Controller
             foreach ($menus as $menu) {
                 $sides = $menu->pivot->sides;
 
-                if ($sides != 'N/A') {
+                if ($sides == null || $sides == 'null') {
+                    $sides = 'N/A';
+                } else if ($sides != 'N/A') {
                     $sidesArray = explode(', ', $menu->pivot->sides);
-                    $sides = (count($sidesArray) == 1) ? $sidesArray : $this->displaySidesAsList($sidesArray);
+                    $sides = $this->displaySides($sidesArray);
                 }
 
                 $data[] = array(
@@ -184,12 +238,17 @@ class OrderController extends Controller
         echo json_encode($jsonData);
     }
 
-    public function displaySidesAsList($sides)
+    public function displaySides($sides)
     {
-        $output = '<ul>';
-        foreach ($sides as $side) {
-            $output .= '<li>' . $side . '</li>';
+        if (count($sides) == 1) {
+            return Menu::where('id', $sides)->first()->name;
+        } else {
+            $output = '<ul>';
+            foreach ($sides as $side) {
+                $side = Menu::where('id', $side)->first()->name;
+                $output .= '<li>' . $side . '</li>';
+            }
+            return $output . '</ul>';
         }
-        return $output . '</ul>';
     }
 }

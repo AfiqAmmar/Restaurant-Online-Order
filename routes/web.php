@@ -43,6 +43,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // Order Queue
 Route::get('order-queue', [OrderController::class, 'indexQueue']);
+Route::get('order-queue/{order_id}/menu-served/{menu_id}', [OrderController::class, 'menuServed']);
+Route::get('order-queue/{order_id}/served', [OrderController::class, 'orderServed']);
+Route::get('order-queue/{order_id}/menu-prepared/{menu_id}', [OrderController::class, 'menuPrepared']);
+Route::get('order-queue/{order_id}/prepared', [OrderController::class, 'orderPrepared']);
 
 // Order History
 Route::get('order-history', [OrderController::class, 'indexHistory']);
@@ -106,7 +110,7 @@ Route::group(['middleware' => ['role:master-admin']], function () {
   Route::delete('staff/{id}', [StaffController::class, 'deleteStaff']);
 
   // Dashboard (Sales)
-    Route::get('dashboard', [SalesController::class, 'index']);
+  Route::get('dashboard', [SalesController::class, 'index']);
 
   // Menu Analyzation
 
