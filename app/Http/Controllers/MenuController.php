@@ -196,6 +196,10 @@ class MenuController extends Controller
             'preparation_time' => $request->time,
         ]);
 
+        $menuInsert->analyses()->create([
+            'orders' => 0,
+        ]);
+
         Session::flash('success','Menu added successfully');
         return response()->json(['success'=>'Menu added successfully']);
     }
