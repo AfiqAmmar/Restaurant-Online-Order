@@ -24,7 +24,7 @@
                             <p>Customer Registration</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
+                            <i class="ion ion-person-add"></i>
                         </div>
                         <div class="small-box-footer"></div> 
                     </div>
@@ -38,7 +38,7 @@
                             <p>Regular Customers</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-person-add"></i>
+                            <i class="ion ion-person"></i>
                         </div>
                         <div class="small-box-footer"></div> 
                     </div>
@@ -52,7 +52,7 @@
                             <p>Available Table</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-pie-graph"></i>
+                            <i class="ion ion-clipboard"></i>
                         </div>
                         <a href="/billing" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
