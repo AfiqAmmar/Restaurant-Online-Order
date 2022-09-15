@@ -113,6 +113,9 @@ Route::group(['middleware' => ['role:master-admin']], function () {
   Route::get('dashboard', [SalesController::class, 'index']);
 
   // Menu Analyzation
+  Route::get('analyzation', [MenuController::class, 'analyze']);
+  Route::post('getFoodRank', [MenuController::class, 'getFoodRank'])->name('getFoodRank');
+  Route::post('getBeverageRank', [MenuController::class, 'getBeverageRank'])->name('getBeverageRank');
 
   // Billing
   Route::get('billing', [BillingController::class, 'index']);

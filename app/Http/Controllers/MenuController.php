@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\Category;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
@@ -301,5 +302,216 @@ class MenuController extends Controller
         $menuDelete->delete();
         Session::flash('success','Menu deleted successfully');
         return redirect('/menu');
+    }
+
+    public function analyze()
+    {
+        $menus_arr = array();
+        $categories_arr = array();
+        $analyze_data = array();
+        $categories = Category::orderBy('category', 'ASC')->get();
+        foreach($categories as $category)
+        {
+            $menu_arr = array();
+            foreach($category->menus as $menu)
+            {
+                $menu_info = Menu::find($menu->id);
+                $quantity = 0;
+                foreach($menu_info->orders as $order)
+                {
+                    $quantity = $quantity + $order->pivot->quantity;
+                }
+                $menu_arr[$menu->name] = $quantity;
+                array_push($menus_arr, $menu->name);
+            }
+            $analyze_data[$category->name] = $menu_arr;
+        }
+        return view('manage.menu.analyze', [
+            'categories' => $categories,
+            'menus_arr' => $menus_arr,
+            'analyze_data' => $analyze_data,
+        ]);
+    }
+
+    public function getFoodRank(Request $request)
+    {
+        try{
+            $search_arr[] = $request->get('search');
+        }
+        catch (\Exception $e){
+            $search_arr[] = '';
+        }
+
+        $columns = array(
+            0 => 'rank',
+            1 => 'name',
+            2 => 'orders'
+        );
+
+        $draw = $request->get('draw');
+        $start = $request->get('start');
+        $rowPerPage = $request->get('length');
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+
+        $columnIndex = $columnIndex_arr[0]['column'];
+        $columnName = $columnName_arr[$columnIndex]['data'];
+        $columnSortOrder = $columnIndex_arr[0]['dir'];
+
+        $foodsCount = Menu::whereRelation('categories', 'category', 0)->count();
+        $totalFiltered = $foodsCount;
+        $totalData = $totalFiltered;
+
+        $foods = Menu::whereRelation('categories', 'category', 0)->get();
+
+        $totalFiltered = Menu::whereRelation('categories', 'category', 0)->count();
+
+        $totalData = $totalFiltered;
+
+        $data = [];
+
+        $foods_arr = array();
+
+        foreach($foods as $food)
+        {
+            $foods_arr[$food->name] = 0;
+        }
+
+        foreach($foods as $food)
+        {
+            $quantity = 0;
+            foreach($food->orders as $order)
+            {
+                $quantity = $quantity + $order->pivot->quantity;
+            }
+            $foods_arr[$food->name] = $quantity;
+            
+            $food->analyses()->update([
+                'orders' => $quantity,
+            ]);
+        }
+
+        arsort($foods_arr);
+        $count = 1;
+
+        if(!(empty($foods))){
+            foreach($foods_arr as $food=>$food_value)
+            {
+                $data[] = array(
+                    'rank' => $count,
+                    'name' => $food,
+                    'orders' => $food_value,
+                );
+                $count++;
+
+                $keys = array_column($data, $columnName);
+                if($columnSortOrder == 'asc')
+                {
+                    array_multisort($keys, SORT_ASC, $data);
+                } else {
+                    array_multisort($keys, SORT_DESC, $data);
+                }
+            }
+        }
+
+        $jsonData = array(
+            "draw" => intval($draw),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data,
+        );
+
+        echo json_encode($jsonData);
+    }
+
+    public function getBeverageRank(Request $request)
+    {
+        try{
+            $search_arr[] = $request->get('search');
+        }
+        catch (\Exception $e){
+            $search_arr[] = '';
+        }
+
+        $columns = array(
+            0 => 'rank',
+            1 => 'name',
+            2 => 'orders'
+        );
+
+        $draw = $request->get('draw');
+        $start = $request->get('start');
+        $rowPerPage = $request->get('length');
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+
+        $columnIndex = $columnIndex_arr[0]['column'];
+        $columnName = $columnName_arr[$columnIndex]['data'];
+        $columnSortOrder = $columnIndex_arr[0]['dir'];
+
+        $beveragesCount = Menu::whereRelation('categories', 'category', 1)->count();
+        $totalFiltered = $beveragesCount;
+        $totalData = $totalFiltered;
+
+        $beverages = Menu::whereRelation('categories', 'category', 1)->get();
+
+        $totalFiltered = Menu::whereRelation('categories', 'category', 1)->count();
+
+        $totalData = $totalFiltered;
+
+        $data = [];
+
+        $beverages_arr = array();
+
+        foreach($beverages as $beverage)
+        {
+            $beverages_arr[$beverage->name] = 0;
+        }
+
+        foreach($beverages as $beverage)
+        {
+            $quantity = 0;
+            foreach($beverage->orders as $order)
+            {
+                $quantity = $quantity + $order->pivot->quantity;
+            }
+            $beverages_arr[$beverage->name] = $quantity;
+            
+            $beverage->analyses()->update([
+                'orders' => $quantity,
+            ]);
+        }
+
+        arsort($beverages_arr);
+        $count = 1;
+
+        if(!(empty($beverages))){
+            foreach($beverages_arr as $beverage=>$beverage_value)
+            {
+                $data[] = array(
+                    'rank' => $count,
+                    'name' => $beverage,
+                    'orders' => $beverage_value,
+                );
+                $count++;
+
+                $keys = array_column($data, $columnName);
+                if($columnSortOrder == 'asc')
+                {
+                    array_multisort($keys, SORT_ASC, $data);
+                } else {
+                    array_multisort($keys, SORT_DESC, $data);
+                }
+            }
+        }
+
+        $jsonData = array(
+            "draw" => intval($draw),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data,
+        );
+
+        echo json_encode($jsonData);
     }
 }

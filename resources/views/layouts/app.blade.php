@@ -142,11 +142,11 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url('menu-ranking') }}"
-                                    class="nav-link {{ request()->is('menu-ranking*') ? 'active' : ''}}">
+                                <a href="{{ url('analyzation') }}"
+                                    class="nav-link {{ request()->is('analyzation*') ? 'active' : ''}}">
                                     <i class="nav-icon fas fa-chart-area"></i>
                                     <p>
-                                        Menu Ranking
+                                        Menu Analyzation
                                     </p>
                                 </a>
                             </li>
