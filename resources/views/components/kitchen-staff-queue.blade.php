@@ -49,20 +49,19 @@ break;
 
           <tr>
             <td>
-              {{$menu->name}}<br>
+              {{$menu->name}}
 
-              @if (is_string($output))
-              {{$output}}
-              @elseif (count($output) == 1)
-              {{$allMenus->where('id', $output)->first()->name}}
-              @else
+              @if (!is_string($output))
+              <br>
+              <hr>
+              <strong>Sides</strong>
               <ul>
                 @foreach ($output as $side)
                 <li>{{$allMenus->where('id', $side)->first()->name}}</li>
                 @endforeach
               </ul>
               @endif
-              
+
             </td>
             <td>{{$menu->pivot->quantity}}</td>
             <td>
