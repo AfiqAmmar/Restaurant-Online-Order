@@ -151,6 +151,8 @@ class MenuController extends Controller
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data,
             "count" => $count,
+            "start" => $start,
+            "row" => $rowPerPage,
         );
 
         echo json_encode($jsonData);
@@ -313,6 +315,7 @@ class MenuController extends Controller
         foreach($categories as $category)
         {
             $menu_arr = array();
+            array_push($categories_arr, $category->name);
             foreach($category->menus as $menu)
             {
                 $menu_info = Menu::find($menu->id);
@@ -328,6 +331,7 @@ class MenuController extends Controller
         }
         return view('manage.menu.analyze', [
             'categories' => $categories,
+            'categories_arr' => $categories_arr,
             'menus_arr' => $menus_arr,
             'analyze_data' => $analyze_data,
         ]);
@@ -364,10 +368,6 @@ class MenuController extends Controller
 
         $foods = Menu::whereRelation('categories', 'category', 0)->get();
 
-        $totalFiltered = Menu::whereRelation('categories', 'category', 0)->count();
-
-        $totalData = $totalFiltered;
-
         $data = [];
 
         $foods_arr = array();
@@ -392,28 +392,91 @@ class MenuController extends Controller
         }
 
         arsort($foods_arr);
-        $count = 1;
+        $count = $start + 1;
+        $menus_name = array();
+        $menus_data = array();
+        $index_size = array();
 
-        if(!(empty($foods))){
-            foreach($foods_arr as $food=>$food_value)
+        foreach($foods_arr as $food=>$food_value)
+        {
+            array_push($menus_name, $food);
+            array_push($menus_data, $food_value);
+        }
+
+        if(!(empty($foods)))
+        {
+            if(sizeof($menus_name) % 10 == 0)
             {
-                $data[] = array(
-                    'rank' => $count,
-                    'name' => $food,
-                    'orders' => $food_value,
-                );
-                $count++;
-
-                $keys = array_column($data, $columnName);
-                if($columnSortOrder == 'asc')
+                for($i = $start; $i < $start + $rowPerPage; $i++)
                 {
-                    array_multisort($keys, SORT_ASC, $data);
-                } else {
-                    array_multisort($keys, SORT_DESC, $data);
+                    $data[] = array(
+                        'rank' => $count,
+                        'name' => $menus_name[$i],
+                        'orders' => $menus_data[$i],
+                    );
+                    array_push($index_size, $i);
+                    $count++;
+
+                    $keys = array_column($data, $columnName);
+                    if($columnSortOrder == 'asc')
+                    {
+                        array_multisort($keys, SORT_ASC, $data);
+                    } else {
+                        array_multisort($keys, SORT_DESC, $data);
+                    }
+                }
+            }
+            else
+            {   
+                $remainder = sizeof($menus_name) % 10;
+                $indicator = $totalData / 10;
+                $end = $start / 10;
+                $indicator = (int) ($totalData / 10);
+                if($end == $indicator)
+                {
+                    for($i = $start; $i < $start + $remainder; $i++)
+                    {
+                        $data[] = array(
+                            'rank' => $count,
+                            'name' => $menus_name[$i],
+                            'orders' => $menus_data[$i],
+                        );
+                        array_push($index_size, $i);
+                        $count++;
+
+                        $keys = array_column($data, $columnName);
+                        if($columnSortOrder == 'asc')
+                        {
+                            array_multisort($keys, SORT_ASC, $data);
+                        } else {
+                            array_multisort($keys, SORT_DESC, $data);
+                        }
+                    }
+                }
+                else
+                {
+                    for($i = $start; $i < $start + $rowPerPage; $i++)
+                    {
+                        $data[] = array(
+                            'rank' => $count,
+                            'name' => $menus_name[$i],
+                            'orders' => $menus_data[$i],
+                        );
+                        array_push($index_size, $i);
+                        $count++;
+
+                        $keys = array_column($data, $columnName);
+                        if($columnSortOrder == 'asc')
+                        {
+                            array_multisort($keys, SORT_ASC, $data);
+                        } else {
+                            array_multisort($keys, SORT_DESC, $data);
+                        }
+                    }
                 }
             }
         }
-
+        
         $jsonData = array(
             "draw" => intval($draw),
             "recordsTotal" => intval($totalData),
@@ -455,13 +518,9 @@ class MenuController extends Controller
 
         $beverages = Menu::whereRelation('categories', 'category', 1)->get();
 
-        $totalFiltered = Menu::whereRelation('categories', 'category', 1)->count();
-
-        $totalData = $totalFiltered;
-
         $data = [];
 
-        $beverages_arr = array();
+        $foods_arr = array();
 
         foreach($beverages as $beverage)
         {
@@ -483,28 +542,91 @@ class MenuController extends Controller
         }
 
         arsort($beverages_arr);
-        $count = 1;
+        $count = $start + 1;
+        $menus_name = array();
+        $menus_data = array();
+        $index_size = array();
 
-        if(!(empty($beverages))){
-            foreach($beverages_arr as $beverage=>$beverage_value)
+        foreach($beverages_arr as $beverage=>$beverage_value)
+        {
+            array_push($menus_name, $beverage);
+            array_push($menus_data, $beverage_value);
+        }
+
+        if(!(empty($beverages)))
+        {
+            if(sizeof($menus_name) % 10 == 0)
             {
-                $data[] = array(
-                    'rank' => $count,
-                    'name' => $beverage,
-                    'orders' => $beverage_value,
-                );
-                $count++;
-
-                $keys = array_column($data, $columnName);
-                if($columnSortOrder == 'asc')
+                for($i = $start; $i < $start + $rowPerPage; $i++)
                 {
-                    array_multisort($keys, SORT_ASC, $data);
-                } else {
-                    array_multisort($keys, SORT_DESC, $data);
+                    $data[] = array(
+                        'rank' => $count,
+                        'name' => $menus_name[$i],
+                        'orders' => $menus_data[$i],
+                    );
+                    array_push($index_size, $i);
+                    $count++;
+
+                    $keys = array_column($data, $columnName);
+                    if($columnSortOrder == 'asc')
+                    {
+                        array_multisort($keys, SORT_ASC, $data);
+                    } else {
+                        array_multisort($keys, SORT_DESC, $data);
+                    }
+                }
+            }
+            else
+            {   
+                $remainder = sizeof($menus_name) % 10;
+                $indicator = $totalData / 10;
+                $end = $start / 10;
+                $indicator = (int) ($totalData / 10);
+                if($end == $indicator)
+                {
+                    for($i = $start; $i < $start + $remainder; $i++)
+                    {
+                        $data[] = array(
+                            'rank' => $count,
+                            'name' => $menus_name[$i],
+                            'orders' => $menus_data[$i],
+                        );
+                        array_push($index_size, $i);
+                        $count++;
+
+                        $keys = array_column($data, $columnName);
+                        if($columnSortOrder == 'asc')
+                        {
+                            array_multisort($keys, SORT_ASC, $data);
+                        } else {
+                            array_multisort($keys, SORT_DESC, $data);
+                        }
+                    }
+                }
+                else
+                {
+                    for($i = $start; $i < $start + $rowPerPage; $i++)
+                    {
+                        $data[] = array(
+                            'rank' => $count,
+                            'name' => $menus_name[$i],
+                            'orders' => $menus_data[$i],
+                        );
+                        array_push($index_size, $i);
+                        $count++;
+
+                        $keys = array_column($data, $columnName);
+                        if($columnSortOrder == 'asc')
+                        {
+                            array_multisort($keys, SORT_ASC, $data);
+                        } else {
+                            array_multisort($keys, SORT_DESC, $data);
+                        }
+                    }
                 }
             }
         }
-
+        
         $jsonData = array(
             "draw" => intval($draw),
             "recordsTotal" => intval($totalData),

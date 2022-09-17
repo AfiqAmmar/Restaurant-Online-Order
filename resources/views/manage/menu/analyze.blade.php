@@ -41,7 +41,7 @@
                                         <h6 class="text-center">{{ $category->name }}</h6>
                                     </div>
                                     <div class="card-body">
-                                        <canvas id="{{ $category->name }}"
+                                        <canvas id="{{ str_replace(' ', '', $category->name) }}"
                                             style="min-height: 200px; height: 2px; max-height: 250px; max-width: 100%;">
                                         </canvas>
                                     </div>
@@ -87,7 +87,7 @@
                                         <h6 class="text-center">{{ $category->name }}</h6>
                                     </div>
                                     <div class="card-body">
-                                        <canvas id="{{ $category->name }}"
+                                        <canvas id="{{ str_replace(' ', '', $category->name) }}"
                                             style="min-height: 200px; height: 2px; max-height: 250px; max-width: 100%;">
                                         </canvas>
                                     </div>
@@ -105,13 +105,15 @@
 
 @push('script')
 
+    <script src="{{ asset('adminlte/plugins/chart.js/Chart.min.js') }}"></script>
+
     <script>
 
         // food rank table
         $(function() {
             $('#foodRankTable').DataTable({
                 "lengthChange": false,
-                "pageLength": 100,
+                "pageLength": 10,
                 "processing": true,
                 "serverSide": true,
                 "responsive": true,
@@ -158,7 +160,7 @@
         $(function() {
             $('#beverageRankTable').DataTable({
                 "lengthChange": false,
-                "pageLength": 100,
+                "pageLength": 10,
                 "processing": true,
                 "serverSide": true,
                 "responsive": true,
@@ -200,6 +202,47 @@
                 ],
             }).buttons().container().appendTo('#beverageRankTable .col-md-6:eq(0)');
         })
+
+        // loop pie chart
+        let analyze_data = <?php echo json_encode($analyze_data); ?>;
+        let categories_arr = <?php echo json_encode($categories_arr); ?>;
+        
+        for (let i = 0; i < categories_arr.length; i++) {
+            let menu_names = [];
+            let menu_datas = [];
+            for (var key in analyze_data[categories_arr[i]]) {
+                // console.log(key);
+                // console.log(analyze_data[categories_arr[i]][key]);
+                menu_names.push(key);
+                menu_datas.push(analyze_data[categories_arr[i]][key]);
+            }
+            // console.log(menu_names);
+            // console.log(menu_datas);
+            console.log('next');
+            let categories_no_space = categories_arr[i].replace(" ", "");
+            var donutChartCanvas = $('#' + categories_no_space).get(0).getContext('2d')
+            var donutData = {
+                labels: menu_names,
+                datasets: [{
+                    data: menu_datas,
+                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#872657', '#7e587e',
+                        '#87afc7', '#00ced1', '#fff380', '#704214', '#f8b88b'
+                    ], // 13 total colours
+                    weight: 10,
+                }],
+            }
+            var donutOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+            }
+
+            new Chart(donutChartCanvas, {
+                type: 'pie',
+                data: donutData,
+                options: donutOptions
+            })
+        }
+
     </script>
 
 @endpush
