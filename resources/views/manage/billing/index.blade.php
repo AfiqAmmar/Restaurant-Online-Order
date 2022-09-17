@@ -14,7 +14,7 @@
                         <div class="row">
                             @foreach ($tables as $table)
                                 @if ($table_arr[$table->id] == 0)
-                                    <div class="col-3">
+                                    <div class="col-md-3">
                                         <div class="card">
                                             <div class="card-header bg-secondary">
                                                 <h6 class="text-center">Table</h6>
@@ -27,7 +27,7 @@
                                     @continue
                                 @else
                                     @if($table->orders[$table_arr[$table->id]-1]->payment_status == 0)
-                                        <div class="col-3">
+                                        <div class="col-md-3">
                                             <div class="card">
                                                 <div class="card-header bg-secondary">
                                                     <h6 class="text-center">Table</h6>
@@ -38,7 +38,7 @@
                                             </div>
                                         </div>
                                     @else
-                                        <div class="col-3">
+                                        <div class="col-md-3">
                                             <div class="card">
                                                 <div class="card-header bg-secondary">
                                                     <h6 class="text-center">Table</h6>

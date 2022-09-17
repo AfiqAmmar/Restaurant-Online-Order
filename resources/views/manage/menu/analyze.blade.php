@@ -5,7 +5,7 @@
 <section class="content mt-4">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header" style="background-color:#FFC300;>
                         <h3 class="card-title">Food Ranking</h3>
@@ -35,7 +35,7 @@
                 <div class="row justify-content-center">
                     @foreach ($categories as $category)
                         @if ($category->category == 0)
-                            <div class="col-6">
+                            <div class="col-md-6">
                                 <div class="card card-warning">
                                     <div class="card-header" style="background-color:#FFC300;">
                                         <h6 class="text-center">{{ $category->name }}</h6>
@@ -51,7 +51,7 @@
                     @endforeach
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header" style="background-color:#87afc7;">
                         <h3 class="card-title">Beverage Ranking</h3>
@@ -81,7 +81,7 @@
                 <div class="row justify-content-center">
                     @foreach ($categories as $category)
                         @if ($category->category == 1)
-                            <div class="col-6">
+                            <div class="col-md-6">
                                 <div class="card card-warning">
                                     <div class="card-header" style="background-color:#87afc7;">
                                         <h6 class="text-center">{{ $category->name }}</h6>
