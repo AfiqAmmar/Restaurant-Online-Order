@@ -84,7 +84,6 @@ class OrderingController extends Controller
         ]);
     }
 
-    // search functionality not yet implemented
     public function getMenus($customer_id)
     {
         $totalPrice = 0;
@@ -100,8 +99,7 @@ class OrderingController extends Controller
 
         return view('ordering.menus', [
             'customer_id' => $customer_id,
-            // 'menus' => Menu::all()->filter(request(['search'])),
-            'menus' => Menu::all(),
+            'menus' => Menu::oldest()->filter(request(['search']))->get(),
             'categories' => Category::all(),
             'totalPrice' => $totalPrice
         ]);
@@ -120,11 +118,12 @@ class OrderingController extends Controller
 
     public function addMenuToCart(Request $request, $customer_id, $menu_id)
     {
+        $quantity = $request->quantity;
         $remarks = ($request->remarks) ? $request->remarks : 'N/A';
         $sides = ($request->sides) ? implode(', ', $request->sides) : 'N/A';
 
         $menuToCartData = array(
-            'quantity' => $request->quantity,
+            'quantity' => $quantity,
             'remarks' => $remarks,
             'sides' => $sides
         );
@@ -133,24 +132,32 @@ class OrderingController extends Controller
 
         if ($cartMenus->get()->contains($menu_id)) {
             $cartMenu = $cartMenus->get()->where('id', $menu_id)->first();
-            $quantity = $cartMenu->pivot->quantity;
+            $pivotQuantity = $cartMenu->pivot->quantity;
             $cartMenus->updateExistingPivot($menu_id, [
-                'quantity' => $quantity + 1
+                'quantity' => $pivotQuantity + $quantity
             ]);
         } else {
             $cartMenus->attach($menu_id, $menuToCartData);
         }
 
+        $menu = Menu::where('id', $menu_id)->first();
+        $available_quantity = $menu->available_quantity;
+        $remaining_quantity = $available_quantity - $quantity;
+        $menu->update(['available_quantity' => $remaining_quantity]);
+
+        if ($remaining_quantity <= 0) {
+            $menu->update(['availability' => 1]);
+        }
+
         return redirect('/' . $customer_id . '/menus');
     }
 
-    // estimated preparation time calculation not implemented yet
+    // TODO: Implement estimated preparation time calculation
     public function confirmOrder($customer_id)
     {
         $totalPrice = 0;
         $estimatedTime = 0;
         $cart = Cart::where('customer_id', $customer_id)->first();
-        $cart_id = $cart->id;
         $cartMenus = $cart->menus()->get();
 
         foreach ($cartMenus as $cartMenu) {
@@ -160,7 +167,7 @@ class OrderingController extends Controller
         }
 
         return view('ordering.confirm', [
-            'cart_id' => $cart_id,
+            'cart_id' => $cart->id,
             'customer_id' => $customer_id,
             'cartMenus' => $cartMenus,
             'totalPrice' => $totalPrice,
@@ -171,8 +178,19 @@ class OrderingController extends Controller
     public function deleteMenuFromCart($customer_id, $menu_id)
     {
         $cart = Cart::where('customer_id', $customer_id)->first();
-        $cart->menus()->detach($menu_id);
+        $cartMenu = $cart->menus()->get()
+            ->where('id', $menu_id)->first();
+        $available_quantity = $cartMenu->available_quantity;
+        $cartMenu_quantity = $cartMenu->pivot->quantity;
 
+        $remaining_quantity = $available_quantity + $cartMenu_quantity;
+        $cartMenu->update(['available_quantity' => $remaining_quantity]);
+
+        if ($remaining_quantity > 0) {
+            $cartMenu->update(['availability' => 0]);
+        }
+
+        $cart->menus()->detach($menu_id);
         return redirect('/' . $customer_id . '/cart/confirm');
     }
 
@@ -182,13 +200,23 @@ class OrderingController extends Controller
         $cartMenus = $cart->menus();
 
         if ($cartMenus->get()->isNotEmpty()) {
+            foreach ($cartMenus->get() as $cartMenu) {
+                $available_quantity = $cartMenu->available_quantity;
+                $cartMenu_quantity = $cartMenu->pivot->quantity;
+                $remaining_quantity = $available_quantity + $cartMenu_quantity;
+                $cartMenu->update(['available_quantity' => $remaining_quantity]);
+
+                if ($remaining_quantity > 0) {
+                    $cartMenu->update(['availability' => 0]);
+                }
+            }
             $cartMenus->detach();
         }
 
         return redirect('/' . $customer_id . '/menus');
     }
 
-    // estimated preparation time calculation not implemented yet
+    // TODO: Implement estimated preparation time calculation
     public function orderConfirmed($customer_id)
     {
         $totalPrice = 0;
