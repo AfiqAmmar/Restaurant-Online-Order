@@ -1,34 +1,32 @@
 <x-customer-layout>
   <header class="sticky-top">
-    <!-- Navbar -->
+    {{-- Navbar --}}
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #000">
       <div class="container-fluid">
         <div class="navbar-brand ps-2">
-          <img src="{{ asset('img/red_card_cafe_logo-removebg-preview.png') }}" alt="red card logo" width="80">
+          <a href="/{{$customer_id}}/menus">
+            <img src="{{ asset('img/red_card_cafe_logo-removebg-preview.png') }}" alt="red card logo" width="80">
+          </a>
         </div>
-        <x-search />
+        <x-search :customer_id="$customer_id" />
       </div>
     </nav>
 
-    <!-- Categories -->
+    {{-- Categories --}}
     <div class="container bg-danger py-2 d-flex gap-2 overflow-auto">
       <a class="btn btn-dark border border-white border-2" href="#recommendedMenus" role="button">RECOMMENDED</a>
       <a class="btn btn-dark border border-white border-2" href="#trendingMenus" role="button">TRENDING</a>
-
-      @unless (count($categories)==0)
 
       @foreach ($categories as $category)
       <a class="btn btn-dark border border-white border-2 text-nowrap" href="#{{strtolower($category->name)}}"
         role="button">{{strtoupper($category->name)}}</a>
       @endforeach
-
-      @endunless
     </div>
   </header>
 
   <main>
-    <!-- Menus -->
-    <div class="container bg-dark py-2 px-3">
+    {{-- Menus --}}
+    <div class="container bg-dark py-2 px-3 min-vh-100">
       <h5 class="text-white py-1" id="recommendedMenus">Recommended Menus</h5>
       <h5 class="text-white py-1" id="trendingMenus">Trending Menus</h5>
 
@@ -38,7 +36,7 @@
     </div>
   </main>
 
-  <!-- Footer -->
+  {{-- Footer --}}
   <footer class="footer px-2 py-3 sticky-bottom" style="background-color: #000">
     <div class="container d-flex justify-content-between align-items-center">
       <span class="h4 text-light pt-2"><strong>Total:</strong> RM {{$totalPrice}}</span>

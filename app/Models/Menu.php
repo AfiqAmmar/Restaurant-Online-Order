@@ -41,4 +41,11 @@ class Menu extends Model
     {
         return $this->hasOne(Analysis::class);
     }
+
+    public function scopeFilter($query, array $filters)
+    {
+        if ($filters['search'] ?? false) {
+            $query->where('name', 'like', '%' . request('search') . '%');
+        }
+    }
 }

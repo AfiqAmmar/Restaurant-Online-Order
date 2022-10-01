@@ -19,7 +19,11 @@
   <main>
     <div class="container bg-dark py-2 min-vh-100">
       @if ($cartMenus->isEmpty())
-      <h5 class="text-white py-1">No menus selected</h5>
+      <div class="position-absolute top-50 start-50 translate-middle">
+        {{-- <img src="{{ asset('img/empty-cart-red-hidden.svg') }}" alt="empty cart" width='350'> --}}
+        <img src="{{ asset('img/empty-cart-red-simple.svg') }}" alt="empty cart" width='350'>
+        <h3 class="text-white text-center py-1">No menus selected</h3>
+      </div>
       @else
       <!-- Selected Menus -->
       <h5 class="text-white py-1">Selected Menus</h5>
