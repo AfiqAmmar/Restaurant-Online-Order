@@ -10,6 +10,8 @@ use App\Models\Category;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class OrderingController extends Controller
 {
     public function index()
@@ -87,6 +89,179 @@ class OrderingController extends Controller
     // search functionality not yet implemented
     public function getMenus($customer_id)
     {
+        // favourite menu $fav_menu_col and menu recommendation $recommend_menu_col
+        // create User Matrix = $user_mtrx
+        $customer = Customer::find($customer_id);
+        $user_mtrx = array();
+        if($customer->orders[0]->menus->isNotEmpty())
+        {
+            foreach($customer->orders as $order)
+            {
+                foreach($order->menus as $menu)
+                {
+                    if(array_key_exists($menu->name, $user_mtrx))
+                    {
+                        $user_mtrx[$menu->name] = $menu->pivot->quantity + $user_mtrx[$menu->name];
+                    }
+                    else
+                    {
+                        $user_mtrx[$menu->name] = $menu->pivot->quantity;
+                    }
+                }
+            }
+
+            $sides_app_arr = array(Category::where('name', "Appetizers")->first()->id, Category::where('name', "Sides")->first()->id);
+            $categories = Category::where('category', 0)->whereNotIn('id', $sides_app_arr)->get();
+            $user_mtrx_data = array();
+            $fav_menu_arr = $user_mtrx;
+            foreach($user_mtrx as $menu=>$menu_value)
+            {
+                if(Menu::where('name', $menu)->first()->categories->category == 1 ||  Menu::where('name', $menu)->first()->categories->name == "Appetizers" || Menu::where('name', $menu)->first()->categories->name == "Sides")
+                {
+                    unset($user_mtrx[$menu]);
+                }
+                else
+                {
+                    array_push($user_mtrx_data, $menu_value);
+                }
+            }
+
+            // finding favourite menu
+            foreach($fav_menu_arr as $menu=>$menu_value)
+            {
+                if(Menu::where('name', $menu)->first()->categories->category == 1 || Menu::where('name', $menu)->first()->categories->name == "Sides")
+                {
+                    unset($fav_menu_arr[$menu]);
+                }
+            }
+            arsort($fav_menu_arr);
+            $fav_menu_arr_keys = array_keys($fav_menu_arr);
+            $fav_menu_1 = Menu::where('name', $fav_menu_arr_keys[0])->first();
+            $fav_menu_2 = Menu::where('name', $fav_menu_arr_keys[1])->first();
+            $fav_menu_col = collect([$fav_menu_1, $fav_menu_2]);
+
+            $categories_arr = array();
+            foreach($categories as $category)
+            {
+                array_push($categories_arr, $category->name);
+            }
+            
+            // create Weighted Menu Matrix = $weighted_menu_mtrx
+            $weighted_menu_mtrx = array();
+            foreach($user_mtrx as $menu=>$menu_value)
+            {
+                $rows_arr = array();
+                for($j = 0; $j < sizeof($categories); $j++)
+                {
+                    if(Menu::where('name', $menu)->first()->categories->name == $categories[$j]->name)
+                    {
+                        array_push($rows_arr, 1);
+                    }
+                    else
+                    {
+                        array_push($rows_arr, 0);
+                    }
+                }
+                array_push($weighted_menu_mtrx, $rows_arr);
+            }
+
+            // multiply UM and WMM to create User Profile Matrix = $user_profile_mtrx
+            $um_wmm_res = array();
+            for($i = 0; $i < sizeof($user_mtrx_data); $i++)
+            {
+                $um_wmm_res_row = array();
+                for($j = 0; $j < sizeof($categories); $j++)
+                {
+                    array_push($um_wmm_res_row, $user_mtrx_data[$i] * $weighted_menu_mtrx[$i][$j]);
+                }
+                array_push($um_wmm_res, $um_wmm_res_row);
+            }
+            $user_profile_mtrx = array();
+            $user_profile_mtrx_ctgr = array();
+            for($i = 0; $i < sizeof($categories); $i++)
+            {
+                $value = 0;
+                for($j = 0; $j < sizeof($user_mtrx_data); $j++)
+                {
+                    $value = $value + $um_wmm_res[$j][$i];
+                }
+                array_push($user_profile_mtrx, $value);
+                $user_profile_mtrx_ctgr[$categories[$i]->name] = $value;
+            }
+
+            // sort the UPM and get the highest number
+            arsort($user_profile_mtrx);
+            arsort($user_profile_mtrx_ctgr);
+            $user_profile_mtrx_ctgr_keys = array_keys($user_profile_mtrx_ctgr);
+
+            // Menu Matrix
+            $menu_matrix = array();
+            $menu_weight = $user_profile_mtrx[0];
+            $fav_menus_id = array($fav_menu_1->id, $fav_menu_2->id);
+            if($user_profile_mtrx[0] !== $user_profile_mtrx[1])
+            {
+                $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])->first()->menus->whereNotIn('id', $fav_menus_id);
+                foreach($ctgrys as $ctgry)
+                {
+                    $menu = Menu::find($ctgry->id);
+                    $quantity = 0;
+                    foreach($menu->orders as $order)
+                    {
+                        $quantity = $quantity + $order->pivot->quantity;
+                    }
+                    $menu_matrix[$ctgry->name] = $quantity;
+                }
+            }
+            else
+            {
+                $ctgrys_chosen = array();
+                array_push($ctgrys_chosen, $user_profile_mtrx_ctgr_keys[0]);
+                array_push($ctgrys_chosen, $user_profile_mtrx_ctgr_keys[1]);
+                for($i = 1; $i < sizeof($user_profile_mtrx); $i++)
+                {
+                    if($user_profile_mtrx[$i] !== $user_profile_mtrx[$i+1])
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        array_push($ctgrys_chosen, $user_profile_mtrx_ctgr_keys[$i+1]);
+                    }
+                }
+                for($i = 0; $i < sizeof($ctgrys_chosen); $i++)
+                {
+                    $ctgrys = Category::where('name', $ctgrys_chosen[$i])->first()->menus->whereNotIn('id', $fav_menus_id);
+                    foreach($ctgrys as $ctgry)
+                    {
+                        $menu = Menu::find($ctgry->id);
+                        $quantity = 0;
+                        foreach($menu->orders as $order)
+                        {
+                            $quantity = $quantity + $order->pivot->quantity;
+                        }
+                        $menu_matrix[$ctgry->name] = $quantity;
+                    }
+                }
+            }
+
+            // scalar multiplication of MM and $menu_weight
+            foreach($menu_matrix as $menu=>$menu_value)
+            {
+                $menu_matrix[$menu] = $menu_value * $menu_weight;
+            }
+            arsort($menu_matrix);
+            $menu_matrix_keys = array_keys($menu_matrix);
+            $recommend_menu_1 = Menu::where('name', $menu_matrix_keys[0])->first();
+            $recommend_menu_2 = Menu::where('name', $menu_matrix_keys[1])->first();
+            $recommend_menu_col = collect([$recommend_menu_1, $recommend_menu_2]);
+            // dd($recommend_menu_col->isNotEmpty());
+        }
+        else
+        {
+            $recommend_menu_col = collect();
+            $fav_menu_col = collect();
+        }
+
         $totalPrice = 0;
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cartMenus = $cart->menus()->get();
@@ -103,7 +278,9 @@ class OrderingController extends Controller
             // 'menus' => Menu::all()->filter(request(['search'])),
             'menus' => Menu::all(),
             'categories' => Category::all(),
-            'totalPrice' => $totalPrice
+            'totalPrice' => $totalPrice,
+            'recommend_menu_col' => $recommend_menu_col,
+            'fav_menu_col' => $fav_menu_col,
         ]);
     }
 
