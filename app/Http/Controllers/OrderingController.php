@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Analysis;
 use App\Models\Cart;
 use App\Models\Menu;
 use App\Models\Order;
@@ -224,6 +225,11 @@ class OrderingController extends Controller
             $fav_menu_col = collect();
         }
 
+        // trending menus $trend_menus
+
+        $trend_menus_rank = Analysis::orderByDesc('orders')->take(4)->get();
+        $trend_menus = collect([Menu::where('id', $trend_menus_rank[0]->menu_id)->first(), Menu::where('id', $trend_menus_rank[1]->menu_id)->first(), Menu::where('id', $trend_menus_rank[2]->menu_id)->first(), Menu::where('id', $trend_menus_rank[3]->menu_id)->first()]);
+
         $totalPrice = 0;
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cartMenus = $cart->menus()->get();
@@ -242,6 +248,7 @@ class OrderingController extends Controller
             'totalPrice' => $totalPrice,
             'recommend_menu_col' => $recommend_menu_col,
             'fav_menu_col' => $fav_menu_col,
+            'trend_menus' => $trend_menus,
         ]);
     }
 
