@@ -118,7 +118,7 @@ class OrderingController extends Controller
 
             // finding favourite menu
             foreach ($fav_menu_arr as $menu => $menu_value) {
-                if (Menu::where('name', $menu)->first()->categories->category == 1 || Menu::where('name', $menu)->first()->categories->name == "Sides") {
+                if (Menu::where('name', $menu)->first()->categories->category == 1 || Menu::where('name', $menu)->first()->categories->name == "Sides" || Menu::where('name', $menu)->first()->availability == 1) {
                     unset($fav_menu_arr[$menu]);
                 }
             }
@@ -210,6 +210,12 @@ class OrderingController extends Controller
                 }
             }
 
+            foreach ($menu_matrix as $menu => $menu_value) {
+                if (Menu::where('name', $menu)->first()->availability == 1) {
+                    unset($menu_matrix[$menu]);
+                }
+            }
+
             // scalar multiplication of MM and $menu_weight
             foreach ($menu_matrix as $menu => $menu_value) {
                 $menu_matrix[$menu] = $menu_value * $menu_weight;
@@ -220,15 +226,35 @@ class OrderingController extends Controller
             $recommend_menu_2 = Menu::where('name', $menu_matrix_keys[1])->first();
             $recommend_menu_col = collect([$recommend_menu_1, $recommend_menu_2]);
             // dd($recommend_menu_col->isNotEmpty());
-        } else {
+        } 
+        else 
+        {
             $recommend_menu_col = collect();
             $fav_menu_col = collect();
         }
 
         // trending menus $trend_menus
-
-        $trend_menus_rank = Analysis::orderByDesc('orders')->take(4)->get();
-        $trend_menus = collect([Menu::where('id', $trend_menus_rank[0]->menu_id)->first(), Menu::where('id', $trend_menus_rank[1]->menu_id)->first(), Menu::where('id', $trend_menus_rank[2]->menu_id)->first(), Menu::where('id', $trend_menus_rank[3]->menu_id)->first()]);
+        $trend_menus_rank = Analysis::orderByDesc('orders')->take(10)->get();
+        $trend_menus_arr = array();
+        foreach($trend_menus_rank as $trend_menu)
+        {
+            if(sizeof($trend_menus_arr) == 4)
+            {
+                break;
+            }
+            else
+            {
+                if($trend_menu->menus->availability == 1)
+                {
+                    continue;
+                }
+                else
+                {
+                    array_push($trend_menus_arr, $trend_menu->menus);
+                } 
+            }
+        }
+        $trend_menus = collect($trend_menus_arr);
 
         $totalPrice = 0;
         $cart = Cart::where('customer_id', $customer_id)->first();
