@@ -315,13 +315,16 @@ class OrderingController extends Controller
 
         $menu = Menu::where('id', $menu_id)->first();
         $available_quantity = $menu->available_quantity;
-        
+
         if ($available_quantity != null) {
             $remaining_quantity = $available_quantity - $quantity;
             $menu->update(['available_quantity' => $remaining_quantity]);
 
-            if ($remaining_quantity <= 0) {
-                $menu->update(['availability' => 1]);
+            if ($remaining_quantity == 0) {
+                $menu->update([
+                    'availability' => 1,
+                    'available_quantity' => null
+                ]);
             }
         }
 
