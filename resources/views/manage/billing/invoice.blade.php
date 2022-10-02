@@ -28,7 +28,7 @@
                     
                     <div class="col-sm-4 invoice-col">
                         <b>Payment Due:</b> {{ $date }}<br>
-                        <b>Table:</b> 1
+                        <b>Table:</b> {{ $table->id }}
                         <br>
                         <b>Time:</b> {{ $time }}
                     </div>
