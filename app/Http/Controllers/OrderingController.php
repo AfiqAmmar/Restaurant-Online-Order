@@ -103,7 +103,6 @@ class OrderingController extends Controller
                     }
                 }
             }
-
             $sides_app_arr = array(Category::where('name', "Appetizers")->first()->id, Category::where('name', "Sides")->first()->id);
             $categories = Category::where('category', 0)->whereNotIn('id', $sides_app_arr)->get();
             $user_mtrx_data = array();
@@ -117,17 +116,27 @@ class OrderingController extends Controller
             }
 
             // finding favourite menu
-            foreach ($fav_menu_arr as $menu => $menu_value) {
-                if (Menu::where('name', $menu)->first()->categories->category == 1 || Menu::where('name', $menu)->first()->categories->name == "Sides" || Menu::where('name', $menu)->first()->availability == 1) {
-                    unset($fav_menu_arr[$menu]);
+            if(sizeof($user_mtrx) > 1)
+            {
+                foreach ($fav_menu_arr as $menu => $menu_value) {
+                    if (Menu::where('name', $menu)->first()->categories->category == 1 || Menu::where('name', $menu)->first()->categories->name == "Sides" || Menu::where('name', $menu)->first()->availability == 1) {
+                        unset($fav_menu_arr[$menu]);
+                    }
                 }
+                arsort($fav_menu_arr);
+                dd($fav_menu_arr);
+                $fav_menu_arr_keys = array_keys($fav_menu_arr);
+                $fav_menu_1 = Menu::where('name', $fav_menu_arr_keys[0])->first();
+                $fav_menu_2 = Menu::where('name', $fav_menu_arr_keys[1])->first();
+                $fav_menu_col = collect([$fav_menu_1, $fav_menu_2]);
+                $fav_menus_id = array($fav_menu_1->id, $fav_menu_2->id);
             }
-            arsort($fav_menu_arr);
-            $fav_menu_arr_keys = array_keys($fav_menu_arr);
-            $fav_menu_1 = Menu::where('name', $fav_menu_arr_keys[0])->first();
-            $fav_menu_2 = Menu::where('name', $fav_menu_arr_keys[1])->first();
-            $fav_menu_col = collect([$fav_menu_1, $fav_menu_2]);
-
+            else
+            {
+                $fav_menu_col = collect();
+                $fav_menus_id = array();
+            }
+            
             $categories_arr = array();
             foreach ($categories as $category) {
                 array_push($categories_arr, $category->name);
@@ -175,7 +184,6 @@ class OrderingController extends Controller
             // Menu Matrix
             $menu_matrix = array();
             $menu_weight = $user_profile_mtrx[0];
-            $fav_menus_id = array($fav_menu_1->id, $fav_menu_2->id);
             if ($user_profile_mtrx[0] !== $user_profile_mtrx[1]) {
                 $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])->first()->menus->whereNotIn('id', $fav_menus_id);
                 foreach ($ctgrys as $ctgry) {
@@ -244,7 +252,7 @@ class OrderingController extends Controller
             }
             else
             {
-                if($trend_menu->menus->availability == 1)
+                if($trend_menu->menus->availability == 1 || $trend_menu->menus->categories->name == "Sides" || $trend_menu->menus->categories->category == 1)
                 {
                     continue;
                 }
