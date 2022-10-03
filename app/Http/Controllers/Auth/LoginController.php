@@ -45,15 +45,15 @@ class LoginController extends Controller
         }
         else if(Auth::user()->hasRole('waiter')){
             // order queue
-            return '/home';
+            return '/order-queue';
         }
         else if(Auth::user()->hasRole('cashier')){
             // billing
-            return '/home';
+            return '/billing';
           }
         else{
             // order queue
-            return '/account'; 
+            return '/order-queue'; 
         }
     }
 
