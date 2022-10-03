@@ -27,8 +27,55 @@
   <main>
     {{-- Menus --}}
     <div class="container bg-dark py-2 px-3 min-vh-100">
-      <h5 class="text-white py-1" id="recommendedMenus">Recommended Menus</h5>
-      <h5 class="text-white py-1" id="trendingMenus">Trending Menus</h5>
+      @if ($fav_menu_col->isNotEmpty())
+        <h5 class="text-white py-1" id="favouriteMenus">Your Favourite</h5>
+        <div class="row gy-4 pb-3">
+          @foreach ($fav_menu_col as $fav)
+            <div class="col-6">
+              <div class="card" style="background-color: #F7E7D8;">
+                <img src="{{ asset('menu_img/' . $fav->image_name) }}" class="card-img-top rounded" alt="{{$fav->name}}">
+                <div class="card-body">
+                  <h5 class="card-title">{{$fav->name}}</h5>
+                  <p class="card-text">RM {{$fav->price}}</p>
+                </div>
+                <a href="/{{$customer_id}}/menus/{{$fav->id}}" class="stretched-link"></a>
+              </div>
+            </div>
+          @endforeach
+        </div>
+      @endif
+      @if ($recommend_menu_col->isNotEmpty())
+        <h5 class="text-white py-1" id="recommendedMenus">Recommended Menus</h5>
+        <div class="row gy-4 pb-3">
+          @foreach ($recommend_menu_col as $rec)
+            <div class="col-6">
+              <div class="card" style="background-color: #F7E7D8;">
+                <img src="{{ asset('menu_img/' . $rec->image_name) }}" class="card-img-top rounded" alt="{{$rec->name}}">
+                <div class="card-body">
+                  <h5 class="card-title">{{$rec->name}}</h5>
+                  <p class="card-text">RM {{$rec->price}}</p>
+                </div>
+                <a href="/{{$customer_id}}/menus/{{$rec->id}}" class="stretched-link"></a>
+              </div>
+            </div>
+          @endforeach
+        </div>
+      @endif
+      <h5 class="text-white py-1" id="trendingMenus">Popular Menus</h5>
+      <div class="row gy-4 pb-3">
+        @foreach ($trend_menus as $trend)
+          <div class="col-6">
+            <div class="card" style="background-color: #F7E7D8;">
+              <img src="{{ asset('menu_img/' . $trend->image_name) }}" class="card-img-top rounded" alt="{{$trend->name}}">
+              <div class="card-body">
+                <h5 class="card-title">{{$trend->name}}</h5>
+                <p class="card-text">RM {{$trend->price}}</p>
+              </div>
+              <a href="/{{$customer_id}}/menus/{{$trend->id}}" class="stretched-link"></a>
+            </div>
+          </div>
+        @endforeach
+      </div>
 
       @foreach ($categories as $category)
       <x-menu-card :customer_id="$customer_id" :menus="$menus" :category="$category" />
