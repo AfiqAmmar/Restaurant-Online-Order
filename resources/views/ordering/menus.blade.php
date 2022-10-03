@@ -14,8 +14,9 @@
 
     {{-- Categories --}}
     <div class="container bg-danger py-2 d-flex gap-2 overflow-auto">
+      <a class="btn btn-dark border border-white border-2" href="#favouriteMenus" role="button">FAVOURITE</a>
       <a class="btn btn-dark border border-white border-2" href="#recommendedMenus" role="button">RECOMMENDED</a>
-      <a class="btn btn-dark border border-white border-2" href="#trendingMenus" role="button">TRENDING</a>
+      <a class="btn btn-dark border border-white border-2" href="#trendingMenus" role="button">POPULAR</a>
 
       @foreach ($categories as $category)
       <a class="btn btn-dark border border-white border-2 text-nowrap" href="#{{strtolower($category->name)}}"

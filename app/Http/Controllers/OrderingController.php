@@ -124,7 +124,6 @@ class OrderingController extends Controller
                     }
                 }
                 arsort($fav_menu_arr);
-                dd($fav_menu_arr);
                 $fav_menu_arr_keys = array_keys($fav_menu_arr);
                 $fav_menu_1 = Menu::where('name', $fav_menu_arr_keys[0])->first();
                 $fav_menu_2 = Menu::where('name', $fav_menu_arr_keys[1])->first();
