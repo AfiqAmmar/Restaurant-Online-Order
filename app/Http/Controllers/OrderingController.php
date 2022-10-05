@@ -183,7 +183,19 @@ class OrderingController extends Controller
             // Menu Matrix
             $menu_matrix = array();
             $menu_weight = $user_profile_mtrx[0];
-            if ($user_profile_mtrx[0] !== $user_profile_mtrx[1]) {
+            if(sizeof($user_profile_mtrx) == 1)
+            {
+                $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])->first()->menus->whereNotIn('id', $fav_menus_id);
+                foreach ($ctgrys as $ctgry) {
+                    $menu = Menu::find($ctgry->id);
+                    $quantity = 0;
+                    foreach ($menu->orders as $order) {
+                        $quantity = $quantity + $order->pivot->quantity;
+                    }
+                    $menu_matrix[$ctgry->name] = $quantity;
+                }
+            }
+            else if ($user_profile_mtrx[0] !== $user_profile_mtrx[1]) {
                 $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])->first()->menus->whereNotIn('id', $fav_menus_id);
                 foreach ($ctgrys as $ctgry) {
                     $menu = Menu::find($ctgry->id);
@@ -197,7 +209,7 @@ class OrderingController extends Controller
                 $ctgrys_chosen = array();
                 array_push($ctgrys_chosen, $user_profile_mtrx_ctgr_keys[0]);
                 array_push($ctgrys_chosen, $user_profile_mtrx_ctgr_keys[1]);
-                for ($i = 1; $i < sizeof($user_profile_mtrx); $i++) {
+                for ($i = 1; $i < sizeof($user_profile_mtrx)-1; $i++) {
                     if ($user_profile_mtrx[$i] !== $user_profile_mtrx[$i + 1]) {
                         break;
                     } else {
