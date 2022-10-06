@@ -35,9 +35,16 @@ class SalesController extends Controller
         $tables = Table::all();
         foreach($tables as $table)
         {
-            if($table->orders[sizeof($table->orders)-1]->payment_status == 1)
+            if(sizeof($table->orders) == 0)
             {
-                $available_table++;
+                continue;
+            }
+            else
+            {
+                if($table->orders[sizeof($table->orders)-1]->payment_status == 1)
+                {
+                    $available_table++;
+                }
             }
         }
         
