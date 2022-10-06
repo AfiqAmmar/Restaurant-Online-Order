@@ -46,11 +46,8 @@ class OrderingController extends Controller
 
         if ($carts->isNotEmpty()) {
             foreach ($carts as $cart) {
+                $this->returnCartMenusToDatabase($cart);
                 $cart_id = $cart->id;
-                $cartMenus = $cart->menus();
-                if ($cartMenus->get()->isNotEmpty()) {
-                    $cartMenus->detach();
-                }
                 Cart::destroy($cart_id);
             }
         }
@@ -116,26 +113,24 @@ class OrderingController extends Controller
             }
 
             // finding favourite menu
-            if(sizeof($user_mtrx) > 1)
-            {
+            if (sizeof($user_mtrx) > 1) {
                 foreach ($fav_menu_arr as $menu => $menu_value) {
                     if (Menu::where('name', $menu)->first()->categories->category == 1 || Menu::where('name', $menu)->first()->categories->name == "Sides" || Menu::where('name', $menu)->first()->availability == 1) {
                         unset($fav_menu_arr[$menu]);
                     }
                 }
                 arsort($fav_menu_arr);
+                // dd($fav_menu_arr);
                 $fav_menu_arr_keys = array_keys($fav_menu_arr);
                 $fav_menu_1 = Menu::where('name', $fav_menu_arr_keys[0])->first();
                 $fav_menu_2 = Menu::where('name', $fav_menu_arr_keys[1])->first();
                 $fav_menu_col = collect([$fav_menu_1, $fav_menu_2]);
                 $fav_menus_id = array($fav_menu_1->id, $fav_menu_2->id);
-            }
-            else
-            {
+            } else {
                 $fav_menu_col = collect();
                 $fav_menus_id = array();
             }
-            
+
             $categories_arr = array();
             foreach ($categories as $category) {
                 array_push($categories_arr, $category->name);
@@ -183,8 +178,7 @@ class OrderingController extends Controller
             // Menu Matrix
             $menu_matrix = array();
             $menu_weight = $user_profile_mtrx[0];
-            if(sizeof($user_profile_mtrx) == 1)
-            {
+            if (sizeof($user_profile_mtrx) == 1) {
                 $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])->first()->menus->whereNotIn('id', $fav_menus_id);
                 foreach ($ctgrys as $ctgry) {
                     $menu = Menu::find($ctgry->id);
@@ -194,8 +188,7 @@ class OrderingController extends Controller
                     }
                     $menu_matrix[$ctgry->name] = $quantity;
                 }
-            }
-            else if ($user_profile_mtrx[0] !== $user_profile_mtrx[1]) {
+            } else if ($user_profile_mtrx[0] !== $user_profile_mtrx[1]) {
                 $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])->first()->menus->whereNotIn('id', $fav_menus_id);
                 foreach ($ctgrys as $ctgry) {
                     $menu = Menu::find($ctgry->id);
@@ -209,7 +202,7 @@ class OrderingController extends Controller
                 $ctgrys_chosen = array();
                 array_push($ctgrys_chosen, $user_profile_mtrx_ctgr_keys[0]);
                 array_push($ctgrys_chosen, $user_profile_mtrx_ctgr_keys[1]);
-                for ($i = 1; $i < sizeof($user_profile_mtrx)-1; $i++) {
+                for ($i = 1; $i < sizeof($user_profile_mtrx) - 1; $i++) {
                     if ($user_profile_mtrx[$i] !== $user_profile_mtrx[$i + 1]) {
                         break;
                     } else {
@@ -245,9 +238,7 @@ class OrderingController extends Controller
             $recommend_menu_2 = Menu::where('name', $menu_matrix_keys[1])->first();
             $recommend_menu_col = collect([$recommend_menu_1, $recommend_menu_2]);
             // dd($recommend_menu_col->isNotEmpty());
-        } 
-        else 
-        {
+        } else {
             $recommend_menu_col = collect();
             $fav_menu_col = collect();
         }
@@ -255,22 +246,15 @@ class OrderingController extends Controller
         // trending menus $trend_menus
         $trend_menus_rank = Analysis::orderByDesc('orders')->take(10)->get();
         $trend_menus_arr = array();
-        foreach($trend_menus_rank as $trend_menu)
-        {
-            if(sizeof($trend_menus_arr) == 4)
-            {
+        foreach ($trend_menus_rank as $trend_menu) {
+            if (sizeof($trend_menus_arr) == 4) {
                 break;
-            }
-            else
-            {
-                if($trend_menu->menus->availability == 1 || $trend_menu->menus->categories->name == "Sides" || $trend_menu->menus->categories->category == 1)
-                {
+            } else {
+                if ($trend_menu->menus->availability == 1 || $trend_menu->menus->categories->name == "Sides" || $trend_menu->menus->categories->category == 1) {
                     continue;
-                }
-                else
-                {
+                } else {
                     array_push($trend_menus_arr, $trend_menu->menus);
-                } 
+                }
             }
         }
         $trend_menus = collect($trend_menus_arr);
@@ -358,10 +342,13 @@ class OrderingController extends Controller
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cartMenus = $cart->menus()->get();
 
-        foreach ($cartMenus as $cartMenu) {
-            $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
-            $totalPrice += $price;
-            $estimatedTime += $cartMenu->preparation_time;
+        if ($cartMenus->isNotEmpty()) {
+            $estimatedTime = $this->calcEstOrderPrepTime($cartMenus);
+
+            foreach ($cartMenus as $cartMenu) {
+                $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
+                $totalPrice += $price;
+            }
         }
 
         return view('ordering.confirm', [
@@ -395,22 +382,7 @@ class OrderingController extends Controller
     public function clearCart($customer_id)
     {
         $cart = Cart::where('customer_id', $customer_id)->first();
-        $cartMenus = $cart->menus();
-
-        if ($cartMenus->get()->isNotEmpty()) {
-            foreach ($cartMenus->get() as $cartMenu) {
-                $available_quantity = $cartMenu->available_quantity;
-                $cartMenu_quantity = $cartMenu->pivot->quantity;
-                $remaining_quantity = $available_quantity + $cartMenu_quantity;
-                $cartMenu->update(['available_quantity' => $remaining_quantity]);
-
-                if ($remaining_quantity > 0) {
-                    $cartMenu->update(['availability' => 0]);
-                }
-            }
-            $cartMenus->detach();
-        }
-
+        $this->returnCartMenusToDatabase($cart);
         return redirect('/' . $customer_id . '/menus');
     }
 
@@ -422,11 +394,11 @@ class OrderingController extends Controller
         $order = Order::where('customer_id', $customer_id)->get()->last();
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cartMenus = $cart->menus()->get();
+        $estimatedTime = $this->calcEstOrderPrepTime($cartMenus);
 
         foreach ($cartMenus as $cartMenu) {
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
-            $estimatedTime += $cartMenu->preparation_time;
             $menu_id = $cartMenu->id;
 
             $order->menus()->attach($menu_id, [
@@ -443,5 +415,82 @@ class OrderingController extends Controller
             'totalPrice' => $totalPrice,
             'estimatedTime' => $estimatedTime
         ]);
+    }
+
+    public function returnCartMenusToDatabase($cart, $menu_id = null)
+    {
+        $cartMenus = $cart->menus();
+
+        if ($menu_id) {
+            $cartMenu = $cartMenus->get()
+                ->where('id', $menu_id)->first();
+            $this->returnCartMenuQuantityToDatabase($cartMenu);
+            $cartMenus->detach($menu_id);
+        } else {
+            if ($cartMenus->get()->isNotEmpty()) {
+                foreach ($cartMenus->get() as $cartMenu) {
+                    $this->returnCartMenuQuantityToDatabase($cartMenu);
+                }
+                $cartMenus->detach();
+            }
+        }
+    }
+
+    public function returnCartMenuQuantityToDatabase($cartMenu)
+    {
+        $available_quantity = $cartMenu->available_quantity;
+        $cartMenu_quantity = $cartMenu->pivot->quantity;
+        $remaining_quantity = $available_quantity + $cartMenu_quantity;
+        $cartMenu->update(['available_quantity' => $remaining_quantity]);
+
+        if ($remaining_quantity > 0) {
+            $cartMenu->update(['availability' => 0]);
+        }
+    }
+
+    public function calcEstOrderPrepTime($cartMenus)
+    {
+        $orders = Order::where([
+            ['prepare_status', 0], ['serve_status', 0],
+            ['estimate_time', '!=', 0]
+        ])->latest()->get();
+
+        if ($orders->isEmpty()) {
+            $menusPrepTime = array();
+            foreach ($cartMenus as $cartMenu) {
+                array_push($menusPrepTime, $cartMenu->preparation_time);
+            }
+            rsort($menusPrepTime);
+            $estimatedTime = $menusPrepTime[0];
+        } else {
+            $menus = array();
+            foreach ($cartMenus as $cartMenu) {
+                $menus[$cartMenu->id] = $cartMenu->preparation_time;
+            }
+            arsort($menus);
+
+            $orderCount = ($orders->count() < 5) ? $orders->count() : 5;
+            for ($i = 0; $i < $orderCount; $i++) {
+                $orderMenus = $orders[$i]->menus;
+                foreach ($orderMenus as $orderMenu) {
+                    foreach ($menus as $menu_id => $menu_estTime) {
+                        if ($menu_id == $orderMenu->id) {
+                            unset($menus[$menu_id]);
+                        }
+                    }
+                }
+            }
+
+            if ($menus) {
+                $estimatedTime = reset($menus);
+                foreach ($orders as $order) {
+                    $estimatedTime += $order->estimate_time;
+                }
+            } else {
+                $estimatedTime = $orders->first()->estimate_time;
+            }
+        }
+
+        return $estimatedTime;
     }
 }
