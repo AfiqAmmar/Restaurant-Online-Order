@@ -17,10 +17,10 @@ class OrderController extends Controller
     // Order Queue
     public function indexQueue()
     {
-        $ordersNotServed = Order::where('serve_status', 0)
-            ->orderBy('id', 'desc')->get();
-        $ordersNotPrepared = Order::where('prepare_status', 0)
-            ->orderBy('id', 'desc')->get();
+        $ordersNotServed = Order::where([['serve_status', 0], ['estimate_time', '!=', 0]])
+            ->orderBy('id', 'asc')->get();
+        $ordersNotPrepared = Order::where([['prepare_status', 0], ['estimate_time', '!=', 0]])
+            ->orderBy('id', 'asc')->get();
 
         return view('manage.order-queue.index', [
             'ordersNotServed' => $ordersNotServed,
@@ -66,7 +66,19 @@ class OrderController extends Controller
     public function orderPrepared($order_id)
     {
         $order = Order::find($order_id);
-        $order->update(['prepare_status' => 1]);
+        $remOrders = Order::where([
+            ['id', '!=', $order_id],
+            ['estimate_time', '!=', 0]
+        ])->get();
+        $orderEstTime = $order->estimate_time;
+
+        foreach ($remOrders as $remOrder) {
+            $remOrderEstTime = $remOrder->estimate_time;
+            $newEstTime = $remOrderEstTime - $orderEstTime;
+            $remOrder->update(['estimate_time' => $newEstTime]);
+        }
+        $order->update(['prepare_status' => 1, 'estimate_time' => 0]);
+
         return back();
     }
 
