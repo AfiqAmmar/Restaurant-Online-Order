@@ -15,6 +15,15 @@
     [x-cloak] {
       display: none !important;
     }
+
+    @media (min-width: 768px) {
+      .sidebar {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 5rem;
+        height: calc(100vh - 7rem);
+      }
+    }
   </style>
 </head>
 

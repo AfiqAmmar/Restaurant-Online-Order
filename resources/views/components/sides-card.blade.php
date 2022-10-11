@@ -2,7 +2,7 @@
 
 <div class="row gy-4 pb-3">
   @foreach ($sides as $side)
-  <div class="col-6" x-data="{ checked: false, open: false }">
+  <div class="col-6 col-sm-4 col-md-3 col-lg-2" x-data="{ checked: false, open: false }">
     <input type="checkbox" class="checkbox" id="{{strtolower($side->name)}}" name="sides[]"
       {{-- value="{{strtolower($side->name)}}" --}}
       value="{{$side->id}}"

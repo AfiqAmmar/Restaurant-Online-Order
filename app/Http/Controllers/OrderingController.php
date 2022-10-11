@@ -334,7 +334,6 @@ class OrderingController extends Controller
         return redirect('/' . $customer_id . '/menus');
     }
 
-    // TODO: Implement estimated preparation time calculation
     public function confirmOrder($customer_id)
     {
         $totalPrice = 0;
@@ -386,7 +385,6 @@ class OrderingController extends Controller
         return redirect('/' . $customer_id . '/menus');
     }
 
-    // TODO: Implement estimated preparation time calculation
     public function orderConfirmed($customer_id)
     {
         $totalPrice = 0;

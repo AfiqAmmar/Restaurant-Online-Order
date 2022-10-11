@@ -11,7 +11,7 @@ $menus = $menus->where('category_id', $category->id);
   @foreach ($menus as $menu)
 
   @if ($menu->availability==0)
-  <div class="col-6">
+  <div class="col-6 col-sm-4 col-lg-3">
     <div class="card" style="background-color: #F7E7D8;">
       <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="card-img-top rounded" alt="{{$menu->name}}">
       <div class="card-body">
@@ -22,7 +22,7 @@ $menus = $menus->where('category_id', $category->id);
     </div>
   </div>
   @else
-  <div class="col-6">
+  <div class="col-6 col-sm-4 col-lg-3">
     <div class="card opacity-50" style="background-color: #F7E7D8;">
       <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="card-img-top rounded" alt="{{$menu->name}}">
       <div class="card-body">
