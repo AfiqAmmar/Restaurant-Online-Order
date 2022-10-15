@@ -16,7 +16,23 @@
       display: none !important;
     }
 
-    @media (min-width: 768px) {
+    @media (max-height: 920px) {
+      .top {
+        --offset: 50px;
+
+        position: sticky;
+        bottom: 20px;
+        /* margin-right: 20px; */
+        margin-left: 20px;
+        place-self: end;
+        margin-top: calc(100vh + var(--offset));
+
+        /* visual styling */
+        background: #000;
+      }
+    }
+
+    @media (min-height: 920px) {
       .sidebar {
         position: -webkit-sticky;
         position: sticky;
