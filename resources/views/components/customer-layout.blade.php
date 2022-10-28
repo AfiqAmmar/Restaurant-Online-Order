@@ -26,8 +26,6 @@
         margin-left: 20px;
         place-self: end;
         margin-top: calc(100vh + var(--offset));
-
-        /* visual styling */
         background: #000;
       }
     }
