@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Analysis;
 use App\Models\Cart;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Table;
+use App\Models\Analysis;
 use App\Models\Category;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
+use App\Events\MessageNotification;
 use function PHPUnit\Framework\isEmpty;
 
 class OrderingController extends Controller
@@ -409,6 +410,7 @@ class OrderingController extends Controller
         }
 
         $order->update(['estimate_time' => $estimatedTime]);
+        event(new MessageNotification('Order confirmed!'));
         return view('ordering.confirmed', [
             'totalPrice' => $totalPrice,
             'estimatedTime' => $estimatedTime
