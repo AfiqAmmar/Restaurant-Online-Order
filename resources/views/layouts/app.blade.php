@@ -272,9 +272,7 @@
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
-<script src="{{ asset('adminlte/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/pace-progress/pace.min.js')}}"></script>
-<script src="{{ asset('js/app.js') }}"></script>
 <script>
     $(function () {
       bsCustomFileInput.init();
