@@ -13,6 +13,7 @@ use App\Http\Controllers\TableController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderingController;
+use App\Http\Controllers\AboutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,9 @@ Route::group(['middleware' => ['role:master-admin|waiter|cashier|kitchen-staff']
   // Account
   Route::get('account', [UserController::class, 'index']);
   Route::put('account/edit', [UserController::class, 'editUser']);
+
+  // About
+  Route::get('about', [AboutController::class, 'index']);
 });
 
 Route::group(['middleware' => ['role:master-admin']], function () {

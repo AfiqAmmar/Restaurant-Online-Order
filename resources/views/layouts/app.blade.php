@@ -43,9 +43,6 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block mx-2">
-                    <a href="{{ url('support') }}" class="nav-link">Support</a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block mx-2">
                     <a href="{{ url('about') }}" class="nav-link">About</a>
                 </li>
             </ul>
