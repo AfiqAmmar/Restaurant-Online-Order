@@ -103,7 +103,6 @@ class MenuController extends Controller
                 $totalData = $totalFiltered;
             }
         }
-        $count = $menus;
 
         $data = [];
         
@@ -150,9 +149,6 @@ class MenuController extends Controller
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data,
-            "count" => $count,
-            "start" => $start,
-            "row" => $rowPerPage,
         );
 
         echo json_encode($jsonData);

@@ -25,6 +25,7 @@
                 <div class="card">
                     <div class="card-header">
                         <button class="btn btn-success card-title float-right"><a class="text-white" href="/category/add">Add New Menu Category</a></button>
+                        <button class="btn btn-success card-title"><a class="text-white" href="/menu">Back to Menu</a></button>
                     </div>
                     <div class="card-body">
                         <table id="categoryTable" class="table table-bordered table-striped">
