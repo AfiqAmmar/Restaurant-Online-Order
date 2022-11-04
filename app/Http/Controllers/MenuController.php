@@ -301,6 +301,15 @@ class MenuController extends Controller
         if(File::exists(public_path('menu_img/' . $menuDelete->image_name))){
             File::delete(public_path('menu_img/' . $menuDelete->image_name));
         }
+        $menuDelete->analyses->delete();
+        foreach($menuDelete->carts as $cart)
+        {
+            $cart->pivot->delete();
+        }
+        foreach($menuDelete->orders as $order)
+        {
+            $order->pivot->delete();
+        }
         $menuDelete->delete();
         Session::flash('success','Menu deleted successfully');
         return redirect('/menu');
