@@ -68,21 +68,21 @@
 
             <div class="row justify-contend-end">
                 <div class="col-6">
-                    <p class="lead"><strong>Amount Due:</strong></p>
+                    <p class="lead"><strong>Amount Due: </strong></p>
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
-                                <th style="width:50%">Subtotal:(RM)</th>
+                                <th style="width:50%">Subtotal (RM): </th>
                                 <td>{{ $amount_exl_tax }}</td>
                             </tr>
                             @foreach ($taxes as $tax)
                                 <tr>
-                                    <th>{{ $tax->name }} ({{ $tax->percentage }}%)</th>
+                                    <th>{{ $tax->name }} ({{ $tax->percentage }}%) (RM): </th>
                                     <td>{{ $tax_amount[$tax->name] }}</td>
                                 </tr>
                             @endforeach
                             <tr>
-                                <th>Total (RM):</th>
+                                <th>Total (RM): </th>
                                 <td>{{ $amount_incl_tax }}</td>
                             </tr>
                         </table>
