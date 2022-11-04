@@ -37,6 +37,7 @@ class SalesController extends Controller
         {
             if(sizeof($table->orders) == 0)
             {
+                $available_table++;
                 continue;
             }
             else
