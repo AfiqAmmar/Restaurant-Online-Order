@@ -409,7 +409,10 @@ class OrderingController extends Controller
             ]);
         }
 
-        $order->update(['estimate_time' => $estimatedTime]);
+        $order->update([
+            'estimate_time' => $estimatedTime,
+            'order_confirmed' => 1
+        ]);
         event(new MessageNotification('Order confirmed!'));
         return view('ordering.confirmed', [
             'totalPrice' => $totalPrice,
