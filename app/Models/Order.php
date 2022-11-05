@@ -16,6 +16,7 @@ class Order extends Model
         'serve_status',
         'estimate_time',
         'payment_status',
+        'order_confirmed',
     ];
 
     public function customers()
