@@ -37,7 +37,8 @@
           </div>
           @endrole
           <div class="card-body">
-            <div class="row row-cols-2 row-cols-xl-3">
+            @if ($ordersNotServed->isNotEmpty())
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
               @foreach ($ordersNotServed as $order)
 
               @php
@@ -60,7 +61,23 @@
               @endrole
 
               @endforeach
+            </div>
+            @else
 
+            @role('master-admin')
+            <div x-show="!open" x-cloak>
+              <div>No orders in the serving queue.</div>
+            </div>
+            @endrole
+
+            @role('waiter')
+            <div>No orders in the serving queue.</div>
+            @endrole
+
+            @endif
+
+            @if ($ordersNotPrepared->isNotEmpty())
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
               @foreach ($ordersNotPrepared as $order)
 
               @php
@@ -84,6 +101,19 @@
 
               @endforeach
             </div>
+            @else
+
+            @role('master-admin')
+            <div x-show="open" x-cloak>
+              <div>No orders in the preparing queue.</div>
+            </div>
+            @endrole
+
+            @role('kitchen-staff')
+            <div>No orders in the preparing queue.</div>
+            @endrole
+
+            @endif
           </div>
         </div>
       </div>
