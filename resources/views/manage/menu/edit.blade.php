@@ -17,7 +17,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-12">
-                                <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="mx-auto d-block w-50 p-3" alt="Menu Image">
+                                <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="mx-auto d-block p-2" alt="Menu Image" height="450px" width="350px">
                             </div>
                         </div>
                         <div class="row">

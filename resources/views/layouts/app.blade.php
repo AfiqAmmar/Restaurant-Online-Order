@@ -31,6 +31,11 @@
     @yield('css')
 
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 
@@ -41,9 +46,6 @@
             <ul class="navbar-nav">
                 <li class="nav-item mr-3">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block mx-2">
-                    <a href="{{ url('support') }}" class="nav-link">Support</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block mx-2">
                     <a href="{{ url('about') }}" class="nav-link">About</a>
@@ -272,7 +274,6 @@
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
-<script src="{{ asset('adminlte/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{ asset('adminlte/plugins/pace-progress/pace.min.js')}}"></script>
 <script>
     $(function () {

@@ -41,10 +41,10 @@
     </div>
   </header>
 
-  <main class="bg-dark py-3 px-2 px-md-0 min-vh-100">
+  <div class="bg-dark py-3 px-2 px-md-0 min-vh-100">
     <div class="container-md d-flex gap-4">
       {{-- Menus --}}
-      <div>
+      <main>
         @if ($fav_menu_col->isNotEmpty())
         <h5 class="text-white py-1" id="favouriteMenus">Your Favourite</h5>
         <div class="row gy-4 pb-3">
@@ -101,10 +101,10 @@
         @foreach ($categories as $category)
         <x-menu-card :customer_id="$customer_id" :menus="$menus" :category="$category" />
         @endforeach
-      </div>
+      </main>
 
       {{-- TODO: Fix sidebar scroll --}}
-      <div class="sidebar d-flex flex-column d-none d-md-block">
+      <aside class="sidebar d-flex flex-column d-none d-md-block">
         {{-- Categories on tablet size --}}
         <div class="container bg-danger rounded p-3 d-flex flex-column gap-3 mt-2 mb-4">
           @if ($fav_menu_col->isNotEmpty())
@@ -130,11 +130,11 @@
             Order&nbsp;&nbsp;<i class="fas fa-cart-plus mr-2"></i>
           </a>
         </div>
-      </div>
+      </aside>
     </div>
-  </main>
+  </div>
 
-  {{-- Footer --}}
+  {{-- Footer at phone size --}}
   <footer class="footer px-2 py-3 sticky-bottom d-md-none" style="background-color: #000">
     <div class="container-fluid d-flex justify-content-between align-items-center">
       <span class="h4 text-light pt-2"><strong>Total:</strong> RM {{$totalPrice}}</span>
@@ -143,9 +143,14 @@
       </a>
     </div>
   </footer>
+
+  {{-- Footer at tablet size upwards --}}
   <footer class="footer px-2 py-3 d-none d-md-block" style="background-color: #000">
     <div class="container-fluid text-center">
       <span class="h6 text-light pt-2"><strong>Copyright © 2022 Red Card Cafe.</strong> All rights reserved.</span>
     </div>
   </footer>
+
+  <a href="#" class="top text-white text-decoration-none p-3 fs-6 rounded-pill d-none d-md-inline">Back to Top
+    &#8593;</a>
 </x-customer-layout>

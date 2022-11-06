@@ -17,9 +17,9 @@ class OrderController extends Controller
     // Order Queue
     public function indexQueue()
     {
-        $ordersNotServed = Order::where([['serve_status', 0], ['estimate_time', '!=', 0]])
+        $ordersNotServed = Order::where([['serve_status', 0], ['order_confirmed', 1]])
             ->orderBy('id', 'asc')->get();
-        $ordersNotPrepared = Order::where([['prepare_status', 0], ['estimate_time', '!=', 0]])
+        $ordersNotPrepared = Order::where([['prepare_status', 0], ['order_confirmed', 1]])
             ->orderBy('id', 'asc')->get();
 
         return view('manage.order-queue.index', [
@@ -118,16 +118,18 @@ class OrderController extends Controller
         $totalData = $totalFiltered;
 
         if ($search_arr[0]['value'] == null) {
-            $orders = Order::orderBy('id', 'DESC')->skip($start)
+            $orders = Order::where('order_confirmed', 1)->orderBy('id', 'DESC')->skip($start)
                 ->take($rowPerPage)->get();
         } else {
             $orders = Order::where('id', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orWhere('created_at', 'LIKE', "%{$search_arr[0]['value']}%")
+                ->where('order_confirmed', 1)
                 ->orderBy('id', 'DESC')->skip($start)
                 ->take($rowPerPage)->get();
 
             $totalFiltered = Order::where('id', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orWhere('created_at', 'LIKE', "%{$search_arr[0]['value']}%")
+                ->where('order_confirmed', 1)
                 ->orderBy('id', 'DESC')->skip($start)
                 ->take($rowPerPage)->count();
 

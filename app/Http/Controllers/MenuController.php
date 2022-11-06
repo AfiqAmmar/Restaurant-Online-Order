@@ -103,7 +103,6 @@ class MenuController extends Controller
                 $totalData = $totalFiltered;
             }
         }
-        $count = $menus;
 
         $data = [];
         
@@ -150,9 +149,6 @@ class MenuController extends Controller
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data,
-            "count" => $count,
-            "start" => $start,
-            "row" => $rowPerPage,
         );
 
         echo json_encode($jsonData);
@@ -300,6 +296,15 @@ class MenuController extends Controller
         $menuDelete = Menu::find($id);
         if(File::exists(public_path('menu_img/' . $menuDelete->image_name))){
             File::delete(public_path('menu_img/' . $menuDelete->image_name));
+        }
+        $menuDelete->analyses->delete();
+        foreach($menuDelete->carts as $cart)
+        {
+            $cart->pivot->delete();
+        }
+        foreach($menuDelete->orders as $order)
+        {
+            $order->pivot->delete();
         }
         $menuDelete->delete();
         Session::flash('success','Menu deleted successfully');
