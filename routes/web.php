@@ -65,6 +65,16 @@ Route::group(['middleware' => ['role:master-admin|waiter|cashier|kitchen-staff']
   Route::get('about', [AboutController::class, 'index']);
 });
 
+Route::group(['middleware' => ['role:master-admin|cashier']], function () {
+
+    // Billing
+    Route::get('billing', [BillingController::class, 'index']);
+    Route::get('billing/{id}', [BillingController::class, 'invoice']);
+    Route::post('billing/{id}', [BillingController::class, 'submitPayment']);
+    Route::get('billing/pdf/{id}', [BillingController::class, 'viewPDF']);
+    Route::get('invoice', [BillingController::class, 'invoice']);
+});
+
 Route::group(['middleware' => ['role:master-admin']], function () {
 
   // Tax
@@ -121,10 +131,4 @@ Route::group(['middleware' => ['role:master-admin']], function () {
   Route::post('getFoodRank', [MenuController::class, 'getFoodRank'])->name('getFoodRank');
   Route::post('getBeverageRank', [MenuController::class, 'getBeverageRank'])->name('getBeverageRank');
 
-  // Billing
-  Route::get('billing', [BillingController::class, 'index']);
-  Route::get('billing/{id}', [BillingController::class, 'invoice']);
-  Route::post('billing/{id}', [BillingController::class, 'submitPayment']);
-  Route::get('billing/pdf/{id}', [BillingController::class, 'viewPDF']);
-  Route::get('invoice', [BillingController::class, 'invoice']);
 });
