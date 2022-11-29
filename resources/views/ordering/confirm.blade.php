@@ -17,7 +17,7 @@
   </header>
 
   <main>
-    <div class="container-fluid bg-dark py-2 min-vh-100">
+    <div id="confirmPageContainer" class="container-fluid bg-dark py-2 min-vh-100">
       @if ($cartMenus->isEmpty())
       <div class="position-absolute top-50 start-50 translate-middle text-center">
         {{-- <img src="{{ asset('img/empty-cart-red-hidden.svg') }}" alt="empty cart" width='350'> --}}
@@ -34,7 +34,6 @@
           <x-confirm-menu-card :cartMenu="$cartMenu" :customer_id="$customer_id" />
           @endforeach
 
-          <hr style="color: #F7E7D8">
         </div>
         <div class="d-none d-md-block w-50">
           <h5 class="text-white py-1">Selected Menus</h5>
@@ -48,12 +47,17 @@
           <!-- Cart Description -->
           <div class="py-2">
             <div class="d-flex justify-content-between align-items-center">
-              <h5 class="text-white">Total Price</h5>
-              <h5 class="text-white lead">RM {{$totalPrice}}</h5>
+              <h5 class="text-white">Food Est. Prep Time</h5>
+              <h5 class="text-white lead">{{$estimatedTimeFoods}} mins</h5>
             </div>
             <div class="d-flex justify-content-between align-items-center">
-              <h5 class="text-white">Estimated Preparation Time</h5>
-              <h5 class="text-white lead">{{$estimatedTime}} mins</h5>
+              <h5 class="text-white">Drinks Est. Prep Time</h5>
+              <h5 class="text-white lead">{{$estimatedTimeDrinks}} mins</h5>
+            </div>
+            <hr style="color: #F7E7D8">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="text-white">Total Price</h5>
+              <h5 class="text-white lead">RM {{$totalPrice}}</h5>
             </div>
           </div>
           <div class="rounded p-3 d-none d-md-block" style="background-color: #000">

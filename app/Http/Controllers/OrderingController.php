@@ -338,17 +338,28 @@ class OrderingController extends Controller
     public function confirmOrder($customer_id)
     {
         $totalPrice = 0;
-        $estimatedTime = 0;
+        $cartFoods = array();
+        $cartDrinks = array();
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cartMenus = $cart->menus()->get();
 
         if ($cartMenus->isNotEmpty()) {
-            $estimatedTime = $this->calcEstOrderPrepTime($cartMenus);
-
             foreach ($cartMenus as $cartMenu) {
+                $category = Category::where('id', $cartMenu->category_id)->first();
+                $isDrink = $category->category;
+
+                if ($isDrink) {
+                    array_push($cartDrinks, $cartMenu);
+                } else {
+                    array_push($cartFoods, $cartMenu);
+                }
+
                 $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
                 $totalPrice += $price;
             }
+
+            $estimatedTimeFoods = $this->calcEstOrderPrepTime($cartFoods);
+            $estimatedTimeDrinks = $this->calcEstOrderPrepTime($cartDrinks);
         }
 
         return view('ordering.confirm', [
@@ -356,7 +367,8 @@ class OrderingController extends Controller
             'customer_id' => $customer_id,
             'cartMenus' => $cartMenus,
             'totalPrice' => $totalPrice,
-            'estimatedTime' => $estimatedTime
+            'estimatedTimeFoods' => $estimatedTimeFoods,
+            'estimatedTimeDrinks' => $estimatedTimeDrinks,
         ]);
     }
 
@@ -389,13 +401,22 @@ class OrderingController extends Controller
     public function orderConfirmed($customer_id)
     {
         $totalPrice = 0;
-        $estimatedTime = 0;
+        $cartFoods = array();
+        $cartDrinks = array();
         $order = Order::where('customer_id', $customer_id)->get()->last();
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cartMenus = $cart->menus()->get();
-        $estimatedTime = $this->calcEstOrderPrepTime($cartMenus);
 
         foreach ($cartMenus as $cartMenu) {
+            $category = Category::where('id', $cartMenu->category_id)->first();
+            $isDrink = $category->category;
+
+            if ($isDrink) {
+                array_push($cartDrinks, $cartMenu);
+            } else {
+                array_push($cartFoods, $cartMenu);
+            }
+
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
             $menu_id = $cartMenu->id;
@@ -409,14 +430,19 @@ class OrderingController extends Controller
             ]);
         }
 
+        $estimatedTimeFoods = $this->calcEstOrderPrepTime($cartFoods);
+        $estimatedTimeDrinks = $this->calcEstOrderPrepTime($cartDrinks);
         $order->update([
-            'estimate_time' => $estimatedTime,
+            'estimate_time' => $estimatedTimeFoods,
+            'estimate_time_drink' => $estimatedTimeDrinks,
             'order_confirmed' => 1
         ]);
+
         event(new MessageNotification('Order confirmed!'));
         return view('ordering.confirmed', [
             'totalPrice' => $totalPrice,
-            'estimatedTime' => $estimatedTime
+            'estimatedTimeFoods' => $estimatedTimeFoods,
+            'estimatedTimeDrinks' => $estimatedTimeDrinks,
         ]);
     }
 
@@ -453,30 +479,28 @@ class OrderingController extends Controller
 
     public function calcEstOrderPrepTime($cartMenus)
     {
+        // sort menus by ascending category and descending prep time
+        $menus = $this->sortMenusByAscCategoryAndDescPrepTime($cartMenus);
+
+        // get orders from database
         $orders = Order::where([
-            ['prepare_status', 0], ['serve_status', 0],
-            ['estimate_time', '!=', 0]
+            ['estimate_time', '!=', 0], ['order_confirmed', 1]
         ])->latest()->get();
 
+        // input is first order
         if ($orders->isEmpty()) {
-            $menusPrepTime = array();
-            foreach ($cartMenus as $cartMenu) {
-                array_push($menusPrepTime, $cartMenu->preparation_time);
-            }
-            rsort($menusPrepTime);
-            $estimatedTime = $menusPrepTime[0];
-        } else {
-            $menus = array();
-            foreach ($cartMenus as $cartMenu) {
-                $menus[$cartMenu->id] = $cartMenu->preparation_time;
-            }
-            arsort($menus);
-
+            $finalMenus = $this->deductEverySecondMenuInEachCategory($menus);
+            $estimatedTime = $this->getHighestEstTimeFromEachCategory($finalMenus);
+            // dd($estimatedTime);
+        }
+        // previous orders already exist
+        else {
+            // check if menu exists in previous 5 orders
             $orderCount = ($orders->count() < 5) ? $orders->count() : 5;
             for ($i = 0; $i < $orderCount; $i++) {
                 $orderMenus = $orders[$i]->menus;
                 foreach ($orderMenus as $orderMenu) {
-                    foreach ($menus as $menu_id => $menu_estTime) {
+                    foreach ($menus as $menu_id => $menu) {
                         if ($menu_id == $orderMenu->id) {
                             unset($menus[$menu_id]);
                         }
@@ -485,15 +509,94 @@ class OrderingController extends Controller
             }
 
             if ($menus) {
-                $estimatedTime = reset($menus);
+                $finalMenus = $this->deductEverySecondMenuInEachCategory($menus);
+
+                // add first menu's est time and add it to prev orders' est time
+                $estimatedTime = $this->getHighestEstTimeFromEachCategory($finalMenus);
                 foreach ($orders as $order) {
                     $estimatedTime += $order->estimate_time;
                 }
             } else {
+                // use previous order's estimated time
                 $estimatedTime = $orders->first()->estimate_time;
             }
         }
 
+        return $estimatedTime;
+    }
+
+
+    public function sortMenusByAscCategoryAndDescPrepTime($cartMenus)
+    {
+        // add menus in cart into array with category id and est time as values
+        $menus = array();
+        foreach ($cartMenus as $cartMenu) {
+            $category_id = $cartMenu->category_id;
+            $prepTime = $cartMenu->preparation_time;
+            $menus[$cartMenu->id] = array($category_id, $prepTime);
+        }
+
+        // sort menus in cart by asc category id and desc prep time
+        uasort($menus, function ($menu1, $menu2) {
+            return ($menu1[0] == $menu2[0]) ? $menu2[1] <=> $menu1[1] : $menu1[0] <=> $menu2[0];
+        });
+
+        return $menus;
+    }
+
+    public function deductEverySecondMenuInEachCategory($menus)
+    {
+        $menusLength = count($menus) - 2;
+        $index = 1;
+        $finalMenus = array();
+
+        // add first menu to finalMenus array
+        array_push($finalMenus, current($menus));
+        next($menus);
+
+        for ($i = 0; $i < $menusLength; ++$i) {
+            $currentMenu = current($menus)[0];
+            $nextMenu = next($menus) ? current($menus)[0] : null;
+
+            // deduct every second menu in each category
+            if ($index % 2 == 0) {
+                array_push($finalMenus, prev($menus));
+                next($menus);
+            }
+
+            // reset index to 0 if next menu is from different category
+            if ($currentMenu != $nextMenu) {
+                $index = 0;
+            }
+            // increment index to 1 if next menu is from same category
+            else {
+                $index++;
+            }
+        }
+
+        return $finalMenus;
+    }
+
+    public function getHighestEstTimeFromEachCategory($menus)
+    {
+        // add menu with highest est time from each category to finalMenus
+        $finalMenus = array();
+        array_push($finalMenus, current($menus));
+        $menusLength = count($menus) - 1;
+        for ($i = 0; $i < $menusLength; ++$i) {
+            if (value(current($menus)[0]) != value(next($menus))[0]) {
+                array_push($finalMenus, current($menus));
+            }
+        }
+
+        // resort finalMenus and set pointer to first menu
+        uasort($finalMenus, function ($menu1, $menu2) {
+            return $menu2[1] <=> $menu1[1];
+        });
+        reset($finalMenus);
+
+        // return zero if no menus
+        $estimatedTime = current($finalMenus)[1] ?? 0;
         return $estimatedTime;
     }
 }

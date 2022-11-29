@@ -8,7 +8,7 @@
       value="{{$side->id}}"
       autocomplete="off" x-show="open" x-cloak>
     <label for="{{strtolower($side->name)}}" x-on:click="checked = !checked">
-      <div class="card" x-bind:class="checked ? 'bg-danger' : 'bg-dark'">
+      <div class="card pointer" x-bind:class="checked ? 'bg-danger' : 'bg-dark'">
         <img src="{{ asset('menu_img/' . $side->image_name) }}" class="card-img-top rounded" alt="{{$side->name}}">
         <div class="card-body">
           <h5 class="card-title text-white">{{$side->name}}</h5>

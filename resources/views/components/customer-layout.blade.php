@@ -12,18 +12,38 @@
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
+    .pointer {
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      #confirmPageContainer {
+        padding-bottom: 4.5rem !important;
+      }
+
+      #confirmInfo {
+        width: 17rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      #confirmInfo {
+        width: 28rem;
+      }
+    }
+
     @media (prefers-reduced-motion: no-preference) {
       html:focus-within {
         scroll-behavior: smooth;
       }
 
-      @media only screen and (max-width: 768px) {
+      @media (max-width: 768px) {
         html:focus-within {
           scroll-padding-top: 8rem;
         }
       }
 
-      @media only screen and (min-width: 768px) {
+      @media (min-width: 768px) {
         html:focus-within {
           scroll-padding-top: 5rem;
         }
