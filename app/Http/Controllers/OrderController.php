@@ -118,8 +118,8 @@ class OrderController extends Controller
         $totalData = $totalFiltered;
 
         if ($search_arr[0]['value'] == null) {
-            $orders = Order::where('order_confirmed', 1)->orderBy('id', 'DESC')->skip($start)
-                ->take($rowPerPage)->get();
+            $orders = Order::where('order_confirmed', 1)->orderBy('id', 'DESC')
+                ->skip($start)->take($rowPerPage)->get();
         } else {
             $orders = Order::where('id', 'LIKE', "%{$search_arr[0]['value']}%")
                 ->orWhere('created_at', 'LIKE', "%{$search_arr[0]['value']}%")
@@ -151,8 +151,12 @@ class OrderController extends Controller
 
                 $data[] = array(
                     'order_number' => $order->id,
-                    'order_time' => $order->created_at->format('g:i a'),
-                    'order_date' => $order->created_at->format('d/m/Y'),
+                    'order_time' => $order->created_at
+                        ->setTimezone('Asia/Kuala_Lumpur')
+                        ->format('g:i a'),
+                    'order_date' => $order->created_at
+                        ->setTimezone('Asia/Kuala_Lumpur')
+                        ->format('d/m/Y'),
                     'action' => $editButton
                 );
 
@@ -180,8 +184,15 @@ class OrderController extends Controller
         $order = Order::find($id);
 
         return view('manage.order-history.view', [
-            'order' => $order,
-            'table' => Table::where('id', $order->table_id)->first()
+            'orderId' => $order->id,
+            'orderTime' => $order->created_at
+                ->setTimezone('Asia/Kuala_Lumpur')
+                ->format('g:i a'),
+            'orderDate' => $order->created_at
+                ->setTimezone('Asia/Kuala_Lumpur')
+                ->format('d/m/Y'),
+            'tableNumber' => Table::where('id', $order->table_id)
+                ->first()->table_number
         ]);
     }
 

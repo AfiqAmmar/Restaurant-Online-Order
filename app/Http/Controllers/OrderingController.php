@@ -491,7 +491,6 @@ class OrderingController extends Controller
         if ($orders->isEmpty()) {
             $finalMenus = $this->deductEverySecondMenuInEachCategory($menus);
             $estimatedTime = $this->getHighestEstTimeFromEachCategory($finalMenus);
-            // dd($estimatedTime);
         }
         // previous orders already exist
         else {
@@ -538,7 +537,9 @@ class OrderingController extends Controller
 
         // sort menus in cart by asc category id and desc prep time
         uasort($menus, function ($menu1, $menu2) {
-            return ($menu1[0] == $menu2[0]) ? $menu2[1] <=> $menu1[1] : $menu1[0] <=> $menu2[0];
+            return ($menu1[0] == $menu2[0])
+                ? $menu2[1] <=> $menu1[1]
+                : $menu1[0] <=> $menu2[0];
         });
 
         return $menus;

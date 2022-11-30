@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <h4 class="mb-3">Order #{{$order->id}}</h4>
+        <h4 class="mb-3">Order #{{ $orderId }}</h4>
         <div class="card card-light">
           <div class="card-header">
             <button class="btn btn-success">
@@ -17,13 +17,13 @@
           <div class="card-body">
             <div class="row">
               <div class="col">
-                <h4>Table Number: <b>{{ $table->table_number }}</b></h4>
+                <h4>Table Number: <b>{{ $tableNumber }}</b></h4>
               </div>
               <div class="col">
-                <h4>Order Time: <b>{{ $order->created_at->format('g:i a')}}</b></h4>
+                <h4>Order Time: <b>{{ $orderTime }}</b></h4>
               </div>
               <div class="col">
-                <h4>Order Date: <b>{{ $order->created_at->format('d/m/Y')}}</b></h4>
+                <h4>Order Date: <b>{{ $orderDate }}</b></h4>
               </div>
             </div>
             <hr>
@@ -66,8 +66,8 @@
                 "type": "POST",
                 "data": function(d) {
                     return $.extend({}, d, {
-                        _token: "{{csrf_token()}}",
-                        id: "{{$order->id}}"
+                        _token: "{{ csrf_token() }}",
+                        id: "{{ $orderId }}"
                     });
                 }
             },

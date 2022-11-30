@@ -60,7 +60,7 @@
                 "type": "POST",
                 "data": function(d) {
                     return $.extend({}, d, {
-                        _token: "{{csrf_token()}}",
+                        _token: "{{ csrf_token() }}",
                     });
                 }
             },
