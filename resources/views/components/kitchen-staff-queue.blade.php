@@ -20,7 +20,9 @@ break;
           <h4>Table Number: <b>{{ $table->table_number }}</b></h4>
         </div>
         <div class="col">
-          <h4>Order Time: <b>{{ $order->created_at->format('g:i a')}}</b></h4>
+          <h4>Order Time: <b>{{ $order->created_at
+              ->setTimezone(new DateTimeZone('Asia/Kuala_Lumpur'))
+              ->format('g:i a')}}</b></h4>
         </div>
       </div>
       <hr>
