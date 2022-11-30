@@ -15,26 +15,26 @@
               {{-- Waiter button --}}
               <template x-if="open">
                 <button type="button" class="btn btn-outline-primary card-title"
-                  x-on:click="open = false">Waiter</button>
+                  x-on:click="open = false">Serve Queue</button>
               </template>
               <template x-if="!open">
                 <button type="button" class="btn btn-outline-primary card-title active"
-                  aria-current="page">Waiter</button>
+                  aria-current="page">Serve Queue</button>
               </template>
 
               {{-- Kitchen staff button --}}
               <template x-if="open">
-                <button type="button" class="btn btn-outline-primary card-title active" aria-current="page">Kitchen
-                  Staff</button>
+                <button type="button" class="btn btn-outline-primary card-title active"
+                  aria-current="page">Prepare Queue</button>
               </template>
               <template x-if="!open">
-                <button type="button" class="btn btn-outline-primary card-title" x-on:click="open = true">Kitchen
-                  Staff</button>
+                <button type="button" class="btn btn-outline-primary card-title"
+                  x-on:click="open = true">Prepare Queue</button>
               </template>
 
             </div>
-
           </div>
+          
           @endrole
           <div class="card-body">
             @if ($ordersNotServed->isNotEmpty())
@@ -55,7 +55,7 @@
               </div>
               @endrole
 
-              @role('waiter')
+              @hasanyrole('waiter|cashier')
               <x-waiter-queue :order="$order" :table="$table" :menus="$menus" :allMenus="$allMenus"
                 :serveStatus="$serveStatus" />
               @endrole
@@ -70,7 +70,7 @@
             </div>
             @endrole
 
-            @role('waiter')
+            @hasanyrole('waiter|cashier')
             <div>No orders in the serving queue.</div>
             @endrole
 
