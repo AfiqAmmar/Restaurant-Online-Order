@@ -232,6 +232,15 @@
                                     </p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ url('order-history') }}"
+                                    class="nav-link {{ request()->is('order-history*') ? 'active' : ''}}">
+                                    <i class="nav-icon fas fa-history"></i>
+                                    <p>
+                                        Order History
+                                    </p>
+                                </a>
+                            </li>
                             @endrole
                         </ul>
                     </nav>
