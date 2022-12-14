@@ -51,7 +51,8 @@
           @foreach ($fav_menu_col as $fav)
           <div class="col-6 col-sm-4 col-lg-3">
             <div class="card" style="background-color: #F7E7D8;">
-              <img src="{{ asset('menu_img/' . $fav->image_name) }}" class="card-img-top rounded" alt="{{$fav->name}}">
+              <img style="aspect-ratio: 1 / 1;" src="{{ asset('menu_img/' . $fav->image_name) }}"
+                class="card-img-top rounded" alt="{{$fav->name}}">
               <div class="card-body">
                 <h5 class="card-title">{{$fav->name}}</h5>
                 <p class="card-text">RM {{$fav->price}}</p>
@@ -69,7 +70,8 @@
           @foreach ($recommend_menu_col as $rec)
           <div class="col-6 col-sm-4 col-lg-3">
             <div class="card" style="background-color: #F7E7D8;">
-              <img src="{{ asset('menu_img/' . $rec->image_name) }}" class="card-img-top rounded" alt="{{$rec->name}}">
+              <img style="aspect-ratio: 1 / 1;" src="{{ asset('menu_img/' . $rec->image_name) }}"
+                class="card-img-top rounded" alt="{{$rec->name}}">
               <div class="card-body">
                 <h5 class="card-title">{{$rec->name}}</h5>
                 <p class="card-text">RM {{$rec->price}}</p>
@@ -86,8 +88,8 @@
           @foreach ($trend_menus as $trend)
           <div class="col-6 col-sm-4 col-lg-3">
             <div class="card" style="background-color: #F7E7D8;">
-              <img src="{{ asset('menu_img/' . $trend->image_name) }}" class="card-img-top rounded"
-                alt="{{$trend->name}}">
+              <img style="aspect-ratio: 1 / 1;" src="{{ asset('menu_img/' . $trend->image_name) }}"
+                class="card-img-top rounded" alt="{{$trend->name}}">
               <div class="card-body">
                 <h5 class="card-title">{{$trend->name}}</h5>
                 <p class="card-text">RM {{$trend->price}}</p>

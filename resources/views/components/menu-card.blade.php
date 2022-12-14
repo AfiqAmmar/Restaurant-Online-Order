@@ -13,7 +13,8 @@ $menus = $menus->where('category_id', $category->id);
   @if ($menu->availability==0)
   <div class="col-6 col-sm-4 col-lg-3">
     <div class="card" style="background-color: #F7E7D8;">
-      <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="card-img-top rounded" alt="{{$menu->name}}">
+      <img style="aspect-ratio: 1 / 1;" src="{{ asset('menu_img/' . $menu->image_name) }}" class="card-img-top rounded"
+        alt="{{$menu->name}}">
       <div class="card-body">
         <h5 class="card-title">{{$menu->name}}</h5>
         <p class="card-text">RM {{$menu->price}}</p>
