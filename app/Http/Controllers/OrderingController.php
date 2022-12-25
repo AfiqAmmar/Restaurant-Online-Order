@@ -357,10 +357,10 @@ class OrderingController extends Controller
                 $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
                 $totalPrice += $price;
             }
-
-            $estimatedTimeFoods = $this->calcEstOrderPrepTime($cartFoods);
-            $estimatedTimeDrinks = $this->calcEstOrderPrepTime($cartDrinks);
         }
+
+        $estimatedTimeFoods = ($cartFoods) ? $this->calcEstOrderPrepTime($cartFoods) : 0;
+        $estimatedTimeDrinks = ($cartDrinks) ? $this->calcEstOrderPrepTime($cartDrinks) : 0;
 
         return view('ordering.confirm', [
             'cart_id' => $cart->id,
