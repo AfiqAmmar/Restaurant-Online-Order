@@ -1,4 +1,4 @@
-@props(['customer_id', 'menus', 'category'])
+@props(['customer_id', 'menus', 'category', 'request'])
 
 @php
 $menus = $menus->where('category_id', $category->id);
@@ -6,7 +6,10 @@ $menus = $menus->where('category_id', $category->id);
 
 @unless ($menus->isEmpty())
 
+@unless ($request->has('search'))
 <h5 class="text-white py-1" id="{{strtolower($category->name)}}">{{$category->name}}</h5>
+@endunless
+
 <div class="row gy-4 pb-3">
   @foreach ($menus as $menu)
 

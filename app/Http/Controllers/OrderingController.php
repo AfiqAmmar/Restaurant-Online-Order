@@ -85,7 +85,7 @@ class OrderingController extends Controller
         ]);
     }
 
-    public function getMenus($customer_id)
+    public function getMenus($customer_id, Request $request)
     {
         // favourite menu $fav_menu_col and menu recommendation $recommend_menu_col
         // create User Matrix = $user_mtrx
@@ -279,6 +279,7 @@ class OrderingController extends Controller
             'recommend_menu_col' => $recommend_menu_col,
             'fav_menu_col' => $fav_menu_col,
             'trend_menus' => $trend_menus,
+            'request' => $request
         ]);
     }
 
