@@ -9,7 +9,7 @@
             <h4 class="mb-3">Menu: {{ $menu->name }}</h4>
             <div class="card card-light">
                 <div class="card-header">
-                    <button class="btn btn-success"><a href="/menu" class="text-white" id="backButton">Back to Menu</a></button>
+                    <button class="btn btn-secondary"><a href="/menu" class="text-white" id="backButton">Back to Menu</a></button>
                     <button class="btn btn-success float-right" id="editButton" onclick="able()">Click to Edit</button>
                 </div>    
                 <form id="editMenuForm" method="POST" enctype="multipart/form-data">
@@ -17,7 +17,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-12">
-                                <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="mx-auto d-block p-2" alt="Menu Image" height="450px" width="350px">
+                                <img src="{{ asset('menu_img/' . $menu->image_name) }}" class="mx-auto d-block p-2" alt="Menu Image" height="450px" width="400px">
                             </div>
                         </div>
                         <div class="row">

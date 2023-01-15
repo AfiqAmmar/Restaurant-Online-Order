@@ -23,7 +23,7 @@
             <h4 class="mb-3">Staff: {{ $staff->fname }} {{ $staff->lname }}</h4>
             <div class="card card-light">
                 <div class="card-header">
-                    <button class="btn btn-success"><a href="/staff" class="text-white" id="backButton">Back</a></button>
+                    <button class="btn btn-secondary"><a href="/staff" class="text-white" id="backButton">Back</a></button>
                     <button class="btn btn-success float-right" id="editButton" onclick="able()">Click to Edit</button>
                 </div>    
                 <form id="editStaffForm" method="POST" enctype="multipart/form-data">
