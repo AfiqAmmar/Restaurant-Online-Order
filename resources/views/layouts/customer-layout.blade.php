@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Red Card Cafe</title>
   <link rel="icon" type="image/x-icon" href="{{asset('img/favicon.ico')}}">
@@ -80,15 +81,14 @@
 </head>
 
 <body>
-  {{$slot}}
+  @yield('content')
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
   </script>
-  <script>
-    const categories = document.querySelectorAll('h5');
-    categories.forEach(h => h.setAttribute('tabindex', '-1'));
-  </script>
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+    crossorigin="anonymous"></script>
+  @stack('script')
 </body>
 
 </html>

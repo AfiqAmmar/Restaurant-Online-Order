@@ -31,11 +31,12 @@ Route::get('/', [OrderingController::class, 'index']);
 Route::post('/customers', [OrderingController::class, 'fillIndexForm']);
 Route::get('/{customer_id}/menus', [OrderingController::class, 'getMenus']);
 Route::get('/{customer_id}/menus/{menu}', [OrderingController::class, 'getMenu']);
-Route::post('/{customer_id}/{menu_id}/cart', [OrderingController::class, 'addMenuToCart']);
-Route::get('/{customer_id}/cart/confirm', [OrderingController::class, 'confirmOrder']);
+Route::post('/{customer_id}/{menu_id}/add', [OrderingController::class, 'addMenuToCart']);
+Route::get('/{customer_id}/cart', [OrderingController::class, 'getCart']);
+Route::post('/{customer_id}/cart', [OrderingController::class, 'updateCartMenuQuantity']);
 Route::get('/{customer_id}/cart/{menu_id}/delete', [OrderingController::class, 'deleteMenuFromCart']);
 Route::get('/{customer_id}/cart/clear', [OrderingController::class, 'clearCart']);
-Route::get('/{customer_id}/cart/confirmed', [OrderingController::class, 'orderConfirmed']);
+Route::get('/{customer_id}/cart/confirm', [OrderingController::class, 'confirmOrder']);
 
 // Authentication
 Auth::routes();
@@ -67,12 +68,12 @@ Route::group(['middleware' => ['role:master-admin|waiter|cashier|kitchen-staff']
 
 Route::group(['middleware' => ['role:master-admin|cashier']], function () {
 
-    // Billing
-    Route::get('billing', [BillingController::class, 'index']);
-    Route::get('billing/{id}', [BillingController::class, 'invoice']);
-    Route::post('billing/{id}', [BillingController::class, 'submitPayment']);
-    Route::get('billing/pdf/{id}', [BillingController::class, 'viewPDF']);
-    Route::get('invoice', [BillingController::class, 'invoice']);
+  // Billing
+  Route::get('billing', [BillingController::class, 'index']);
+  Route::get('billing/{id}', [BillingController::class, 'invoice']);
+  Route::post('billing/{id}', [BillingController::class, 'submitPayment']);
+  Route::get('billing/pdf/{id}', [BillingController::class, 'viewPDF']);
+  Route::get('invoice', [BillingController::class, 'invoice']);
 });
 
 Route::group(['middleware' => ['role:master-admin']], function () {
@@ -130,5 +131,4 @@ Route::group(['middleware' => ['role:master-admin']], function () {
   Route::get('analyzation', [MenuController::class, 'analyze']);
   Route::post('getFoodRank', [MenuController::class, 'getFoodRank'])->name('getFoodRank');
   Route::post('getBeverageRank', [MenuController::class, 'getBeverageRank'])->name('getBeverageRank');
-
 });

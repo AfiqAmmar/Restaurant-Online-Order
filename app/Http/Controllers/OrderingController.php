@@ -101,12 +101,20 @@ class OrderingController extends Controller
                     }
                 }
             }
-            $sides_app_arr = array(Category::where('name', "Appetizers")->first()->id, Category::where('name', "Sides")->first()->id);
-            $categories = Category::where('category', 0)->whereNotIn('id', $sides_app_arr)->get();
+            $sides_app_arr = array(
+                Category::where('name', "Appetizers")->first()->id,
+                Category::where('name', "Sides")->first()->id
+            );
+            $categories = Category::where('category', 0)
+                ->whereNotIn('id', $sides_app_arr)->get();
             $user_mtrx_data = array();
             $fav_menu_arr = $user_mtrx;
             foreach ($user_mtrx as $menu => $menu_value) {
-                if (Menu::where('name', $menu)->first()->categories->category == 1 ||  Menu::where('name', $menu)->first()->categories->name == "Appetizers" || Menu::where('name', $menu)->first()->categories->name == "Sides") {
+                if (
+                    Menu::where('name', $menu)->first()->categories->category == 1
+                    || Menu::where('name', $menu)->first()->categories->name == "Appetizers"
+                    || Menu::where('name', $menu)->first()->categories->name == "Sides"
+                ) {
                     unset($user_mtrx[$menu]);
                 } else {
                     array_push($user_mtrx_data, $menu_value);
@@ -116,7 +124,11 @@ class OrderingController extends Controller
             // finding favourite menu
             if (sizeof($user_mtrx) > 1) {
                 foreach ($fav_menu_arr as $menu => $menu_value) {
-                    if (Menu::where('name', $menu)->first()->categories->category == 1 || Menu::where('name', $menu)->first()->categories->name == "Sides" || Menu::where('name', $menu)->first()->availability == 1) {
+                    if (
+                        Menu::where('name', $menu)->first()->categories->category == 1
+                        || Menu::where('name', $menu)->first()->categories->name == "Sides"
+                        || Menu::where('name', $menu)->first()->availability == 1
+                    ) {
                         unset($fav_menu_arr[$menu]);
                     }
                 }
@@ -180,7 +192,8 @@ class OrderingController extends Controller
             $menu_matrix = array();
             $menu_weight = $user_profile_mtrx[0];
             if (sizeof($user_profile_mtrx) == 1) {
-                $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])->first()->menus->whereNotIn('id', $fav_menus_id);
+                $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])
+                    ->first()->menus->whereNotIn('id', $fav_menus_id);
                 foreach ($ctgrys as $ctgry) {
                     $menu = Menu::find($ctgry->id);
                     $quantity = 0;
@@ -190,7 +203,8 @@ class OrderingController extends Controller
                     $menu_matrix[$ctgry->name] = $quantity;
                 }
             } else if ($user_profile_mtrx[0] !== $user_profile_mtrx[1]) {
-                $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])->first()->menus->whereNotIn('id', $fav_menus_id);
+                $ctgrys = Category::where('name', $user_profile_mtrx_ctgr_keys[0])
+                    ->first()->menus->whereNotIn('id', $fav_menus_id);
                 foreach ($ctgrys as $ctgry) {
                     $menu = Menu::find($ctgry->id);
                     $quantity = 0;
@@ -211,7 +225,8 @@ class OrderingController extends Controller
                     }
                 }
                 for ($i = 0; $i < sizeof($ctgrys_chosen); $i++) {
-                    $ctgrys = Category::where('name', $ctgrys_chosen[$i])->first()->menus->whereNotIn('id', $fav_menus_id);
+                    $ctgrys = Category::where('name', $ctgrys_chosen[$i])
+                        ->first()->menus->whereNotIn('id', $fav_menus_id);
                     foreach ($ctgrys as $ctgry) {
                         $menu = Menu::find($ctgry->id);
                         $quantity = 0;
@@ -251,7 +266,11 @@ class OrderingController extends Controller
             if (sizeof($trend_menus_arr) == 4) {
                 break;
             } else {
-                if ($trend_menu->menus->availability == 1 || $trend_menu->menus->categories->name == "Sides" || $trend_menu->menus->categories->category == 1) {
+                if (
+                    $trend_menu->menus->availability == 1
+                    || $trend_menu->menus->categories->name == "Sides"
+                    || $trend_menu->menus->categories->category == 1
+                ) {
                     continue;
                 } else {
                     array_push($trend_menus_arr, $trend_menu->menus);
@@ -275,6 +294,7 @@ class OrderingController extends Controller
             'customer_id' => $customer_id,
             'menus' => Menu::oldest()->filter(request(['search']))->get(),
             'categories' => Category::all(),
+            'cart_menus' => $cartMenus,
             'totalPrice' => $totalPrice,
             'recommend_menu_col' => $recommend_menu_col,
             'fav_menu_col' => $fav_menu_col,
@@ -336,7 +356,7 @@ class OrderingController extends Controller
         return redirect('/' . $customer_id . '/menus');
     }
 
-    public function confirmOrder($customer_id)
+    public function getCart($customer_id)
     {
         $totalPrice = 0;
         $cartFoods = array();
@@ -360,10 +380,11 @@ class OrderingController extends Controller
             }
         }
 
-        $estimatedTimeFoods = ($cartFoods) ? $this->calcEstOrderPrepTime($cartFoods) : 0;
-        $estimatedTimeDrinks = ($cartDrinks) ? $this->calcEstOrderPrepTime($cartDrinks) : 0;
+        $estimatedTimeFoods = ($cartFoods) ? $this->calcEstOrderPrepTime($cartFoods, 0) : 0;
+        $estimatedTimeDrinks = ($cartDrinks) ? $this->calcEstOrderPrepTime($cartDrinks, 1) : 0;
 
         return view('ordering.confirm', [
+            'menus' => Menu::all(),
             'cart_id' => $cart->id,
             'customer_id' => $customer_id,
             'cartMenus' => $cartMenus,
@@ -371,6 +392,25 @@ class OrderingController extends Controller
             'estimatedTimeFoods' => $estimatedTimeFoods,
             'estimatedTimeDrinks' => $estimatedTimeDrinks,
         ]);
+    }
+
+    public function updateCartMenuQuantity(Request $request)
+    {
+        $customer_id = $request->input('customer_id');
+        $menu_id = $request->input('menu_id');
+        $quantity = $request->input('quantity');
+
+        $cart = Cart::where('customer_id', $customer_id)->first();
+        $cart->menus()->updateExistingPivot($menu_id, ['quantity' => $quantity]);
+
+        $cartMenus = $cart->menus()->get();
+        $totalPrice = 0;
+        foreach ($cartMenus as $cartMenu) {
+            $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
+            $totalPrice += $price;
+        }
+
+        return response()->json(['success' => $totalPrice]);
     }
 
     public function deleteMenuFromCart($customer_id, $menu_id)
@@ -389,7 +429,7 @@ class OrderingController extends Controller
         }
 
         $cart->menus()->detach($menu_id);
-        return redirect('/' . $customer_id . '/cart/confirm');
+        return redirect('/' . $customer_id . '/cart');
     }
 
     public function clearCart($customer_id)
@@ -399,7 +439,7 @@ class OrderingController extends Controller
         return redirect('/' . $customer_id . '/menus');
     }
 
-    public function orderConfirmed($customer_id)
+    public function confirmOrder($customer_id)
     {
         $totalPrice = 0;
         $cartFoods = array();
@@ -431,8 +471,8 @@ class OrderingController extends Controller
             ]);
         }
 
-        $estimatedTimeFoods = $this->calcEstOrderPrepTime($cartFoods);
-        $estimatedTimeDrinks = $this->calcEstOrderPrepTime($cartDrinks);
+        $estimatedTimeFoods = $this->calcEstOrderPrepTime($cartFoods, 0);
+        $estimatedTimeDrinks = $this->calcEstOrderPrepTime($cartDrinks, 1);
         $order->update([
             'estimate_time' => $estimatedTimeFoods,
             'estimate_time_drink' => $estimatedTimeDrinks,
@@ -441,6 +481,7 @@ class OrderingController extends Controller
 
         event(new MessageNotification('Order confirmed!'));
         return view('ordering.confirmed', [
+            'cartMenus' => $cartMenus,
             'totalPrice' => $totalPrice,
             'estimatedTimeFoods' => $estimatedTimeFoods,
             'estimatedTimeDrinks' => $estimatedTimeDrinks,
@@ -478,7 +519,7 @@ class OrderingController extends Controller
         }
     }
 
-    public function calcEstOrderPrepTime($cartMenus)
+    public function calcEstOrderPrepTime($cartMenus, $isDrink)
     {
         // sort menus by ascending category and descending prep time
         $menus = $this->sortMenusByAscCategoryAndDescPrepTime($cartMenus);
@@ -514,11 +555,16 @@ class OrderingController extends Controller
                 // add first menu's est time and add it to prev orders' est time
                 $estimatedTime = $this->getHighestEstTimeFromEachCategory($finalMenus);
                 foreach ($orders as $order) {
-                    $estimatedTime += $order->estimate_time;
+                    $orderEstTime = ($isDrink)
+                        ? $order->estimate_time_drink
+                        : $order->estimate_time;
+                    $estimatedTime += $orderEstTime;
                 }
             } else {
                 // use previous order's estimated time
-                $estimatedTime = $orders->first()->estimate_time;
+                $estimatedTime = ($isDrink)
+                    ? $orders->first()->estimate_time_drink
+                    : $orders->first()->estimate_time;
             }
         }
 
