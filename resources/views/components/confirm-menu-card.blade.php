@@ -2,6 +2,9 @@
 
 @php
 $menu = $menus->where('id', $cartMenu->id)->first();
+$remaining_quantity = $menu->available_quantity;
+$cartMenuQuantity = $cartMenu->pivot->quantity;
+$available_quantity = $remaining_quantity + $cartMenuQuantity;
 @endphp
 
 <div class="card mb-3" style="background-color: #F7E7D8;">
@@ -24,7 +27,7 @@ $menu = $menus->where('id', $cartMenu->id)->first();
 
       <div class="d-flex justify-content-between">
         <div class="d-none menu_id">{{$cartMenu->id}}</div>
-        <div class="d-none menu_available_quantity">{{$menu->available_quantity}}</div>
+        <div class="d-none menu_available_quantity">{{$available_quantity}}</div>
 
         <div class="btn-group" role="group" aria-label="Quantity" x-data="{ quantity: {{$cartMenu->pivot->quantity}} }">
           <button type="button" class="btn btn-primary minusButton" :disabled="(quantity == 1) ? true : false">
@@ -35,7 +38,7 @@ $menu = $menus->where('id', $cartMenu->id)->first();
             style="width: 3rem" disabled />
 
           <button type="button" class="btn btn-primary plusButton"
-            :disabled="(quantity < {{$menu->available_quantity}}) ? false : true">
+            :disabled="(quantity < {{$available_quantity}}) ? false : true">
             <i class="fas fa-plus"></i>
           </button>
         </div>

@@ -399,6 +399,29 @@ class OrderingController extends Controller
         $customer_id = $request->input('customer_id');
         $menu_id = $request->input('menu_id');
         $quantity = $request->input('quantity');
+        $isPlus = $request->input('isPlus');
+
+        $menu = Menu::where('id', $menu_id)->first();
+        $available_quantity = $menu->available_quantity;
+
+        if ($available_quantity != null) {
+            $remaining_quantity = ($isPlus)
+                ? $available_quantity - 1
+                : $available_quantity + 1;
+            $menu->update(['available_quantity' => $remaining_quantity]);
+
+            if ($remaining_quantity == 0) {
+                $menu->update([
+                    'availability' => 1,
+                    'available_quantity' => null
+                ]);
+            }
+        } else {
+            $menu->update([
+                'availability' => 0,
+                'available_quantity' => 1
+            ]);
+        }
 
         $cart = Cart::where('customer_id', $customer_id)->first();
         $cart->menus()->updateExistingPivot($menu_id, ['quantity' => $quantity]);
@@ -410,7 +433,7 @@ class OrderingController extends Controller
             $totalPrice += $price;
         }
 
-        return response()->json(['success' => $totalPrice]);
+        return response()->json(['totalPrice' => $totalPrice]);
     }
 
     public function deleteMenuFromCart($customer_id, $menu_id)

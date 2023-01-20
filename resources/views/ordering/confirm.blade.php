@@ -122,26 +122,23 @@
       data: {
         customer_id: customer_id,
         menu_id: menu_id,
-        quantity: quantity
+        quantity: quantity,
+        isPlus: 1
       },
       success: function(response) {
-        if (response.success) {
-          $parent.find(".quantity").val(quantity);
-          $("#totalPrice").text("RM " + response.success);
+        $parent.find(".quantity").val(quantity);
+        $("#totalPrice").text("RM " + response.totalPrice);
 
-          if (quantity < max_quantity) {
-            $parent.find('.plusButton').prop('disabled', false);
-          } else {
-            $parent.find('.plusButton').prop('disabled', true);
-          }
-
-          if (quantity > 1) {
-            $parent.find('.minusButton').prop('disabled', false);
-          } else {
-            $parent.find('.minusButton').prop('disabled', true);
-          }
+        if (quantity < max_quantity) {
+          $parent.find('.plusButton').prop('disabled', false);
         } else {
-          alert("Error saving data");
+          $parent.find('.plusButton').prop('disabled', true);
+        }
+
+        if (quantity > 1) {
+          $parent.find('.minusButton').prop('disabled', false);
+        } else {
+          $parent.find('.minusButton').prop('disabled', true);
         }
       }
     });
@@ -164,26 +161,23 @@
       data: {
         customer_id: customer_id,
         menu_id: menu_id,
-        quantity: quantity
+        quantity: quantity,
+        isPlus: 0
       },
       success: function(response) {
-        if (response.success) {
-          $parent.find(".quantity").val(quantity);
-          $("#totalPrice").text("RM " + response.success);
+        $parent.find(".quantity").val(quantity);
+        $("#totalPrice").text("RM " + response.totalPrice);
 
-          if (quantity > 1) {
-            $parent.find('.minusButton').prop('disabled', false);
-          } else {
-            $parent.find('.minusButton').prop('disabled', true);
-          }
-
-          if (quantity < max_quantity) {
-            $parent.find('.plusButton').prop('disabled', false);
-          } else {
-            $parent.find('.plusButton').prop('disabled', true);
-          }
+        if (quantity > 1) {
+          $parent.find('.minusButton').prop('disabled', false);
         } else {
-          alert("Error saving data");
+          $parent.find('.minusButton').prop('disabled', true);
+        }
+
+        if (quantity < max_quantity) {
+          $parent.find('.plusButton').prop('disabled', false);
+        } else {
+          $parent.find('.plusButton').prop('disabled', true);
         }
       }
     });
