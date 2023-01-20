@@ -26,7 +26,7 @@ class OrderingController extends Controller
     public function fillIndexForm(Request $request)
     {
         $validatedData = $request->validate([
-            'phone_num' => ['required', 'numeric', 'min:10'],
+            'phone_num' => ['required', 'min_digits:10'],
             'table_number' => ['required', 'numeric'],
         ]);
 

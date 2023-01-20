@@ -13,23 +13,27 @@
 
         {{-- Enter phone number --}}
         <div class="form-floating pb-4">
-          <input class="form-control" type="text" placeholder="Enter phone number" id="phone_num" name="phone_num">
+          <input class="form-control @error('phone_num') is-invalid @enderror" type="text" placeholder="Enter phone number" id="phone_num" name="phone_num">
           <label for="phone_num">Phone Number</label>
 
           @error('phone_num')
-          <div class="invalid-feedback">{{$message}}</div>
+          <div class="invalid-feedback">Please enter a valid phone number.</div>
           @enderror
         </div>
 
         {{-- Enter table number --}}
         <div class="form-floating pb-4">
-          <select class="form-select" id="table_number" name="table_number" aria-label="Table number">
+          <select class="form-select @error('table_number') is-invalid @enderror" id="table_number" name="table_number" aria-label="Table number">
             <option selected>Choose table number</option>
             @foreach ($tables as $table)
             <option value="{{$table->table_number}}">{{$table->table_number}}</option>
             @endforeach
           </select>
           <label for="table_number">Table Number</label>
+
+          @error('table_number')
+          <div class="invalid-feedback">Please choose a table number.</div>
+          @enderror
         </div>
 
         <button type="submit" class="btn btn-success">Confirm</button>
