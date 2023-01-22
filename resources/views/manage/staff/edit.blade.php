@@ -336,7 +336,7 @@
                         "_token":"{{csrf_token()}}"
                     },
                     success:function(response) {
-                        // window.location.href = "/staff";
+                        window.location.href = "/staff";
                     },
                     error:function(response){
                         document.getElementById("editStaffButton").disabled = false;
