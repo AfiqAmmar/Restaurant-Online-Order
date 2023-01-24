@@ -341,16 +341,9 @@ class OrderingController extends Controller
         $menu = Menu::where('id', $menu_id)->first();
         $available_quantity = $menu->available_quantity;
 
-        if ($available_quantity != null) {
+        if (!is_null($available_quantity)) {
             $remaining_quantity = $available_quantity - $quantity;
             $menu->update(['available_quantity' => $remaining_quantity]);
-
-            if ($remaining_quantity == 0) {
-                $menu->update([
-                    'availability' => 1,
-                    'available_quantity' => null
-                ]);
-            }
         }
 
         return redirect('/' . $customer_id . '/menus');
@@ -404,23 +397,11 @@ class OrderingController extends Controller
         $menu = Menu::where('id', $menu_id)->first();
         $available_quantity = $menu->available_quantity;
 
-        if ($available_quantity != null) {
+        if (!is_null($available_quantity)) {
             $remaining_quantity = ($isPlus)
                 ? $available_quantity - 1
                 : $available_quantity + 1;
             $menu->update(['available_quantity' => $remaining_quantity]);
-
-            if ($remaining_quantity == 0) {
-                $menu->update([
-                    'availability' => 1,
-                    'available_quantity' => null
-                ]);
-            }
-        } else {
-            $menu->update([
-                'availability' => 0,
-                'available_quantity' => 1
-            ]);
         }
 
         $cart = Cart::where('customer_id', $customer_id)->first();
@@ -439,19 +420,7 @@ class OrderingController extends Controller
     public function deleteMenuFromCart($customer_id, $menu_id)
     {
         $cart = Cart::where('customer_id', $customer_id)->first();
-        $cartMenu = $cart->menus()->get()
-            ->where('id', $menu_id)->first();
-        $available_quantity = $cartMenu->available_quantity;
-        $cartMenu_quantity = $cartMenu->pivot->quantity;
-
-        $remaining_quantity = $available_quantity + $cartMenu_quantity;
-        $cartMenu->update(['available_quantity' => $remaining_quantity]);
-
-        if ($remaining_quantity > 0) {
-            $cartMenu->update(['availability' => 0]);
-        }
-
-        $cart->menus()->detach($menu_id);
+        $this->returnCartMenusToDatabase($cart, $menu_id);
         return redirect('/' . $customer_id . '/cart');
     }
 
@@ -474,7 +443,6 @@ class OrderingController extends Controller
         foreach ($cartMenus as $cartMenu) {
             $category = Category::where('id', $cartMenu->category_id)->first();
             $isDrink = $category->category;
-
             if ($isDrink) {
                 array_push($cartDrinks, $cartMenu);
             } else {
@@ -483,9 +451,16 @@ class OrderingController extends Controller
 
             $price = ($cartMenu->price) * ($cartMenu->pivot->quantity);
             $totalPrice += $price;
-            $menu_id = $cartMenu->id;
 
-            $order->menus()->attach($menu_id, [
+            $available_quantity = $cartMenu->available_quantity;
+            if ($available_quantity === 0) {
+                $cartMenu->update([
+                    'availability' => 1,
+                    'available_quantity' => null
+                ]);
+            }
+
+            $order->menus()->attach($cartMenu->id, [
                 'quantity' => $cartMenu->pivot->quantity,
                 'menu_prepare' => 0,
                 'menu_serve' => 0,
@@ -534,11 +509,10 @@ class OrderingController extends Controller
     {
         $available_quantity = $cartMenu->available_quantity;
         $cartMenu_quantity = $cartMenu->pivot->quantity;
-        $remaining_quantity = $available_quantity + $cartMenu_quantity;
-        $cartMenu->update(['available_quantity' => $remaining_quantity]);
 
-        if ($remaining_quantity > 0) {
-            $cartMenu->update(['availability' => 0]);
+        if (!is_null($available_quantity)) {
+            $remaining_quantity = $available_quantity + $cartMenu_quantity;
+            $cartMenu->update(['available_quantity' => $remaining_quantity]);
         }
     }
 

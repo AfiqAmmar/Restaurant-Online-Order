@@ -4,7 +4,7 @@
 $menu = $menus->where('id', $cartMenu->id)->first();
 $remaining_quantity = $menu->available_quantity;
 $cartMenuQuantity = $cartMenu->pivot->quantity;
-$available_quantity = $remaining_quantity + $cartMenuQuantity;
+$available_quantity = (is_null($remaining_quantity)) ? PHP_INT_MAX : $remaining_quantity + $cartMenuQuantity;
 @endphp
 
 <div class="card mb-3" style="background-color: #F7E7D8;">

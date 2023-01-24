@@ -2,6 +2,10 @@
 
 @section('content')
 
+@php
+$available_quantity = (is_null($menu->available_quantity)) ? PHP_INT_MAX : $menu->available_quantity;
+@endphp
+
 <header class="sticky-top">
   {{-- Navbar --}}
   <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #000">
@@ -51,7 +55,7 @@
                   style="width: 3rem" disabled />
 
                 <button type="button" class="btn btn-light" x-on:click="quantity = quantity+1"
-                  :disabled="(quantity < {{$menu->available_quantity}}) ? false : true">
+                  :disabled="(quantity < {{$available_quantity}}) ? false : true">
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
