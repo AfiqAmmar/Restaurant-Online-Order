@@ -28,7 +28,7 @@ use App\Http\Controllers\AboutController;
 
 // Customer Ordering
 Route::get('/', [OrderingController::class, 'index']);
-Route::post('/customers', [OrderingController::class, 'fillIndexForm']);
+Route::post('/', [OrderingController::class, 'fillIndexForm']);
 Route::get('/{customer_id}/menus', [OrderingController::class, 'getMenus']);
 Route::get('/{customer_id}/menus/{menu}', [OrderingController::class, 'getMenu']);
 Route::post('/{customer_id}/{menu_id}/add', [OrderingController::class, 'addMenuToCart']);

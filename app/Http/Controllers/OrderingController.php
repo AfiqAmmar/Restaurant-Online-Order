@@ -38,7 +38,7 @@ class OrderingController extends Controller
         $this->checkIfOrderExists($customer_id);
         $this->createCartAndOrder($customer_id, $table_number);
 
-        return redirect('/' . $customer_id . '/menus');
+        return response()->json(['customer_id' => $customer_id]);
     }
 
     public function checkIfCartExists($customer_id)
