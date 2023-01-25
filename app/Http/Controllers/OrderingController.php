@@ -531,6 +531,7 @@ class OrderingController extends Controller
             $finalMenus = $this->deductEverySecondMenuInEachCategory($menus);
             $estimatedTime = $this->getHighestEstTimeFromEachCategory($finalMenus);
         }
+
         // previous orders already exist
         else {
             // check if menu exists in previous 5 orders
@@ -546,22 +547,19 @@ class OrderingController extends Controller
                 }
             }
 
+            $orderEstTime = ($isDrink)
+                ? $orders->first()->estimate_time_drink
+                : $orders->first()->estimate_time;
+
             if ($menus) {
                 $finalMenus = $this->deductEverySecondMenuInEachCategory($menus);
 
-                // add first menu's est time and add it to prev orders' est time
+                // add first menu's est time and add it to prev order's est time
                 $estimatedTime = $this->getHighestEstTimeFromEachCategory($finalMenus);
-                foreach ($orders as $order) {
-                    $orderEstTime = ($isDrink)
-                        ? $order->estimate_time_drink
-                        : $order->estimate_time;
-                    $estimatedTime += $orderEstTime;
-                }
+                $estimatedTime += $orderEstTime;
             } else {
                 // use previous order's estimated time
-                $estimatedTime = ($isDrink)
-                    ? $orders->first()->estimate_time_drink
-                    : $orders->first()->estimate_time;
+                $estimatedTime = $orderEstTime;
             }
         }
 
