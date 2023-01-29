@@ -30,7 +30,7 @@ class SalesController extends Controller
             }
         }
 
-        $new_orders = Order::where('payment_status', 0)->count();
+        $new_orders = Order::where('prepare_status', 0)->count();
         $available_table = 0;
         $tables = Table::all();
         foreach($tables as $table)
