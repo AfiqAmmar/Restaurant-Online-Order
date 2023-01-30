@@ -28,15 +28,21 @@
 
       <div id="confirmInfo" class="d-flex flex-column gap-2 rounded p-4 text-dark" style="background-color: #F7E7D8">
         @foreach ($cartMenus as $cartMenu)
+
+        @php
+        $cartMenuQuantity = $cartMenu->pivot->quantity;
+        $cartMenuPrice = $cartMenu->price;
+        @endphp
+
         <div class="row align-items-center gap-2">
           <div class="col-6">
             <h3 class="text-start">{{$cartMenu->name}}</h3>
           </div>
           <div class="col-1">
-            <p class="fs-5">x{{$cartMenu->pivot->quantity}}</p>
+            <p class="fs-5">x{{$cartMenuQuantity}}</p>
           </div>
           <div class="col-4">
-            <p class="fs-5">RM {{$cartMenu->price}}</p>
+            <p class="fs-5">RM {{$cartMenuPrice*$cartMenuQuantity}}</p>
           </div>
         </div>
         @endforeach

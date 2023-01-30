@@ -34,7 +34,7 @@
         <h5 class="text-white py-1">Selected Menus</h5>
 
         @foreach ($cartMenus as $cartMenu)
-        <x-confirm-menu-card :cartMenu="$cartMenu" :customer_id="$customer_id" :menus="$menus" />
+        <x-cart-menu-card :cartMenu="$cartMenu" :customer_id="$customer_id" :menus="$menus" />
         @endforeach
       </div>
 
@@ -42,7 +42,7 @@
         <h5 class="text-white py-1">Selected Menus</h5>
 
         @foreach ($cartMenus as $cartMenu)
-        <x-confirm-menu-card :cartMenu="$cartMenu" :customer_id="$customer_id" :menus="$menus" />
+        <x-cart-menu-card :cartMenu="$cartMenu" :customer_id="$customer_id" :menus="$menus" />
         @endforeach
       </div>
 
@@ -107,8 +107,9 @@
 <script>
   $(".plusButton").click(function() {
     var customer_id = parseInt("<?php echo $customer_id; ?>");
-    var $parent = $(this).closest('.d-flex');
+    var $parent = $(this).closest('.cartMenu');
     var menu_id = parseInt($parent.find('.menu_id').text());
+    var menu_price = parseInt($parent.find('.menu_price').text());
     var max_quantity = parseInt($parent.find('.menu_available_quantity').text());
     var quantity = parseInt($parent.find('.quantity').val());
     quantity += 1;
@@ -127,6 +128,7 @@
       },
       success: function(response) {
         $parent.find(".quantity").val(quantity);
+        $parent.find(".cartMenuPrice").text("RM " + menu_price*quantity);
         $("#totalPrice").text("RM " + response.totalPrice);
 
         if (quantity < max_quantity) {
@@ -145,9 +147,10 @@
   });
 
   $(".minusButton").click(function() {
-    var customer_id = "<?php echo $customer_id; ?>";
-    var $parent = $(this).closest('.d-flex');
+    var customer_id = parseInt("<?php echo $customer_id; ?>");
+    var $parent = $(this).closest('.cartMenu');
     var menu_id = parseInt($parent.find('.menu_id').text());
+    var menu_price = parseInt($parent.find('.menu_price').text());
     var max_quantity = parseInt($parent.find('.menu_available_quantity').text());
     var quantity = parseInt($parent.find('.quantity').val());
     quantity -= 1;
@@ -166,6 +169,7 @@
       },
       success: function(response) {
         $parent.find(".quantity").val(quantity);
+        $parent.find(".cartMenuPrice").text("RM " + menu_price*quantity);
         $("#totalPrice").text("RM " + response.totalPrice);
 
         if (quantity > 1) {
